@@ -1,0 +1,17 @@
+[Unit]
+Description=TB378FC Iris video codec devices
+Requires=tb378fc-runtime68.service
+After=tb378fc-runtime68.service
+
+[Service]
+Type=oneshot
+ExecStart=/sbin/modprobe videocc_sm8750
+ExecStart=/sbin/modprobe qcom_iris
+ExecStart=/bin/udevadm settle --timeout=15
+ExecStart=/usr/bin/test -c /dev/video0
+ExecStart=/usr/bin/test -c /dev/video1
+RemainAfterExit=yes
+TimeoutStartSec=40
+
+[Install]
+WantedBy=graphical.target

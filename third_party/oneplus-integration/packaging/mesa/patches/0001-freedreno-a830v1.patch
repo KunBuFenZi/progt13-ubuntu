@@ -1,0 +1,22 @@
+From 2061a5ee6184e465eafb87cf465aed92c04f1a41 Mon Sep 17 00:00:00 2001
+From: Lakshman Chandu Kondreddy <lkondred@qti.qualcomm.com>
+Subject: [PATCH] freedreno: Add chip-id support for A830v1
+
+Add initial support for A830v1 device in freedreno.
+Verified weston,glmark2-es2-wayland.
+
+Signed-off-by: Lakshman Chandu Kondreddy <lkondred@qti.qualcomm.com>
+Part-of: <https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/43878>
+Source: https://gitlab.freedesktop.org/mesa/mesa/-/commit/2061a5ee6184e465eafb87cf465aed92c04f1a41
+---
+diff --git a/src/freedreno/common/freedreno_devices.py b/src/freedreno/common/freedreno_devices.py
+index f220181..30caad5 100644
+--- a/src/freedreno/common/freedreno_devices.py
++++ b/src/freedreno/common/freedreno_devices.py
+@@ -1405,5 +1405,6 @@
+ add_gpus([
+         GPUId(chip_id=0xffff44050000, name="Adreno (TM) 830"),
++        GPUId(chip_id=0xffff44050001, name="Adreno (TM) 830v1"),
+         GPUId(chip_id=0x44050001, name="Adreno (TM) 830"), # KGSL
+     ], A6xxGPUInfo(
+         CHIP.A8XX,

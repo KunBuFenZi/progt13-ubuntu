@@ -1,0 +1,35 @@
+#!/bin/sh
+export PATH=/bin
+(while [ ! -d /run/evidence ]; do sleep 1; done
+ sleep 12
+ (
+  echo LATE_ID_DISPLAY_BEFORE
+  /bin/kms-test 48 cycle &
+  kms=$!
+  sleep 18
+  echo LATE_ID_BEGIN
+  cat /proc/uptime
+  # Preserve early handover faults separately; detect new faults from this read.
+  dmesg -c >/run/evidence/late-id-before.txt
+  for device in /sys/bus/i2c/devices/*/diagnostic_id; do
+      echo "$device"
+      cat "$device"
+      echo "ID_EXIT=$?"
+      dmesg >/run/evidence/late-id-dmesg.txt
+      if dmesg | grep -qE 'I2C timeout|Unhandled context fault|Kernel panic|Oops:'; then
+          echo LATE_ID_ABORT
+          sleep 15
+          reboot -f
+          exit 1
+      fi
+      sleep 2
+  done
+  echo LATE_ID_DONE
+  wait "$kms"
+  echo LATE_ID_DISPLAY_RECYCLE
+  /bin/kms-test 45 cycle
+  dmesg >/run/evidence/late-id-dmesg.txt
+  echo LATE_ID_PROBE_DONE
+ ) >/run/evidence/late-id-probe.txt 2>&1
+) &
+exec /bin/ram-base-init

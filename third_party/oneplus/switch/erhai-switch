@@ -1,0 +1,593 @@
+#!/bin/sh
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# erhai-switch -- rotate the Android and Ubuntu boot triplets through the
+# active A/B slot on the OnePlus Pad 2 Pro (OPD2413, SM8750P).
+#
+# This device has one usable slot. Its B slot carries an older firmware chain
+# (xbl/tz/abl from an earlier ColorOS) and can never complete a boot, and
+# recovery cannot carry a kernel because this ABL treats the recovery
+# partition as a pure ramdisk. So both systems share the *active* slot and
+# take turns in it: boot / init_boot / vendor_boot are swapped as a set, and
+# whichever system is not installed lives in a file store on the Linux root.
+#
+# Nothing else is touched: not recovery, not misc, not vbmeta, not the slot
+# attributes, not the B slot, not xbl/tz. The slot suffix is read, never
+# written -- the script works on whichever slot the bootloader says is active.
+#
+# Both boot images must carry an AVB hash footer, self-signed included: vbmeta
+# describes `boot` as a chain partition, so a missing footer is malformed
+# metadata that an unlocked bootloader still refuses. Footers live in the
+# partition tail, which is why every write here is a whole-partition write.
+#
+# Runs on both sides of the switch, so it stays POSIX sh and uses only applets
+# BusyBox (Ubuntu initramfs / recovery) and toybox (Android) both provide.
+# Android side: a KernelSU root shell. Ubuntu side: sudo or pkexec.
+#
+# Subcommands:
+#   status          what is in the slot, what is in the store, no writes
+#   verify          re-hash the store and the live partitions, no writes
+#   stash-android   refresh the android/ archive from the live slot
+#   to-ubuntu       stash Android, install the Ubuntu triplet, reboot
+#   to-android      install the archived Android triplet, reboot
+#
+# Options: --no-reboot, --dry-run, --slot <_a|_b>, --store <dir>,
+#          --dev-dir <dir> (resolve partitions as plain files, for tests).
+
+# Android mksh closes nonstandard descriptors when starting external commands.
+# KernelSU provides ash, whose inherited fd 9 supports the shared flock below.
+if [ -n "${KSH_VERSION:-}" ] && [ -x /data/adb/ksu/bin/busybox ]; then
+	exec /data/adb/ksu/bin/busybox sh "$0" "$@"
+fi
+
+set -u
+
+PROG=erhai-switch
+PARTS='boot init_boot vendor_boot'
+ROOT_LABEL=linux_rootfs
+STORE_DEFAULT=/var/lib/erhai/switch
+MOUNTPOINT=/mnt/erhai-switch
+# Our boot images carry this in the Android header command line; the stock
+# images cannot. It is the cheap guard that keeps a Ubuntu slot from being
+# archived as if it were Android.
+UBUNTU_MARKER='erhai.boot=mainline'
+
+STORE=
+SLOT=
+DEV_DIR=
+DRY_RUN=0
+NO_REBOOT=0
+MOUNTED_HERE=0
+
+die() {
+	printf '%s: %s\n' "$PROG" "$*" >&2
+	log "ERROR $*"
+	cleanup
+	exit 1
+}
+
+warn() { printf '%s: %s\n' "$PROG" "$*" >&2; }
+
+log() {
+	[ -n "$STORE" ] && [ -d "$STORE" ] || return 0
+	printf '%s %s\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ' 2>/dev/null || echo unknown)" "$*" \
+		>> "$STORE/switch.log" 2>/dev/null || true
+}
+
+say() {
+	printf '%s\n' "$*"
+	log "$*"
+}
+
+# --------------------------------------------------------------------------
+# Environment
+
+is_android() { [ -e /system/build.prop ] || [ -d /system/bin ]; }
+
+# The slot suffix is read, never chosen. Android 15 gets it in bootconfig.
+#
+# The Ubuntu side does not: this ABL hands a mainline kernel its own bootargs
+# (oplusboot.mode, oplusboot.prjname, oplusboot.serialno, panel identity ...)
+# but no androidboot.slot_suffix at all, and leaves /proc/bootconfig empty
+# -- measured on the device, 2026-09-21. So Linux falls back to the GPT
+# attribute the bootloader itself uses to pick a slot (bit 50, "active", the
+# same bit `fastboot --set-active` writes), and finally to what the Android
+# side last recorded in the store.
+GPT_ACTIVE_BIT=0x0004000000000000
+GPT_UNBOOTABLE_BIT=0x0080000000000000
+
+slot_from_bootargs() {
+	[ -r "$1" ] || return 1
+	tr -d '\000' < "$1" | tr ' ' '\n' |
+		sed -n 's/^androidboot\.slot_suffix=//p' | head -n 1
+}
+
+part_flags() {
+	lsblk -dno PARTFLAGS "$1" 2>/dev/null ||
+		blkid -p -s PART_ENTRY_FLAGS -o value "$1" 2>/dev/null
+}
+
+slot_from_gpt() {
+	gp_found=
+	for gp_candidate in _a _b; do
+		gp_dev=$(resolve_part "boot$gp_candidate") || continue
+		gp_flags=$(part_flags "$gp_dev")
+		[ -n "$gp_flags" ] || continue
+		# $(( )) parses 0x... in dash, BusyBox ash and toybox sh alike,
+		# but a value in any other shape is a fatal arithmetic error in
+		# dash rather than a failed command, so check the shape first.
+		case $gp_flags in
+		0x[0-9a-fA-F]*|[0-9]*) ;;
+		*) continue ;;
+		esac
+		gp_active=$((gp_flags & GPT_ACTIVE_BIT))
+		gp_dead=$((gp_flags & GPT_UNBOOTABLE_BIT))
+		[ "$gp_active" != 0 ] || continue
+		[ "$gp_dead" = 0 ] || continue
+		[ -z "$gp_found" ] || return 1   # two active slots: do not guess
+		gp_found=$gp_candidate
+	done
+	[ -n "$gp_found" ] || return 1
+	printf '%s' "$gp_found"
+}
+
+detect_slot() {
+	ds_suffix=
+	if [ -r /proc/bootconfig ]; then
+		ds_suffix=$(sed -n 's/.*androidboot\.slot_suffix *= *"\{0,1\}\([^" ]*\)"\{0,1\}.*/\1/p' \
+			/proc/bootconfig | head -n 1)
+	fi
+	[ -n "$ds_suffix" ] || ds_suffix=$(slot_from_bootargs /proc/cmdline)
+	[ -n "$ds_suffix" ] || ds_suffix=$(slot_from_bootargs /proc/device-tree/chosen/bootargs)
+	[ -n "$ds_suffix" ] || ds_suffix=$(slot_from_gpt)
+	if [ -z "$ds_suffix" ] && [ -f "$STORE_DEFAULT/state.json" ]; then
+		ds_suffix=$(sed -n 's/.*"slot_suffix": *"\([^"]*\)".*/\1/p' \
+			"$STORE_DEFAULT/state.json" | head -n 1)
+	fi
+	printf '%s' "$ds_suffix"
+}
+
+# Android exposes partitions as /dev/block/by-name/<label>, a udev-managed
+# Linux as /dev/disk/by-partlabel/<label>; an initramfs has neither, but every
+# GPT entry still shows up as PARTNAME in the block uevent.
+resolve_part() {
+	rp_label=$1
+	if [ -n "$DEV_DIR" ]; then
+		[ -e "$DEV_DIR/$rp_label" ] || return 1
+		printf '%s' "$DEV_DIR/$rp_label"
+		return 0
+	fi
+	for rp_base in /dev/block/by-name /dev/disk/by-partlabel; do
+		if [ -e "$rp_base/$rp_label" ]; then
+			readlink -f "$rp_base/$rp_label"
+			return 0
+		fi
+	done
+	for rp_uevent in /sys/class/block/*/uevent; do
+		[ -e "$rp_uevent" ] || continue
+		grep -qx "PARTNAME=$rp_label" "$rp_uevent" 2>/dev/null || continue
+		rp_dir=${rp_uevent%/uevent}
+		printf '/dev/%s' "${rp_dir##*/}"
+		return 0
+	done
+	return 1
+}
+
+# The store lives on the Linux root filesystem so both systems see the same
+# archive. Android has to mount it for the duration and give it back after.
+mount_store() {
+	[ -n "$STORE" ] && return 0
+	if [ -d "$STORE_DEFAULT" ] || ! is_android; then
+		STORE=$STORE_DEFAULT
+		mkdir -p "$STORE" || die "cannot create $STORE"
+		return 0
+	fi
+	ms_dev=$(resolve_part "$ROOT_LABEL") || die "no $ROOT_LABEL partition on this device"
+	mkdir -p "$MOUNTPOINT" || die "cannot create $MOUNTPOINT"
+	if ! grep -q " $MOUNTPOINT " /proc/mounts 2>/dev/null; then
+		mount -t ext4 -o rw "$ms_dev" "$MOUNTPOINT" ||
+			die "cannot mount $ms_dev ($ROOT_LABEL) on $MOUNTPOINT"
+		MOUNTED_HERE=1
+	fi
+	STORE=$MOUNTPOINT${STORE_DEFAULT}
+	mkdir -p "$STORE" || die "cannot create $STORE"
+}
+
+cleanup() {
+	[ "$MOUNTED_HERE" = 1 ] || return 0
+	sync
+	umount "$MOUNTPOINT" 2>/dev/null || umount -l "$MOUNTPOINT" 2>/dev/null || true
+	MOUNTED_HERE=0
+}
+
+# --------------------------------------------------------------------------
+# Image sets
+
+sha_of_file() { sha256sum "$1" | cut -d' ' -f1; }
+
+sha_of_part() {
+	# Whole-partition digest: the AVB footer is in the tail, so a
+	# content-sized read would not notice a stale one.
+	sp_dev=$1 sp_bytes=$2
+	if [ $((sp_bytes % 1048576)) -eq 0 ]; then
+		dd if="$sp_dev" bs=1048576 count=$((sp_bytes / 1048576)) 2>/dev/null | sha256sum | cut -d' ' -f1
+	else
+		dd if="$sp_dev" bs=4096 count=$(((sp_bytes + 4095) / 4096)) 2>/dev/null |
+			dd bs=1 count="$sp_bytes" 2>/dev/null | sha256sum | cut -d' ' -f1
+	fi
+}
+
+sums_lookup() {
+	# <sha>  <name>.img, as sha256sum writes it.
+	sed -n "s/^\([0-9a-f]\{64\}\)  *$2\.img\$/\1/p" "$1/SHA256SUMS" | head -n 1
+}
+
+# A set is usable only if all three images are present and every one of them
+# matches the SHA256SUMS that ships with it. Anything else is refused rather
+# than written to a boot partition.
+check_set() {
+	cs_dir=$1 cs_label=$2
+	[ -d "$cs_dir" ] || { warn "$cs_label: no such directory ($cs_dir)"; return 1; }
+	[ -f "$cs_dir/SHA256SUMS" ] || { warn "$cs_label: no SHA256SUMS"; return 1; }
+	cs_rc=0
+	for cs_name in $PARTS; do
+		cs_want=$(sums_lookup "$cs_dir" "$cs_name")
+		if [ -z "$cs_want" ]; then
+			warn "$cs_label: SHA256SUMS has no entry for $cs_name.img"; cs_rc=1; continue
+		fi
+		if [ ! -f "$cs_dir/$cs_name.img" ]; then
+			warn "$cs_label: missing $cs_name.img"; cs_rc=1; continue
+		fi
+		cs_got=$(sha_of_file "$cs_dir/$cs_name.img")
+		if [ "$cs_got" != "$cs_want" ]; then
+			warn "$cs_label: $cs_name.img is $cs_got, SHA256SUMS says $cs_want"; cs_rc=1
+		fi
+	done
+	return $cs_rc
+}
+
+# Which complete set is installed. A ramdisk-only update leaves boot.img
+# unchanged, so its digest cannot prove that init_boot/vendor_boot followed.
+occupant() {
+	oc_live_set=
+	for oc_name in $PARTS; do
+		oc_dev=$(resolve_part "$oc_name$SLOT") || { printf 'unknown'; return; }
+		oc_bytes=$(stat -c %s "$oc_dev" 2>/dev/null)
+		[ -n "$oc_bytes" ] && [ "$oc_bytes" != 0 ] || oc_bytes=$(blockdev --getsize64 "$oc_dev" 2>/dev/null)
+		[ -n "$oc_bytes" ] && [ "$oc_bytes" != 0 ] || { printf 'unknown'; return; }
+		oc_digest=$(sha_of_part "$oc_dev" "$oc_bytes")
+		oc_live_set="$oc_live_set$oc_name=$oc_digest
+"
+	done
+	for oc_candidate in ubuntu android; do
+		[ -f "$STORE/$oc_candidate/SHA256SUMS" ] || continue
+		oc_matches=1
+		for oc_name in $PARTS; do
+			oc_want=$(sums_lookup "$STORE/$oc_candidate" "$oc_name")
+			oc_live=$(printf '%s' "$oc_live_set" | sed -n "s/^$oc_name=//p")
+			if [ -z "$oc_want" ] || [ "$oc_want" != "$oc_live" ]; then
+				oc_matches=0
+				break
+			fi
+		done
+		if [ "$oc_matches" = 1 ]; then
+			printf '%s' "$oc_candidate"
+			return
+		fi
+	done
+	printf 'unknown'
+}
+
+# Independent of the store: does the installed boot image announce itself as
+# ours? Reading one page is enough -- the Android header keeps its command
+# line at offset 44.
+has_ubuntu_marker() {
+	hm_dev=$(resolve_part "boot$SLOT") || return 1
+	dd if="$hm_dev" bs=4096 count=1 2>/dev/null | tr -d '\000' |
+		grep -q "$UBUNTU_MARKER"
+}
+
+# --------------------------------------------------------------------------
+# Writing
+
+validate_target() {
+	vt_dir=$1 vt_label=$2
+	check_set "$vt_dir" "$vt_label" || die "$vt_label is incomplete or corrupt"
+	for vt_name in $PARTS; do
+		vt_dev=$(resolve_part "$vt_name$SLOT") || die "no $vt_name$SLOT partition"
+		vt_bytes=$(blockdev --getsize64 "$vt_dev" 2>/dev/null) || vt_bytes=$(stat -c %s "$vt_dev")
+		[ "$(stat -c %s "$vt_dir/$vt_name.img")" = "$vt_bytes" ] ||
+			die "$vt_name.img must cover the entire $vt_name$SLOT partition ($vt_bytes bytes)"
+	done
+}
+
+install_set() {
+	is_dir=$1 is_label=$2
+	if [ "$DRY_RUN" = 0 ]; then
+		printf '%s\n' "$is_label" > "$STORE/.switch-incomplete" || die 'cannot record the pending switch'
+		sync
+	fi
+	for is_name in $PARTS; do
+		is_dev=$(resolve_part "$is_name$SLOT") ||
+			die "no $is_name$SLOT partition on this device"
+		is_src=$is_dir/$is_name.img
+		is_bytes=$(stat -c %s "$is_src")
+		is_want=$(sums_lookup "$is_dir" "$is_name")
+		if [ "$DRY_RUN" = 1 ]; then
+			say "dry-run: would write $is_src ($is_bytes bytes, $is_want) to $is_dev"
+			continue
+		fi
+		say "writing $is_name$SLOT <- $is_label/$is_name.img ($is_bytes bytes)"
+		dd if="$is_src" of="$is_dev" bs=1048576 conv=fsync 2>/dev/null ||
+			die "write to $is_dev failed; keep the backup and restore Android before rebooting"
+		sync
+		is_got=$(sha_of_part "$is_dev" "$is_bytes")
+		if [ "$is_got" != "$is_want" ]; then
+			warn "$is_name$SLOT reads back as $is_got, expected $is_want"
+			die "read-back mismatch on $is_name$SLOT; the tablet was NOT rebooted"
+		fi
+		say "verified $is_name$SLOT = $is_got"
+	done
+	if [ "$DRY_RUN" = 0 ]; then
+		rm -f "$STORE/.switch-incomplete"
+		sync
+	fi
+}
+
+stash_set() {
+	ss_dir=$STORE/android
+	if [ "$DRY_RUN" = 1 ]; then
+		say "dry-run: would archive the live slot to $ss_dir"
+		return 0
+	fi
+	ss_tmp=$STORE/.android.new
+	rm -rf "$ss_tmp"
+	mkdir -p "$ss_tmp" || die "cannot create $ss_tmp"
+	: > "$ss_tmp/SHA256SUMS"
+	for ss_name in $PARTS; do
+		ss_dev=$(resolve_part "$ss_name$SLOT") || die "no $ss_name$SLOT partition"
+		ss_bytes=$(stat -c %s "$ss_dev" 2>/dev/null)
+		[ -n "$ss_bytes" ] && [ "$ss_bytes" != 0 ] ||
+			ss_bytes=$(blockdev --getsize64 "$ss_dev" 2>/dev/null)
+		[ -n "$ss_bytes" ] || die "cannot size $ss_dev"
+		dd if="$ss_dev" of="$ss_tmp/$ss_name.img" bs=1048576 \
+			count=$(((ss_bytes + 1048575) / 1048576)) 2>/dev/null ||
+			die "reading $ss_dev failed"
+		printf '%s  %s.img\n' "$(sha_of_file "$ss_tmp/$ss_name.img")" "$ss_name" >> "$ss_tmp/SHA256SUMS"
+	done
+	write_meta "$ss_tmp" android "live slot$SLOT"
+	sync
+	rm -rf "$STORE/android.prev"
+	if [ -d "$ss_dir" ]; then
+		mv "$ss_dir" "$STORE/android.prev" || die "cannot preserve the previous Android backup"
+	fi
+	mv "$ss_tmp" "$ss_dir" || die "cannot install the backup; previous set remains in android.prev"
+	sync
+	say "archived the live slot to $ss_dir"
+}
+
+write_meta() {
+	md_dir=$1 md_kind=$2 md_source=$3
+	{
+		printf '{\n'
+		printf '  "set": "%s",\n' "$md_kind"
+		printf '  "source": "%s",\n' "$md_source"
+		printf '  "slot_suffix": "%s",\n' "$SLOT"
+		printf '  "created": "%s"\n' \
+			"$(date -u '+%Y-%m-%dT%H:%M:%SZ' 2>/dev/null || echo unknown)"
+		printf '}\n'
+	} > "$md_dir/meta.json"
+}
+
+write_state() {
+	ws_kind=$1
+	[ "$DRY_RUN" = 1 ] && return 0
+	{
+		printf '{\n'
+		printf '  "installed": "%s",\n' "$ws_kind"
+		printf '  "slot_suffix": "%s",\n' "$SLOT"
+		printf '  "updated": "%s",\n' \
+			"$(date -u '+%Y-%m-%dT%H:%M:%SZ' 2>/dev/null || echo unknown)"
+		printf '  "boot_sha256": "%s"\n' "$(sums_lookup "$STORE/$ws_kind" boot)"
+		printf '}\n'
+	} > "$STORE/state.json"
+	sync
+}
+
+do_reboot() {
+	if [ "$NO_REBOOT" = 1 ] || [ "$DRY_RUN" = 1 ]; then
+		say "not rebooting (--no-reboot); the new system starts at the next boot"
+		return 0
+	fi
+	say "rebooting"
+	cleanup
+	sync
+	# svc is Android's own path and survives a locked-down init; reboot(8)
+	# covers the Linux side and Android recovery shells.
+	if command -v svc >/dev/null 2>&1; then
+		svc power reboot && return 0
+	fi
+	reboot || reboot -f
+}
+
+# --------------------------------------------------------------------------
+# Subcommands
+
+cmd_status() {
+	st_who=$(occupant)
+	st_marker=no
+	has_ubuntu_marker && st_marker=yes
+	say "slot suffix:      ${SLOT:-<none>}"
+	say "store:            $STORE"
+	say "installed now:    $st_who (erhai marker in boot: $st_marker)"
+	for st_set in ubuntu ubuntu.prev android; do
+		if check_set "$STORE/$st_set" "$st_set" >/dev/null 2>&1; then
+			say "$(printf 'store/%-11s' "$st_set")   ok  boot=$(sums_lookup "$STORE/$st_set" boot)"
+		elif [ -d "$STORE/$st_set" ]; then
+			say "$(printf 'store/%-11s' "$st_set")   PRESENT BUT UNUSABLE"
+		else
+			say "$(printf 'store/%-11s' "$st_set")   absent"
+		fi
+	done
+	[ -f "$STORE/state.json" ] && cat "$STORE/state.json"
+	return 0
+}
+
+cmd_verify() {
+	vf_rc=0
+	for vf_set in ubuntu android; do
+		if check_set "$STORE/$vf_set" "$vf_set"; then
+			say "store/$vf_set: all three images match SHA256SUMS"
+		else
+			say "store/$vf_set: UNUSABLE"
+			vf_rc=1
+		fi
+	done
+	vf_who=$(occupant)
+	say "installed now: $vf_who"
+	[ "$vf_who" = unknown ] && vf_rc=1
+	return $vf_rc
+}
+
+cmd_stash() {
+	[ ! -f "$STORE/.switch-incomplete" ] || die 'a switch was interrupted; restore Android before creating a new backup'
+	sh_who=$(occupant)
+	if [ "$sh_who" = ubuntu ] || has_ubuntu_marker; then
+		die "the active slot holds Ubuntu; refusing to archive it as Android"
+	fi
+	[ "$sh_who" != android ] || return 0
+	if ! is_android && [ -d "$STORE/android" ]; then
+		die 'unknown boot set; refusing to replace the Android backup'
+	fi
+	stash_set
+}
+
+cmd_to_ubuntu() {
+	[ ! -f "$STORE/.switch-incomplete" ] || die 'a switch was interrupted; restore Android first'
+	validate_target "$STORE/ubuntu" ubuntu
+	tu_who=$(occupant)
+	if [ "$tu_who" = ubuntu ]; then
+		say "the Ubuntu triplet is already installed; nothing to write"
+		write_state ubuntu
+		return 0
+	fi
+	if has_ubuntu_marker; then
+		say 'refreshing Ubuntu without replacing the Android backup'
+	elif [ "$tu_who" != android ]; then
+		if ! is_android && [ -d "$STORE/android" ]; then
+			die 'unknown boot set; restore Android before switching'
+		fi
+		stash_set
+	fi
+	install_set "$STORE/ubuntu" ubuntu
+	write_state ubuntu
+	do_reboot
+}
+
+cmd_to_android() {
+	validate_target "$STORE/android" android
+	ta_who=$(occupant)
+	if [ "$ta_who" = android ]; then
+		[ "$DRY_RUN" = 1 ] || rm -f "$STORE/.switch-incomplete"
+		say "the Android triplet is already installed; nothing to write"
+		write_state android
+		return 0
+	fi
+	install_set "$STORE/android" android
+	write_state android
+	do_reboot
+}
+
+usage() {
+	cat <<'EOF'
+erhai-switch -- rotate the Android and Ubuntu boot triplets through the
+active A/B slot on the OnePlus Pad 2 Pro.
+
+  erhai-switch <subcommand> [options]
+
+Subcommands:
+  status          what is in the slot, what is in the store; writes nothing
+  verify          re-hash both stored sets and the live slot; writes nothing
+  stash-android   archive the live slot into <store>/android
+  to-ubuntu       archive Android, install <store>/ubuntu, reboot
+  to-android      install <store>/android, reboot
+
+Options:
+  --no-reboot     do everything but the reboot
+  --dry-run       report what would be written; touches no partition
+  --slot _a|_b    override the detected active slot
+  --store DIR     use this store instead of /var/lib/erhai/switch
+  --dev-dir DIR   resolve partitions as plain files in DIR (tests only)
+
+Runs as root: sudo/pkexec on Ubuntu, a KernelSU root shell on Android.
+EOF
+	exit "${1:-0}"
+}
+
+# --------------------------------------------------------------------------
+
+command=
+while [ $# -gt 0 ]; do
+	case $1 in
+	status|verify|stash-android|to-ubuntu|to-android) command=$1 ;;
+	--no-reboot) NO_REBOOT=1 ;;
+	--dry-run) DRY_RUN=1; NO_REBOOT=1 ;;
+	--slot) shift; SLOT=${1:-} ;;
+	--slot=*) SLOT=${1#--slot=} ;;
+	--store) shift; STORE=${1:-} ;;
+	--store=*) STORE=${1#--store=} ;;
+	--dev-dir) shift; DEV_DIR=${1:-} ;;
+	--dev-dir=*) DEV_DIR=${1#--dev-dir=} ;;
+	-h|--help) usage 0 ;;
+	*) warn "unknown argument: $1"; usage 1 ;;
+	esac
+	shift
+done
+[ -n "$command" ] || usage 1
+
+if [ "$(id -u)" != 0 ]; then
+	die 'must run as root (Ubuntu: sudo/pkexec; Android: a KernelSU root shell)'
+fi
+
+if [ -z "$SLOT" ]; then
+	SLOT=$(detect_slot)
+	[ -n "$SLOT" ] ||
+		die 'cannot tell which slot is active; pass --slot _a or --slot _b'
+fi
+case $SLOT in
+_a|_b|'') ;;
+a|b) SLOT=_$SLOT ;;
+*) die "implausible slot suffix: $SLOT" ;;
+esac
+
+if [ -n "$STORE" ]; then
+	mkdir -p "$STORE" || die "cannot create $STORE"
+else
+	mount_store
+fi
+# The image installer inherits fd 9 when it calls this script.
+lock=$STORE/.lock
+if [ "$(readlink /proc/$$/fd/9 2>/dev/null)" != "$lock" ]; then
+	exec 9>"$lock"
+fi
+if command -v flock >/dev/null 2>&1; then
+	flock -n 9 || die 'another switch or kernel update is running'
+elif [ -x /data/adb/ksu/bin/busybox ]; then
+	/data/adb/ksu/bin/busybox flock -n 9 || die 'another switch or kernel update is running'
+else
+	die 'flock is required; install KernelSU with its BusyBox tools'
+fi
+trap cleanup EXIT
+trap 'exit 1' HUP INT TERM
+log "=== $command slot=$SLOT dry_run=$DRY_RUN store=$STORE"
+
+rc=0
+case $command in
+status)        cmd_status || rc=$? ;;
+verify)        cmd_verify || rc=$? ;;
+stash-android) cmd_stash || rc=$? ;;
+to-ubuntu)     cmd_to_ubuntu || rc=$? ;;
+to-android)    cmd_to_android || rc=$? ;;
+esac
+cleanup
+exit $rc

@@ -1,0 +1,13 @@
+[Unit]
+Description=TB378FC native camera discovery, without starting capture
+Requires=tb378fc-microphone73.service
+After=tb378fc-microphone73.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /usr/local/libexec/tb378fc-camera74.py
+RemainAfterExit=yes
+TimeoutStartSec=150
+
+[Install]
+WantedBy=graphical.target

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Adreno GPU Monitor
+Comment=GPU model, clock and engine activity
+Exec=/usr/local/bin/tb378fc-gpu-monitor
+Icon=utilities-system-monitor
+Terminal=false
+Categories=System;Monitor;

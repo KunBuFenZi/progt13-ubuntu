@@ -1,0 +1,12 @@
+{
+  "etc/systemd/system/graphical.target.wants/tb378fc-video68.service": "../tb378fc-video68.service",
+  "etc/systemd/system/graphical.target.wants/tb378fc-refresh76.service": "/etc/systemd/system/tb378fc-refresh76.service",
+  "etc/systemd/system/graphical.target.wants/tb378fc-power-key.service": "../tb378fc-power-key.service",
+  "etc/systemd/system/graphical.target.wants/tb378fc-camera74.service": "../tb378fc-camera74.service",
+  "etc/systemd/system/graphical.target.wants/tb378fc-microphone73.service": "../tb378fc-microphone73.service",
+  "etc/systemd/system/graphical.target.wants/tb378fc-bluetooth68.service": "../tb378fc-bluetooth68.service",
+  "etc/systemd/system/graphical.target.wants/tb378fc-runtime68.service": "../tb378fc-runtime68.service",
+  "etc/systemd/system/graphical.target.wants/tb378fc-volume-orientation.service": "../tb378fc-volume-orientation.service",
+  "etc/systemd/system/sockets.target.wants/tb378fc-torch70.socket": "../tb378fc-torch70.socket",
+  "etc/systemd/system/multi-user.target.wants/tb378fc-zram.service": "../tb378fc-zram.service"
+}

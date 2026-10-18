@@ -1,0 +1,341 @@
+--- out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/ipa/libipa/camera_sensor_helper.cpp
++++ out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/ipa/libipa/camera_sensor_helper.cpp
+@@ -789,6 +789,28 @@
+ };
+ REGISTER_CAMERA_SENSOR_HELPER("ov13858", CameraSensorHelperOv13858)
+ 
++class CameraSensorHelperGc08a8 : public CameraSensorHelper
++{
++public:
++	CameraSensorHelperGc08a8()
++	{
++		blackLevel_ = 4096;
++		gain_ = AnalogueGainLinear{ 1, 0, 0, 1024 };
++	}
++};
++REGISTER_CAMERA_SENSOR_HELPER("gc08a8", CameraSensorHelperGc08a8)
++
++class CameraSensorHelperOv13b10 : public CameraSensorHelper
++{
++public:
++	CameraSensorHelperOv13b10()
++	{
++		blackLevel_ = 4096;
++		gain_ = AnalogueGainLinear{ 1, 0, 0, 128 };
++	}
++};
++REGISTER_CAMERA_SENSOR_HELPER("ov13b10", CameraSensorHelperOv13b10)
++
+ class CameraSensorHelperVd55g1 : public CameraSensorHelper
+ {
+ public:
+--- out/camera-app75/camss/camss-video.h
++++ out/camera-app75/camss/camss-video.h
+@@ -46,6 +46,7 @@
+ 	struct mutex lock;
+ 	struct mutex q_lock;
+ 	unsigned int bpl_alignment;
++	unsigned int sizeimage_alignment;
+ 	unsigned int line_based;
+ 	const struct camss_format_info *formats;
+ 	unsigned int nformats;
+--- out/camera-app75/camss/camss-vfe-gen4.c
++++ out/camera-app75/camss/camss-vfe-gen4.c
+@@ -171,8 +171,10 @@
+ 	unsigned int i;
+ 
+ 	vfe->video_ops = vfe_video_ops_gen4;
+-	for (i = 0; i < vfe->res->line_num; i++)
++	for (i = 0; i < vfe->res->line_num; i++) {
+ 		vfe->line[i].video_out.vb2_q.min_queued_buffers = CAMSS_INIT_BUF_COUNT;
++		vfe->line[i].video_out.sizeimage_alignment = 256;
++	}
+ }
+ 
+ static void vfe_global_reset(struct vfe_device *vfe)
+--- out/camera-app75/camss/camss-vfe-gen4.c
++++ out/camera-app75/camss/camss-vfe-gen4.c
+@@ -95,7 +95,7 @@
+ 
+ 	writel(0x0, vfe->base + VFE_BUS_WM_TEST_BUS_CTRL);
+ 
+-	writel(ALIGN(pix->plane_fmt[0].bytesperline, 16) * pix->height >> 8,
++	writel(pix->plane_fmt[0].sizeimage >> 8,
+ 	       vfe->base + VFE_BUS_WM_FRAME_INCR(wm));
+ 	writel((WM_IMAGE_CFG_0_DEFAULT_WIDTH & 0xFFFF),
+ 	       vfe->base + VFE_BUS_WM_IMAGE_CFG_0(wm));
+--- out/camera-app75/camss/camss-vfe-gen4.c
++++ out/camera-app75/camss/camss-vfe-gen4.c
+@@ -154,7 +154,7 @@
+ 
+ 	/* Image addresses and frame increments are expressed in 256-byte units. */
+ 	if (!IS_ALIGNED(buf->addr[0], 256) ||
+-	    !IS_ALIGNED(pix->plane_fmt[0].bytesperline * pix->height, 256))
++	    !IS_ALIGNED(pix->plane_fmt[0].sizeimage, 256))
+ 		return -EINVAL;
+ 
+ 	return 0;
+--- out/camera-app75/camss/camss-video.c
++++ out/camera-app75/camss/camss-video.c
+@@ -556,6 +556,11 @@
+ 			if (p->sizeimage < sizeimage[i])
+ 				p->sizeimage = sizeimage[i];
+ 		}
++
++	if (video->sizeimage_alignment)
++		for (i = 0; i < pix_mp->num_planes; i++)
++			pix_mp->plane_fmt[i].sizeimage =
++				ALIGN(pix_mp->plane_fmt[i].sizeimage, video->sizeimage_alignment);
+ 
+ 	return 0;
+ }
+--- out/camera-app75/camss/camss-video.h
++++ out/camera-app75/camss/camss-video.h
+@@ -47,6 +47,7 @@
+ 	struct mutex q_lock;
+ 	unsigned int bpl_alignment;
+ 	unsigned int sizeimage_alignment;
++	unsigned int sizeimage_alignment;
+ 	unsigned int line_based;
+ 	const struct camss_format_info *formats;
+ 	unsigned int nformats;
+--- out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/software_isp/software_isp.cpp
++++ out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/software_isp/software_isp.cpp
+@@ -363,6 +363,9 @@
+  */
+ void SoftwareIsp::stop()
+ {
++	if (!ispWorkerThread_.isRunning())
++		return;
++
+ 	debayer_->invokeMethod(&Debayer::stop,
+ 			       ConnectionTypeBlocking);
+ 
+--- out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/pipeline/simple/simple.cpp
++++ out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/pipeline/simple/simple.cpp
+@@ -1683,9 +1683,15 @@
+ 		}
+ 
+ 		/* Queue all internal buffers for capture. */
+-		if (!data->rawStream_)
+-			for (std::unique_ptr<FrameBuffer> &buffer : data->conversionBuffers_)
+-				video->queueBuffer(buffer.get());
++		if (!data->rawStream_) {
++			for (std::unique_ptr<FrameBuffer> &buffer : data->conversionBuffers_) {
++				ret = video->queueBuffer(buffer.get());
++				if (ret < 0) {
++					stop(camera);
++					return ret;
++				}
++			}
++		}
+ 	}
+ 
+ 	return 0;
+--- out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/sensor/camera_sensor_legacy.cpp
++++ out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/sensor/camera_sensor_legacy.cpp
+@@ -6,6 +6,7 @@
+  */
+ 
+ #include <algorithm>
++#include <fstream>
+ #include <cmath>
+ #include <float.h>
+ #include <iomanip>
+--- out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/sensor/camera_sensor_legacy.cpp
++++ out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/sensor/camera_sensor_legacy.cpp
+@@ -599,6 +599,13 @@
+ 	const auto &rotationControl = controls.find(V4L2_CID_CAMERA_SENSOR_ROTATION);
+ 	if (rotationControl != controls.end()) {
+ 		int32_t propertyValue = rotationControl->second.def().get<int32_t>();
++		std::ifstream boardCamera("/proc/device-tree/soc@0/cci@ac7b000/i2c-bus@0/camera@36/compatible");
++		std::string boardCompatible;
++		std::getline(boardCamera, boardCompatible, '\0');
++		if (boardCompatible == "lenovo,tb378fc-ov13b10" &&
++		    ((model_ == "gc08a8" && propertyValue == 270) ||
++		     (model_ == "ov13b10" && propertyValue == 90)))
++			propertyValue = (propertyValue + 90) % 360;
+ 
+ 		/*
+ 		 * Cache the Transform associated with the camera mounting
+--- out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/sensor/camera_sensor_legacy.cpp
++++ out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/sensor/camera_sensor_legacy.cpp
+@@ -6,6 +6,7 @@
+  */
+ 
+ #include <algorithm>
++#include <fstream>
+ #include <cmath>
+ #include <float.h>
+ #include <iomanip>
+--- out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/sensor/camera_sensor_legacy.cpp
++++ out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/sensor/camera_sensor_legacy.cpp
+@@ -599,6 +599,13 @@
+ 	const auto &rotationControl = controls.find(V4L2_CID_CAMERA_SENSOR_ROTATION);
+ 	if (rotationControl != controls.end()) {
+ 		int32_t propertyValue = rotationControl->second.def().get<int32_t>();
++		std::ifstream boardCamera("/proc/device-tree/soc@0/cci@ac7b000/i2c-bus@0/camera@36/compatible");
++		std::string boardCompatible;
++		std::getline(boardCamera, boardCompatible, '\0');
++		if (boardCompatible == "lenovo,tb378fc-ov13b10" &&
++		    ((model_ == "gc08a8" && propertyValue == 270) ||
++		     (model_ == "ov13b10" && propertyValue == 90)))
++			propertyValue = 0;
+ 
+ 		/*
+ 		 * Cache the Transform associated with the camera mounting
+--- out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/sensor/camera_sensor_legacy.cpp
++++ out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/sensor/camera_sensor_legacy.cpp
+@@ -6,6 +6,7 @@
+  */
+ 
+ #include <algorithm>
++#include <fstream>
+ #include <cmath>
+ #include <float.h>
+ #include <iomanip>
+--- out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/sensor/camera_sensor_legacy.cpp
++++ out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/sensor/camera_sensor_legacy.cpp
+@@ -599,6 +599,13 @@
+ 	const auto &rotationControl = controls.find(V4L2_CID_CAMERA_SENSOR_ROTATION);
+ 	if (rotationControl != controls.end()) {
+ 		int32_t propertyValue = rotationControl->second.def().get<int32_t>();
++		std::ifstream boardCamera("/proc/device-tree/soc@0/cci@ac7b000/i2c-bus@0/camera@36/compatible");
++		std::string boardCompatible;
++		std::getline(boardCamera, boardCompatible, '\0');
++		if (boardCompatible == "lenovo,tb378fc-ov13b10" &&
++		    ((model_ == "gc08a8" && propertyValue == 270) ||
++		     (model_ == "ov13b10" && propertyValue == 90)))
++			propertyValue = 0;
+ 
+ 		/*
+ 		 * Cache the Transform associated with the camera mounting
+--- out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/software_isp/debayer_cpu.cpp
++++ out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/software_isp/debayer_cpu.cpp
+@@ -824,7 +824,9 @@
+ 			auto &blue = swapRedBlueGains_ ? red_ : blue_;
+ 			for (unsigned int i = 0; i < kRGBLookupSize; i++) {
+ 				/* Apply gamma after gain! */
+-				const RGB<float> lutGains = (gains * i / div).min(gammaTableSize - 1);
++				const float blackIndex = params.blackLevel.g() * gammaTableSize;
++				const float signal = std::max(static_cast<float>(i / div) - blackIndex, 0.0f);
++				const RGB<float> lutGains = (gains * signal + RGB<float>(blackIndex)).min(gammaTableSize - 1);
+ 				red[i] = gammaTable_[static_cast<unsigned int>(lutGains.r())];
+ 				green[i] = gammaTable_[static_cast<unsigned int>(lutGains.g())];
+ 				blue[i] = gammaTable_[static_cast<unsigned int>(lutGains.b())];
+--- out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/sensor/camera_sensor_legacy.cpp
++++ out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/sensor/camera_sensor_legacy.cpp
+@@ -6,6 +6,7 @@
+  */
+ 
+ #include <algorithm>
++#include <fstream>
+ #include <cmath>
+ #include <float.h>
+ #include <iomanip>
+--- out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/sensor/camera_sensor_legacy.cpp
++++ out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/sensor/camera_sensor_legacy.cpp
+@@ -599,6 +599,13 @@
+ 	const auto &rotationControl = controls.find(V4L2_CID_CAMERA_SENSOR_ROTATION);
+ 	if (rotationControl != controls.end()) {
+ 		int32_t propertyValue = rotationControl->second.def().get<int32_t>();
++		std::ifstream boardCamera("/proc/device-tree/soc@0/cci@ac7b000/i2c-bus@0/camera@36/compatible");
++		std::string boardCompatible;
++		std::getline(boardCamera, boardCompatible, '\0');
++		if (boardCompatible == "lenovo,tb378fc-ov13b10" &&
++		    ((model_ == "gc08a8" && propertyValue == 270) ||
++		     (model_ == "ov13b10" && propertyValue == 90)))
++			propertyValue = 0;
+ 
+ 		/*
+ 		 * Cache the Transform associated with the camera mounting
+--- out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/software_isp/software_isp.cpp
++++ out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/software_isp/software_isp.cpp
+@@ -159,6 +159,9 @@
+ 		return;
+ 	}
+ 
++	/* IPA init supplies defined neutral parameters before its first async response. */
++	debayerParams_ = *sharedParams_;
++
+ 	ipa_->setIspParams.connect(this, &SoftwareIsp::saveIspParams);
+ 	ipa_->metadataReady.connect(this,
+ 				    [this](uint32_t frame, const ControlList &metadata) {
+--- out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/sensor/camera_sensor_legacy.cpp
++++ out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/sensor/camera_sensor_legacy.cpp
+@@ -6,6 +6,7 @@
+  */
+ 
+ #include <algorithm>
++#include <fstream>
+ #include <cmath>
+ #include <float.h>
+ #include <iomanip>
+--- out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/sensor/camera_sensor_legacy.cpp
++++ out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/sensor/camera_sensor_legacy.cpp
+@@ -599,6 +599,13 @@
+ 	const auto &rotationControl = controls.find(V4L2_CID_CAMERA_SENSOR_ROTATION);
+ 	if (rotationControl != controls.end()) {
+ 		int32_t propertyValue = rotationControl->second.def().get<int32_t>();
++		std::ifstream boardCamera("/proc/device-tree/soc@0/cci@ac7b000/i2c-bus@0/camera@36/compatible");
++		std::string boardCompatible;
++		std::getline(boardCamera, boardCompatible, '\0');
++		if (boardCompatible == "lenovo,tb378fc-ov13b10" &&
++		    ((model_ == "gc08a8" && propertyValue == 270) ||
++		     (model_ == "ov13b10" && propertyValue == 90)))
++			propertyValue = 0;
+ 
+ 		/*
+ 		 * Cache the Transform associated with the camera mounting
+--- out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/sensor/camera_sensor_legacy.cpp
++++ out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/sensor/camera_sensor_legacy.cpp
+@@ -6,6 +6,7 @@
+  */
+ 
+ #include <algorithm>
++#include <fstream>
+ #include <cmath>
+ #include <float.h>
+ #include <iomanip>
+--- out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/sensor/camera_sensor_legacy.cpp
++++ out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/sensor/camera_sensor_legacy.cpp
+@@ -599,6 +599,13 @@
+ 	const auto &rotationControl = controls.find(V4L2_CID_CAMERA_SENSOR_ROTATION);
+ 	if (rotationControl != controls.end()) {
+ 		int32_t propertyValue = rotationControl->second.def().get<int32_t>();
++		std::ifstream boardCamera("/proc/device-tree/soc@0/cci@ac7b000/i2c-bus@0/camera@36/compatible");
++		std::string boardCompatible;
++		std::getline(boardCamera, boardCompatible, '\0');
++		if (boardCompatible == "lenovo,tb378fc-ov13b10" &&
++		    ((model_ == "gc08a8" && propertyValue == 270) ||
++		     (model_ == "ov13b10" && propertyValue == 90)))
++			propertyValue = 0;
+ 
+ 		/*
+ 		 * Cache the Transform associated with the camera mounting
+--- out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/sensor/camera_sensor_legacy.cpp
++++ out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/sensor/camera_sensor_legacy.cpp
+@@ -6,6 +6,7 @@
+  */
+ 
+ #include <algorithm>
++#include <fstream>
+ #include <cmath>
+ #include <float.h>
+ #include <iomanip>
+--- out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/sensor/camera_sensor_legacy.cpp
++++ out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5/src/libcamera/sensor/camera_sensor_legacy.cpp
+@@ -599,6 +599,13 @@
+ 	const auto &rotationControl = controls.find(V4L2_CID_CAMERA_SENSOR_ROTATION);
+ 	if (rotationControl != controls.end()) {
+ 		int32_t propertyValue = rotationControl->second.def().get<int32_t>();
++		std::ifstream boardCamera("/proc/device-tree/soc@0/cci@ac7b000/i2c-bus@0/camera@36/compatible");
++		std::string boardCompatible;
++		std::getline(boardCamera, boardCompatible, '\0');
++		if (boardCompatible == "lenovo,tb378fc-ov13b10" &&
++		    ((model_ == "gc08a8" && propertyValue == 270) ||
++		     (model_ == "ov13b10" && propertyValue == 90)))
++			propertyValue = 0;
+ 
+ 		/*
+ 		 * Cache the Transform associated with the camera mounting

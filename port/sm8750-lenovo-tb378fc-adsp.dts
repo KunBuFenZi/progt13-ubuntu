@@ -1,0 +1,17 @@
+// SPDX-License-Identifier: BSD-3-Clause
+/* Native ADSP preparation; separate candidate, not part of the tested desktop. */
+#include "sm8750-lenovo-tb378fc-keys.dts"
+
+&adspslpi_mem {
+    reg = <0x0 0x9ee00000 0x0 0x3a80000>;
+};
+&q6_adsp_dtb_mem {
+    reg = <0x0 0x9ed80000 0x0 0x80000>;
+};
+&remoteproc_adsp {
+    /* Register base is verified on this board's running native driver. */
+    reg = <0x0 0x03000000 0x0 0x10000>;
+    firmware-name = "qcom/sm8750/tb378fc/adsp.mdt",
+                    "qcom/sm8750/tb378fc/adsp_dtb.mdt";
+    status = "okay";
+};

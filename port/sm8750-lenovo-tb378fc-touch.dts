@@ -1,0 +1,45 @@
+// SPDX-License-Identifier: BSD-3-Clause
+#include "sm8750-lenovo-tb378fc-display.dts"
+
+&qupv3_1 {
+	status = "okay";
+};
+
+&gpi_dma1 {
+	status = "okay";
+};
+
+&spi4 {
+	status = "okay";
+	touchscreen@0 {
+		compatible = "lenovo,tb378fc-nvt";
+		reg = <0>;
+		spi-max-frequency = <9600000>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&tb378fc_touch_irq>;
+		interrupt-parent = <&tlmm>;
+		/* Native nvt_36xxx.ko overrides the Android DT flags with rising edge. */
+		interrupts = <162 IRQ_TYPE_EDGE_RISING>;
+		panel = <&panel>;
+		/* Android advertises a portrait 21900x35040 report frame. */
+		touchscreen-size-x = <2190>;
+		touchscreen-size-y = <3504>;
+		touchscreen-x-mm = <175>;
+		touchscreen-y-mm = <280>;
+		/* Native portrait X becomes landscape Y; invert before swapping. */
+		touchscreen-inverted-x;
+		touchscreen-swapped-x-y;
+		firmware-name = "novatek/tb378fc.bin";
+		novatek,pen-support;
+	};
+};
+
+&tlmm {
+	tb378fc_touch_irq: tb378fc-touch-irq-state {
+		pins = "gpio162";
+		function = "gpio";
+		drive-strength = <2>;
+		bias-pull-up;
+		input-enable;
+	};
+};

@@ -1,0 +1,6 @@
+#!/bin/sh
+# Use the pinned SDK Ninja to write its own compatible log format. Only the
+# Ninja dispatcher runs under QEMU here; its NIR generator runs host Python.
+set -eu
+sdk_root=$(CDPATH= cd -- "$(dirname -- "$0")/../out/mesa-root-build/root" && pwd)
+exec /usr/bin/qemu-aarch64 -L "$sdk_root" "$sdk_root/usr/bin/ninja" "$@"

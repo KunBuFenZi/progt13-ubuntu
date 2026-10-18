@@ -1,0 +1,17 @@
+#!/bin/sh
+export PATH=/bin
+export ALSA_CONFIG_PATH=/usr/share/alsa/alsa.conf
+export LD_LIBRARY_PATH=/lib/aarch64-linux-gnu
+# Parent init mounts /run and sets up evidence. Wait for AudioReach deferred probe.
+sleep 15
+echo AUDIO_DISCOVERY
+cat /etc/build-id
+cat /proc/asound/cards
+cat /proc/asound/pcm
+aplay -l
+amixer -c 0 controls
+amixer -c 0 contents
+echo AMP_BEFORE
+cat /sys/bus/i2c/devices/*/runtime_status
+echo AUDIO_DISCOVERY_DONE
+# First image only enumerates. Playback is sent explicitly over the RAM console.

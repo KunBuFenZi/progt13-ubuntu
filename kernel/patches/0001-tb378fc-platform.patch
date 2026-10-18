@@ -1,0 +1,3183 @@
+diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,pmic-glink.yaml b/Documentation/devicetree/bindings/soc/qcom/qcom,pmic-glink.yaml
+index aea3b06a8..5aae8ce5a 100644
+--- a/Documentation/devicetree/bindings/soc/qcom/qcom,pmic-glink.yaml
++++ b/Documentation/devicetree/bindings/soc/qcom/qcom,pmic-glink.yaml
+@@ -64,6 +64,16 @@ properties:
+           - const: qcom,sm8550-pmic-glink
+           - const: qcom,pmic-glink
+ 
++      - description:
++          Devices whose battery power property does not follow the measured
++          battery voltage and current. The standard SoC protocol is otherwise
++          retained. Native current is positive during discharge.
++        items:
++          - const: lenovo,tb378fc-pmic-glink
++          - const: qcom,sm8750-pmic-glink
++          - const: qcom,sm8550-pmic-glink
++          - const: qcom,pmic-glink
++
+   '#address-cells':
+     const: 1
+ 
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index 60411fd0f..5666b44b8 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -1241,7 +1241,11 @@ static void device_links_flush_sync_list(struct list_head *list,
+ 		if (dev != dont_lock_dev)
+ 			device_lock(dev);
+ 
++		if (initcall_debug)
++			pr_info("TBSYNC B %s\n", dev_name(dev));
+ 		dev_sync_state(dev);
++		if (initcall_debug)
++			pr_info("TBSYNC E %s\n", dev_name(dev));
+ 
+ 		if (dev != dont_lock_dev)
+ 			device_unlock(dev);
+diff --git a/drivers/base/dd.c b/drivers/base/dd.c
+index 60c005223..3e86c1827 100644
+--- a/drivers/base/dd.c
++++ b/drivers/base/dd.c
+@@ -345,7 +345,11 @@ static int deferred_probe_initcall(void)
+ 	driver_deferred_probe_enable = true;
+ 	driver_deferred_probe_trigger();
+ 	/* Sort as many dependencies as possible before exiting initcalls */
++	if (initcall_debug)
++		pr_info("TBDEFER 1 B\n");
+ 	flush_work(&deferred_probe_work);
++	if (initcall_debug)
++		pr_info("TBDEFER 1 E\n");
+ 	initcalls_done = true;
+ 
+ 	if (!IS_ENABLED(CONFIG_MODULES))
+@@ -356,7 +360,11 @@ static int deferred_probe_initcall(void)
+ 	 * that is optional
+ 	 */
+ 	driver_deferred_probe_trigger();
++	if (initcall_debug)
++		pr_info("TBDEFER 2 B\n");
+ 	flush_work(&deferred_probe_work);
++	if (initcall_debug)
++		pr_info("TBDEFER 2 E\n");
+ 
+ 	if (driver_deferred_probe_timeout > 0) {
+ 		schedule_delayed_work(&deferred_probe_timeout_work,
+@@ -782,9 +790,11 @@ static int really_probe_debug(struct device *dev, const struct device_driver *dr
+ 	ktime_t calltime, rettime;
+ 	int ret;
+ 
++	printk(KERN_INFO "TBPROBE B %s [%s]\n", dev_name(dev), drv->name);
+ 	calltime = ktime_get();
+ 	ret = really_probe(dev, drv);
+ 	rettime = ktime_get();
++	printk(KERN_INFO "TBPROBE E %s [%s] ret=%d\n", dev_name(dev), drv->name, ret);
+ 	/*
+ 	 * Don't change this to pr_debug() because that requires
+ 	 * CONFIG_DYNAMIC_DEBUG and we want a simple 'initcall_debug' on the
+diff --git a/drivers/firmware/efi/earlycon.c b/drivers/firmware/efi/earlycon.c
+index 3d060d599..da8aa24b8 100644
+--- a/drivers/firmware/efi/earlycon.c
++++ b/drivers/firmware/efi/earlycon.c
+@@ -273,3 +273,5 @@ static int __init efi_earlycon_setup(struct earlycon_device *device,
+ 	return 0;
+ }
+ EARLYCON_DECLARE(efifb, efi_earlycon_setup);
++
++#include "tb378fc-earlyfb.inc"
+diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c b/drivers/gpu/drm/msm/dsi/dsi_host.c
+index 7edf5937c..2e114a398 100644
+--- a/drivers/gpu/drm/msm/dsi/dsi_host.c
++++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
+@@ -1461,10 +1461,25 @@ static int dsi_cmd_dma_tx(struct msm_dsi_host *msm_host, int len)
+ 		ret = wait_for_completion_timeout(&msm_host->dma_comp,
+ 					msecs_to_jiffies(200));
+ 		DBG("ret=%d", ret);
+-		if (ret == 0)
++		if (ret == 0) {
++			pr_err("TB_DSI_TIMEOUT id=%d enabled=%d ctrl=%08x status=%08x intr=%08x fifo=%08x lane=%08x trigger=%08x dma=%08x base=%08x len=%08x phyerr=%08x timeout=%08x clk=%08x\n",
++			       msm_host->id, msm_host->enabled,
++			       dsi_read(msm_host, REG_DSI_CTRL),
++			       dsi_read(msm_host, REG_DSI_STATUS0),
++			       dsi_read(msm_host, REG_DSI_INTR_CTRL),
++			       dsi_read(msm_host, REG_DSI_FIFO_STATUS),
++			       dsi_read(msm_host, REG_DSI_LANE_STATUS),
++			       dsi_read(msm_host, REG_DSI_TRIG_CTRL),
++			       dsi_read(msm_host, REG_DSI_CMD_DMA_CTRL),
++			       dsi_read(msm_host, REG_DSI_DMA_BASE),
++			       dsi_read(msm_host, REG_DSI_DMA_LEN),
++			       dsi_read(msm_host, REG_DSI_DLN0_PHY_ERR),
++			       dsi_read(msm_host, REG_DSI_TIMEOUT_STATUS),
++			       dsi_read(msm_host, REG_DSI_CLK_STATUS));
+ 			ret = -ETIMEDOUT;
+-		else
++		} else {
+ 			ret = len;
++		}
+ 	} else {
+ 		ret = len;
+ 	}
+@@ -2402,6 +2417,17 @@ void msm_dsi_host_cmd_xfer_commit(struct mipi_dsi_host *host, u32 dma_base,
+ {
+ 	struct msm_dsi_host *msm_host = to_msm_dsi_host(host);
+ 
++	/* TB_DSI_VBIF_PRIORITY: native v2.8+ command DMA arbitration. */
++	if (msm_dsi_host_version_geq(msm_host, MSM_DSI_VER_MAJOR_6G,
++				     MSM_DSI_6G_VER_MINOR_V2_8_0)) {
++		u32 vbif = dsi_read(msm_host, REG_DSI_VBIF_CTRL);
++
++		dsi_write(msm_host, REG_DSI_VBIF_CTRL, vbif | 0x7);
++		if ((vbif & 0x7) != 0x7)
++			pr_info("TB_DSI_VBIF id=%d old=%08x new=%08x\n",
++				msm_host->id, vbif, dsi_read(msm_host, REG_DSI_VBIF_CTRL));
++	}
++
+ 	dsi_write(msm_host, REG_DSI_DMA_BASE, dma_base);
+ 	dsi_write(msm_host, REG_DSI_DMA_LEN, len);
+ 	dsi_write(msm_host, REG_DSI_TRIG_DMA, 1);
+diff --git a/drivers/gpu/drm/msm/msm_iommu.c b/drivers/gpu/drm/msm/msm_iommu.c
+index 897e42c8d..7e7101c75 100644
+--- a/drivers/gpu/drm/msm/msm_iommu.c
++++ b/drivers/gpu/drm/msm/msm_iommu.c
+@@ -723,6 +723,30 @@ static const struct msm_mmu_funcs funcs = {
+ 		.set_stall = msm_iommu_set_stall,
+ };
+ 
++/* TB378FC_DIRECT_REGION_HANDOVER: preserve firmware's active scanout. */
++static int msm_iommu_map_direct_regions(struct iommu_domain *domain,
++				       struct device *dev)
++{
++	struct iommu_resv_region *region;
++	LIST_HEAD(regions);
++	int ret = 0;
++
++	iommu_get_resv_regions(dev, &regions);
++	list_for_each_entry(region, &regions, list) {
++		if (region->type != IOMMU_RESV_DIRECT &&
++		    region->type != IOMMU_RESV_DIRECT_RELAXABLE)
++			continue;
++		ret = iommu_map(domain, region->start, region->start,
++				region->length, region->prot, GFP_KERNEL);
++		if (ret)
++			break;
++		dev_info(dev, "preserved direct scanout IOVA %pa size %zu\n",
++			 &region->start, region->length);
++	}
++	iommu_put_resv_regions(dev, &regions);
++	return ret;
++}
++
+ struct msm_mmu *msm_iommu_new(struct device *dev, unsigned long quirks)
+ {
+ 	struct iommu_domain *domain;
+@@ -750,6 +774,11 @@ struct msm_mmu *msm_iommu_new(struct device *dev, unsigned long quirks)
+ 	mutex_init(&iommu->init_lock);
+ 
+ 	ret = iommu_attach_device(iommu->domain, dev);
++	if (!ret) {
++		ret = msm_iommu_map_direct_regions(iommu->domain, dev);
++		if (ret)
++			iommu_detach_device(iommu->domain, dev);
++	}
+ 	if (ret) {
+ 		iommu_domain_free(domain);
+ 		kfree(iommu);
+diff --git a/drivers/gpu/drm/msm/msm_kms.c b/drivers/gpu/drm/msm/msm_kms.c
+index e5d0ea629..4c1a63e96 100644
+--- a/drivers/gpu/drm/msm/msm_kms.c
++++ b/drivers/gpu/drm/msm/msm_kms.c
+@@ -185,6 +185,10 @@ struct drm_gpuvm *msm_kms_init_vm(struct drm_device *dev, struct device *mdss_de
+ 	struct msm_drm_private *priv = dev->dev_private;
+ 	struct msm_kms *kms = priv->kms;
+ 	struct device *iommu_dev;
++	struct iommu_resv_region *region;
++	LIST_HEAD(regions);
++	u64 va_start = 0x1000, va_size = 0, cursor = 0x1000;
++	const u64 va_limit = 0x100000000ULL;
+ 
+ 	/*
+ 	 * IOMMUs can be a part of MDSS device tree binding, or the
+@@ -203,8 +207,45 @@ struct drm_gpuvm *msm_kms_init_vm(struct drm_device *dev, struct device *mdss_de
+ 	if (IS_ERR(mmu))
+ 		return ERR_CAST(mmu);
+ 
+-	vm = msm_gem_vm_create(dev, mmu, "mdp_kms",
+-			       0x1000, 0x100000000 - 0x1000, true);
++	/* TB378FC_LARGEST_FREE_IOVA: reservations need not be sorted.
++	 * Keep both the MSI window and inherited scanout outside the allocator.
++	 * Truncating at the first reservation left only 128 MiB on TB378FC.
++	 */
++	iommu_get_resv_regions(iommu_dev, &regions);
++	while (cursor < va_limit) {
++		u64 next = va_limit, blocked_end = cursor;
++
++		list_for_each_entry(region, &regions, list) {
++			u64 end;
++
++			if (!region->length || region->start >= va_limit)
++				continue;
++			end = region->start + min_t(u64, region->length,
++						va_limit - region->start);
++			if (end <= cursor)
++				continue;
++			if (region->start <= cursor)
++				blocked_end = max(blocked_end, end);
++			else
++				next = min_t(u64, next, region->start);
++		}
++		if (blocked_end > cursor) {
++			cursor = blocked_end;
++			continue;
++		}
++		if (next - cursor > va_size) {
++			va_start = cursor;
++			va_size = next - cursor;
++		}
++		cursor = next;
++	}
++	iommu_put_resv_regions(iommu_dev, &regions);
++	if (!va_size) {
++		mmu->funcs->destroy(mmu);
++		return ERR_PTR(-ENOSPC);
++	}
++	drm_info(dev, "KMS IOVA aperture %#llx+%#llx\n", va_start, va_size);
++	vm = msm_gem_vm_create(dev, mmu, "mdp_kms", va_start, va_size, true);
+ 	if (IS_ERR(vm)) {
+ 		dev_err(mdp_dev, "vm create, error %pe\n", vm);
+ 		mmu->funcs->destroy(mmu);
+diff --git a/drivers/gpu/drm/msm/registers/display/dsi.xml b/drivers/gpu/drm/msm/registers/display/dsi.xml
+index e40125f75..efe1503ba 100644
+--- a/drivers/gpu/drm/msm/registers/display/dsi.xml
++++ b/drivers/gpu/drm/msm/registers/display/dsi.xml
+@@ -311,6 +311,8 @@ xsi:schemaLocation="https://gitlab.freedesktop.org/freedreno/ rules-fd.xsd">
+ 		<bitfield name="DSI_CAM_BIST_PCLK_ACT" pos="15" type="boolean"/>
+ 		<bitfield name="PLL_UNLOCKED" pos="16" type="boolean"/>
+ 	</reg32>
++	<reg32 offset="0x001c8" name="VBIF_CTRL"/>
++
+ 	<reg32 offset="0x00128" name="PHY_RESET">
+ 		<bitfield name="RESET" pos="0" type="boolean"/>
+ 	</reg32>
+diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
+index 550a7d378..5ea804b03 100644
+--- a/drivers/gpu/drm/panel/Kconfig
++++ b/drivers/gpu/drm/panel/Kconfig
+@@ -1363,3 +1363,9 @@ config DRM_PANEL_XINPENG_XPP055C272
+ 	  XPP055C272 controller for 720x1280 LCD panels with MIPI/RGB/SPI
+ 	  system interfaces.
+ endmenu
++
++config DRM_PANEL_TB378FC_NT36526
++	tristate "Lenovo TB378FC CSOT NT36526 dual-DSI panel"
++	depends on OF && DRM_MIPI_DSI && BACKLIGHT_CLASS_DEVICE
++	help
++	  Native 3504x2190 dual-DSI DSC panel on Lenovo TB378FC.
+diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefile
+index 21a5bdca9..e757bfbc1 100644
+--- a/drivers/gpu/drm/panel/Makefile
++++ b/drivers/gpu/drm/panel/Makefile
+@@ -132,3 +132,5 @@ obj-$(CONFIG_DRM_PANEL_VISIONOX_VTDR6130) += panel-visionox-vtdr6130.o
+ obj-$(CONFIG_DRM_PANEL_VISIONOX_R66451) += panel-visionox-r66451.o
+ obj-$(CONFIG_DRM_PANEL_WIDECHIPS_WS2401) += panel-widechips-ws2401.o
+ obj-$(CONFIG_DRM_PANEL_XINPENG_XPP055C272) += panel-xinpeng-xpp055c272.o
++
++obj-$(CONFIG_DRM_PANEL_TB378FC_NT36526) += panel-novatek-nt36526.o
+diff --git a/drivers/input/touchscreen/nt36536/nt36536.c b/drivers/input/touchscreen/nt36536/nt36536.c
+index 43a8f1fab..42bd31f07 100644
+--- a/drivers/input/touchscreen/nt36536/nt36536.c
++++ b/drivers/input/touchscreen/nt36536/nt36536.c
+@@ -1060,9 +1060,8 @@ static irqreturn_t nvt_ts_work_func(int irq, void *data)
+ 	attempt: bootloader reset, set page to the trim address, a 7-byte
+ 	dummy write, then a 7-byte read carrying the six trim id bytes.
+ 
+-	An unmatched id is not fatal here: the id bytes are logged and the
+-	NT36536 maps are used anyway, so a new trim revision cannot block
+-	bring-up.
++	An unmatched id stops probe before firmware download. The board
++	port must verify its native memory map before accepting new silicon.
+ 
+ return:
+ 	Executive outcomes. 0---NVT IC. -1---not NVT IC.
+@@ -1119,8 +1118,8 @@ static int8_t nvt_ts_check_chip_ver_trim(void)
+ 
+ matched:
+ 	if (!entry) {
+-		NVT_ERR("chip id not in trim table, continue with NT36536 maps\n");
+-		entry = &trim_id_table[0];
++		NVT_ERR("TB378FC_UNKNOWN_TOUCH_ID: refusing firmware download\n");
++		return -ENODEV;
+ 	}
+ 
+ 	ts->hw_crc = entry->hwinfo->hw_crc;
+@@ -2229,8 +2228,15 @@ static const struct nvt_ts_variant nt36536_variant = {
+ 	.pen_pressure_max = 16384,
+ };
+ 
++/* Native Android input: pen coordinates x10, pressure 0..4095. */
++static const struct nvt_ts_variant tb378fc_variant = {
++	.pen_coord_scale = 10,
++	.pen_pressure_max = 4095,
++};
++
+ static const struct spi_device_id nvt_ts_id[] = {
+ 	{ "nt36536-ts", (kernel_ulong_t)&nt36536_variant },
++	{ "tb378fc-nvt", (kernel_ulong_t)&tb378fc_variant },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(spi, nvt_ts_id);
+@@ -2238,6 +2244,7 @@ MODULE_DEVICE_TABLE(spi, nvt_ts_id);
+ #ifdef CONFIG_OF
+ static const struct of_device_id nt36536_of_match[] = {
+ 	{ .compatible = "novatek,nt36536-ts", .data = &nt36536_variant },
++	{ .compatible = "lenovo,tb378fc-nvt", .data = &tb378fc_variant },
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(of, nt36536_of_match);
+diff --git a/drivers/input/touchscreen/nt36536/nt36536_mem_map.h b/drivers/input/touchscreen/nt36536/nt36536_mem_map.h
+index b9b64efa4..c13f20b65 100644
+--- a/drivers/input/touchscreen/nt36536/nt36536_mem_map.h
++++ b/drivers/input/touchscreen/nt36536/nt36536_mem_map.h
+@@ -386,6 +386,9 @@ static const struct nvt_ts_trim_id_table trim_id_table[] = {
+ 		.mmap = &NT36536_single_memory_map, .mmap_casc = &NT36536_cascade_memory_map, .hwinfo = &NT36536_hw_info},
+ 	{.id = {0x15, 0x0E, 0xFF, 0x23, 0x65, 0x03}, .mask = {1, 1, 0, 1, 1, 1},
+ 		.mmap = &NT36536_single_memory_map, .mmap_casc = &NT36536_cascade_memory_map, .hwinfo = &NT36536_hw_info},
++	/* TB378FC_NATIVE_TRIM: the native module also accepts this revision. */
++	{.id = {0x15, 0xFF, 0xFF, 0x23, 0x65, 0x03}, .mask = {1, 0, 0, 1, 1, 1},
++		.mmap = &NT36536_single_memory_map, .mmap_casc = &NT36536_cascade_memory_map, .hwinfo = &NT36536_hw_info},
+ 	{.id = {0xFF, 0xFF, 0xFF, 0x32, 0x65, 0x03}, .mask = {0, 0, 0, 1, 1, 1},
+ 		.mmap = &NT36532_single_memory_map, .mmap_casc = &NT36532_cascade_memory_map, .hwinfo = &NT36532_hw_info},
+ };
+diff --git a/drivers/power/supply/qcom_battmgr.c b/drivers/power/supply/qcom_battmgr.c
+index 14623ca75..e08f4b16b 100644
+--- a/drivers/power/supply/qcom_battmgr.c
++++ b/drivers/power/supply/qcom_battmgr.c
+@@ -1644,6 +1644,12 @@ static const struct of_device_id qcom_battmgr_of_variants[] = {
+  * values with a different meaning.
+  */
+ static const struct of_device_id qcom_battmgr_of_quirks[] = {
++	{
++		/* TB378FC: reported power is inconsistent with voltage/current. */
++		.compatible = "lenovo,tb378fc-pmic-glink",
++		.data = (void *)(QCOM_BATTMGR_QUIRK_NO_BATT_POWER_NOW |
++				 QCOM_BATTMGR_QUIRK_BATT_CURRENT_INVERTED),
++	},
+ 	{
+ 		.compatible = "oneplus,pad2pro-pmic-glink",
+ 		.data = (void *)(QCOM_BATTMGR_QUIRK_BATT_CURRENT_INVERTED |
+diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
+index a54a54919..ce072f0c0 100644
+--- a/drivers/regulator/Kconfig
++++ b/drivers/regulator/Kconfig
+@@ -1890,3 +1890,10 @@ config REGULATOR_QCOM_LABIBB
+ 	  for LCD display panel.
+ 
+ endif
++
++config REGULATOR_TB378FC_BIAS
++	tristate "Lenovo TB378FC paired LCD bias"
++	depends on I2C && GPIOLIB && OF
++	select REGMAP_I2C
++	help
++	  Coupled ENP/ENN sequencing and native LCD bias register settings.
+diff --git a/drivers/regulator/Makefile b/drivers/regulator/Makefile
+index 134eee274..5dbd39b9f 100644
+--- a/drivers/regulator/Makefile
++++ b/drivers/regulator/Makefile
+@@ -219,3 +219,5 @@ obj-$(CONFIG_REGULATOR_WM8400) += wm8400-regulator.o
+ obj-$(CONFIG_REGULATOR_WM8994) += wm8994-regulator.o
+ 
+ ccflags-$(CONFIG_REGULATOR_DEBUG) += -DDEBUG
++
++obj-$(CONFIG_REGULATOR_TB378FC_BIAS) += tb378fc-panel-bias.o
+diff --git a/drivers/rpmsg/qcom_glink_native.c b/drivers/rpmsg/qcom_glink_native.c
+index d9d4468e4..ee790fefc 100644
+--- a/drivers/rpmsg/qcom_glink_native.c
++++ b/drivers/rpmsg/qcom_glink_native.c
+@@ -1399,13 +1399,13 @@ static void qcom_glink_remove_rpmsg_device(struct qcom_glink *glink, struct glin
+ {
+ 	struct rpmsg_channel_info chinfo;
+ 
+-	if (channel->rpdev) {
++	/* Claim removal before unregister can trigger callbacks or a second close. */
++	if (xchg(&channel->rpdev, NULL)) {
+ 		strscpy_pad(chinfo.name, channel->name, sizeof(chinfo.name));
+ 		chinfo.src = RPMSG_ADDR_ANY;
+ 		chinfo.dst = RPMSG_ADDR_ANY;
+ 		rpmsg_unregister_device(glink->dev, &chinfo);
+ 	}
+-	channel->rpdev = NULL;
+ }
+ 
+ static void qcom_glink_destroy_ept(struct rpmsg_endpoint *ept)
+@@ -1418,9 +1418,11 @@ static void qcom_glink_destroy_ept(struct rpmsg_endpoint *ept)
+ 	channel->ept.cb = NULL;
+ 	spin_unlock_irqrestore(&channel->recv_lock, flags);
+ 
+-	/* Decouple the potential rpdev from the channel */
+-	qcom_glink_remove_rpmsg_device(glink, channel);
+-
++	/* TB378FC_LIVE_UNLOAD: rpmsg_dev_remove() invokes destroy_ept with
++	 * this primary device's mutex held. Unregistering it here recurses
++	 * into device_del() and deadlocks. The close/close-ack receive paths
++	 * already own primary-device removal after this callback returns.
++	 */
+ 	qcom_glink_send_close_req(glink, channel);
+ }
+ 
+diff --git a/drivers/soc/qcom/apr.c b/drivers/soc/qcom/apr.c
+index ea7f83916..ad4a19ec0 100644
+--- a/drivers/soc/qcom/apr.c
++++ b/drivers/soc/qcom/apr.c
+@@ -3,6 +3,7 @@
+ // Copyright (c) 2018, Linaro Limited
+ 
+ #include <linux/kernel.h>
++#include <linux/sched.h>
+ #include <linux/module.h>
+ #include <linux/device.h>
+ #include <linux/spinlock.h>
+@@ -131,6 +132,9 @@ static int pkt_router_send_svc_pkt(struct pkt_router_svc *svc, const struct gpr_
+ 	int ret;
+ 
+ 	hdr = &pkt->hdr;
++	if (hdr->opcode == 0x01001021)
++		dev_info(pr->dev, "TB_SPF_SEND src=%x dst=%x callback=%ps task=%s pid=%d\n",
++			 hdr->src_port, hdr->dest_port, svc->callback, current->comm, current->pid);
+ 
+ 	spin_lock_irqsave(&svc->lock, flags);
+ 	ret = rpmsg_trysend(pr->ch, pkt, hdr->pkt_size);
+@@ -175,6 +179,13 @@ static int apr_callback(struct rpmsg_device *rpdev, void *buf,
+ 	if (!abuf)
+ 		return -ENOMEM;
+ 
++	if (apr->type == PR_TYPE_GPR && len >= sizeof(struct gpr_hdr)) {
++		struct gpr_hdr *hdr = buf;
++
++		if (hdr->opcode == 0x02001007)
++			dev_info(apr->dev, "TB_SPF_RX_ENQUEUED dst=%x task=%s pid=%d\n",
++				 hdr->dest_port, current->comm, current->pid);
++	}
+ 	abuf->len = len;
+ 	memcpy(abuf->buf, buf, len);
+ 
+@@ -306,6 +317,9 @@ static int gpr_do_rx_callback(struct packet_router *gpr, struct apr_rx_buf *abuf
+ 		return -EINVAL;
+ 	}
+ 
++	if (hdr->opcode == 0x02001007)
++		dev_info(gpr->dev, "TB_SPF_RX_DISPATCH dst=%x callback=%ps task=%s\n",
++			 hdr->dest_port, svc->callback, current->comm);
+ 	if (svc->callback)
+ 		svc->callback(&resp, svc->priv, 0);
+ 
+diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
+index cf7dba473..24dd5c92d 100644
+--- a/drivers/tty/serial/Kconfig
++++ b/drivers/tty/serial/Kconfig
+@@ -1596,3 +1596,7 @@ endmenu
+ 
+ config SERIAL_MCTRL_GPIO
+ 	tristate
++
++config TB378FC_EARLY_RAM_CONSOLE
++	bool "TB378FC temporary persistent early console"
++	depends on SERIAL_EARLYCON && !PSTORE_RAM
+diff --git a/drivers/tty/serial/Makefile b/drivers/tty/serial/Makefile
+index bba7b21a4..75bba02f1 100644
+--- a/drivers/tty/serial/Makefile
++++ b/drivers/tty/serial/Makefile
+@@ -98,3 +98,5 @@ obj-$(CONFIG_SERIAL_MCTRL_GPIO)	+= serial_mctrl_gpio.o
+ 
+ obj-$(CONFIG_KGDB_SERIAL_CONSOLE) += kgdboc.o
+ obj-$(CONFIG_SERIAL_NUVOTON_MA35D1) += ma35d1_serial.o
++
++obj-$(CONFIG_TB378FC_EARLY_RAM_CONSOLE) += tb378fc-earlyram.o
+diff --git a/drivers/video/backlight/Kconfig b/drivers/video/backlight/Kconfig
+index 105d2bb9f..a35024dcf 100644
+--- a/drivers/video/backlight/Kconfig
++++ b/drivers/video/backlight/Kconfig
+@@ -526,3 +526,10 @@ config BACKLIGHT_LED
+ endif # BACKLIGHT_CLASS_DEVICE
+ 
+ endmenu
++
++config BACKLIGHT_TB378FC_AW99706B
++	tristate "Lenovo TB378FC AW99706B backlight"
++	depends on I2C && GPIOLIB && BACKLIGHT_CLASS_DEVICE
++	select REGMAP_I2C
++	help
++	  AW99706B using the TB378FC vendor register configuration.
+diff --git a/drivers/video/backlight/Makefile b/drivers/video/backlight/Makefile
+index 21c8313cf..7001b7b11 100644
+--- a/drivers/video/backlight/Makefile
++++ b/drivers/video/backlight/Makefile
+@@ -63,3 +63,5 @@ obj-$(CONFIG_BACKLIGHT_WM831X)		+= wm831x_bl.o
+ obj-$(CONFIG_BACKLIGHT_ARCXCNN) 	+= arcxcnn_bl.o
+ obj-$(CONFIG_BACKLIGHT_RAVE_SP)		+= rave-sp-backlight.o
+ obj-$(CONFIG_BACKLIGHT_LED)		+= led_bl.o
++
++obj-$(CONFIG_BACKLIGHT_TB378FC_AW99706B) += tb378fc-aw99706b.o
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index e4d139108..b19296c8e 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -704,6 +704,15 @@ config SND_SOC_AW88261
+ 	  boost converter can be adjusted smartly according to
+ 	  the input amplitude.
+ 
++config SND_SOC_AW88480
++	tristate "Awinic AW88480 native-profile amplifier"
++	depends on I2C
++	select REGMAP_I2C
++	select GPIOLIB
++	select SND_SOC_AW88395_LIB
++	help
++	  Support for AW88480 / PID 0x2418 using board-specific ACF register bins.
++
+ config SND_SOC_AW88081
+ 	tristate "Soc Audio for awinic aw88081/aw88083"
+ 	depends on I2C
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index aa0396e5b..8ec3365fa 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -891,3 +891,6 @@ obj-$(CONFIG_SND_SOC_LPASS_TX_MACRO)	+= snd-soc-lpass-tx-macro.o
+ 
+ # Mux
+ obj-$(CONFIG_SND_SOC_SIMPLE_MUX)	+= snd-soc-simple-mux.o
++
++snd-soc-aw88480-y := aw88480.o
++obj-$(CONFIG_SND_SOC_AW88480) += snd-soc-aw88480.o
+diff --git a/sound/soc/qcom/qdsp6/q6apm-dai.c b/sound/soc/qcom/qdsp6/q6apm-dai.c
+index 3aeac5590..e88d2eeaa 100644
+--- a/sound/soc/qcom/qdsp6/q6apm-dai.c
++++ b/sound/soc/qcom/qdsp6/q6apm-dai.c
+@@ -1029,6 +1029,12 @@ static int q6apm_dai_probe(struct platform_device *pdev)
+ 	struct of_phandle_args args;
+ 	int rc;
+ 
++	/* Registering the FE can bind a card and map PCM buffers immediately.
++	 * Defer this platform device so the driver core retries after SPF boot.
++	 */
++	if (!q6apm_is_adsp_ready())
++		return -EPROBE_DEFER;
++
+ 	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
+ 	if (!pdata)
+ 		return -ENOMEM;
+diff --git a/sound/soc/qcom/qdsp6/q6apm.c b/sound/soc/qcom/qdsp6/q6apm.c
+index 641d6d243..06c5c5ea9 100644
+--- a/sound/soc/qcom/qdsp6/q6apm.c
++++ b/sound/soc/qcom/qdsp6/q6apm.c
+@@ -142,22 +142,30 @@ static void q6apm_put_audioreach_graph(struct kref *ref)
+ 
+ static int q6apm_get_apm_state(struct q6apm *apm)
+ {
+-	struct gpr_pkt *pkt __free(kfree) = audioreach_alloc_apm_cmd_pkt(0,
+-								APM_CMD_GET_SPF_STATE, 0);
++	struct gpr_pkt *pkt __free(kfree) = NULL;
++	int ret;
++
++	pkt = audioreach_alloc_apm_cmd_pkt(0, APM_CMD_GET_SPF_STATE, 0);
+ 	if (IS_ERR(pkt))
+ 		return PTR_ERR(pkt);
+ 
+-	q6apm_send_cmd_sync(apm, pkt, APM_CMD_RSP_GET_SPF_STATE);
++	ret = q6apm_send_cmd_sync(apm, pkt, APM_CMD_RSP_GET_SPF_STATE);
++	if (ret < 0)
++		return ret;
+ 
+ 	return apm->state;
+ }
+ 
+ bool q6apm_is_adsp_ready(void)
+ {
+-	if (g_apm)
+-		return q6apm_get_apm_state(g_apm);
++	int state;
++
++	if (!g_apm || !READ_ONCE(g_apm->gdev->svc.callback))
++		return false;
+ 
+-	return false;
++	state = q6apm_get_apm_state(g_apm);
++	dev_info(g_apm->dev, "TB378FC_AUDIOREACH_SPF_STATE=%d\n", state);
++	return state > 0;
+ }
+ EXPORT_SYMBOL_GPL(q6apm_is_adsp_ready);
+ 
+@@ -877,7 +885,9 @@ static int apm_probe(gpr_device_t *gdev)
+ 
+ 	g_apm = apm;
+ 
+-	q6apm_get_apm_state(apm);
++	/* APR installs the receive callback only after this probe returns.
++	 * PRM and other clients can query SPF once that callback is live.
++	 */
+ 
+ 	ret = snd_soc_register_component(dev, &q6apm_audio_component, NULL, 0);
+ 	if (ret < 0) {
+@@ -929,7 +939,10 @@ static int apm_callback(const struct gpr_resp_pkt *data, void *priv, int op)
+ 		wake_up(&apm->wait);
+ 		break;
+ 	case GPR_BASIC_RSP_RESULT:
++		if (result->opcode == APM_CMD_GET_SPF_STATE)
++			dev_info(dev, "TB_SPF_BASIC_RESPONSE status=%u\n", result->status);
+ 		switch (result->opcode) {
++		case APM_CMD_GET_SPF_STATE:
+ 		case APM_CMD_SHARED_MEM_MAP_REGIONS:
+ 		case APM_CMD_GRAPH_START:
+ 		case APM_CMD_GRAPH_OPEN:
+diff --git a/arch/arm64/boot/dts/qcom/sm8750-lenovo-tb378fc-adsp.dts b/arch/arm64/boot/dts/qcom/sm8750-lenovo-tb378fc-adsp.dts
+new file mode 100644
+index 000000000..3e6aaf29e
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/sm8750-lenovo-tb378fc-adsp.dts
+@@ -0,0 +1,17 @@
++// SPDX-License-Identifier: BSD-3-Clause
++/* Native ADSP preparation; separate candidate, not part of the tested desktop. */
++#include "sm8750-lenovo-tb378fc-keys.dts"
++
++&adspslpi_mem {
++    reg = <0x0 0x9ee00000 0x0 0x3a80000>;
++};
++&q6_adsp_dtb_mem {
++    reg = <0x0 0x9ed80000 0x0 0x80000>;
++};
++&remoteproc_adsp {
++    /* Register base is verified on this board's running native driver. */
++    reg = <0x0 0x03000000 0x0 0x10000>;
++    firmware-name = "qcom/sm8750/tb378fc/adsp.mdt",
++                    "qcom/sm8750/tb378fc/adsp_dtb.mdt";
++    status = "okay";
++};
+diff --git a/arch/arm64/boot/dts/qcom/sm8750-lenovo-tb378fc-audio-gpio.dts b/arch/arm64/boot/dts/qcom/sm8750-lenovo-tb378fc-audio-gpio.dts
+new file mode 100644
+index 000000000..bbb5109b1
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/sm8750-lenovo-tb378fc-audio-gpio.dts
+@@ -0,0 +1,162 @@
++// SPDX-License-Identifier: BSD-3-Clause
++/* Native amp enumeration only: no sound card or automatic playback. */
++#include "sm8750-lenovo-tb378fc-battery.dts"
++
++&tlmm {
++    tb378fc_amp_resets: amp-resets-state {
++        pins = "gpio106", "gpio128", "gpio120", "gpio108";
++        function = "gpio";
++        drive-strength = <2>;
++        bias-disable;
++    };
++};
++
++/* Never let the hardware GPI controller claim these same lines. */
++&i2c5 { status = "disabled"; };
++
++&tlmm {
++    tb378fc_gpio_i2c: tb378fc-amp-i2c-state {
++        pins = "gpio52", "gpio53";
++        function = "gpio";
++        drive-strength = <2>;
++        bias-pull-up;
++    };
++};
++
++/ {
++    tb378fc_amp_bus: tb378fc-amp-i2c {
++    compatible = "i2c-gpio";
++    #address-cells = <1>;
++    #size-cells = <0>;
++    sda-gpios = <&tlmm 52 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
++    scl-gpios = <&tlmm 53 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
++    i2c-gpio,delay-us = <5>;
++    pinctrl-names = "default";
++    pinctrl-0 = <&tb378fc_gpio_i2c>, <&tb378fc_amp_resets>;
++
++    spk_amp1: amplifier@34 {
++        compatible = "awinic,aw88480";
++        reg = <0x34>;
++        #sound-dai-cells = <0>;
++        sound-name-prefix = "Amp1";
++        awinic,audio-channel = <1>;
++        reset-gpios = <&tlmm 106 GPIO_ACTIVE_LOW>;
++        firmware-name = "awinic/tb378fc/aw88480-native-music.acf";
++    };
++
++    spk_amp0: amplifier@35 {
++        compatible = "awinic,aw88480";
++        reg = <0x35>;
++        #sound-dai-cells = <0>;
++        sound-name-prefix = "Amp0";
++        awinic,audio-channel = <0>;
++        reset-gpios = <&tlmm 128 GPIO_ACTIVE_LOW>;
++        firmware-name = "awinic/tb378fc/aw88480-native-music.acf";
++    };
++
++    spk_amp2: amplifier@36 {
++        compatible = "awinic,aw88480";
++        reg = <0x36>;
++        #sound-dai-cells = <0>;
++        sound-name-prefix = "Amp2";
++        awinic,audio-channel = <2>;
++        reset-gpios = <&tlmm 120 GPIO_ACTIVE_LOW>;
++        firmware-name = "awinic/tb378fc/aw88480-native-music.acf";
++    };
++
++    spk_amp3: amplifier@37 {
++        compatible = "awinic,aw88480";
++        reg = <0x37>;
++        #sound-dai-cells = <0>;
++        sound-name-prefix = "Amp3";
++        awinic,audio-channel = <3>;
++        reset-gpios = <&tlmm 108 GPIO_ACTIVE_LOW>;
++        firmware-name = "awinic/tb378fc/aw88480-native-music.acf";
++    };
++};
++};
++
++// SPDX-License-Identifier: BSD-3-Clause
++
++
++/ {
++    sound {
++        compatible = "qcom,sm8750-sndcard", "qcom,sm8450-sndcard";
++        model = "Lenovo-TB378FC";
++        widgets = "Speaker", "Speakers";
++        audio-routing = "Speakers", "Amp0 OUT",
++                        "Speakers", "Amp1 OUT",
++                        "Speakers", "Amp2 OUT",
++                        "Speakers", "Amp3 OUT";
++        pinctrl-names = "default";
++        pinctrl-0 = <&tb378fc_sec_tdm>;
++
++        speaker-playback-dai-link {
++            link-name = "Speaker Playback";
++            dai-format = "dsp_b";
++            convert-rate = <48000>;
++            convert-channels = <4>;
++            convert-sample-format = "s32_le";
++            cpu {
++                sound-dai = <&q6apmbedai SECONDARY_TDM_RX_0>;
++                dai-tdm-slot-num = <4>;
++                dai-tdm-slot-width = <32>;
++                dai-tdm-slot-rx-mask = <1 1 1 1>;
++            };
++            codec-0 {
++                sound-dai = <&spk_amp0>;
++                dai-tdm-slot-tx-mask = <1>;
++                dai-tdm-slot-rx-mask = <1>;
++                bitclock-inversion;
++            };
++            codec-1 {
++                sound-dai = <&spk_amp1>;
++                dai-tdm-slot-tx-mask = <0 1>;
++                dai-tdm-slot-rx-mask = <0 1>;
++                bitclock-inversion;
++            };
++            codec-2 {
++                sound-dai = <&spk_amp2>;
++                dai-tdm-slot-tx-mask = <0 0 1>;
++                dai-tdm-slot-rx-mask = <0 0 1>;
++                bitclock-inversion;
++            };
++            codec-3 {
++                sound-dai = <&spk_amp3>;
++                dai-tdm-slot-tx-mask = <0 0 0 1>;
++                dai-tdm-slot-rx-mask = <0 0 0 1>;
++                bitclock-inversion;
++            };
++            platform { sound-dai = <&q6apm>; };
++        };
++    };
++};
++
++&tlmm {
++    tb378fc_sec_tdm: secondary-tdm-state {
++        sck-pins {
++            pins = "gpio121";
++            function = "i2s1_sck";
++            drive-strength = <8>;
++            bias-disable;
++        };
++        data0-pins {
++            pins = "gpio122";
++            function = "i2s1_data0";
++            drive-strength = <8>;
++            bias-disable;
++        };
++        ws-pins {
++            pins = "gpio123";
++            function = "i2s1_ws";
++            drive-strength = <8>;
++            bias-disable;
++        };
++        data1-pins {
++            pins = "gpio124";
++            function = "i2s1_data1";
++            drive-strength = <8>;
++            bias-disable;
++        };
++    };
++};
+diff --git a/arch/arm64/boot/dts/qcom/sm8750-lenovo-tb378fc-audio-probe.dts b/arch/arm64/boot/dts/qcom/sm8750-lenovo-tb378fc-audio-probe.dts
+new file mode 100644
+index 000000000..92940fd57
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/sm8750-lenovo-tb378fc-audio-probe.dts
+@@ -0,0 +1,58 @@
++// SPDX-License-Identifier: BSD-3-Clause
++/* Native amp enumeration only: no sound card or automatic playback. */
++#include "sm8750-lenovo-tb378fc-battery.dts"
++
++&tlmm {
++    tb378fc_amp_resets: amp-resets-state {
++        pins = "gpio106", "gpio128", "gpio120", "gpio108";
++        function = "gpio";
++        drive-strength = <2>;
++        bias-disable;
++    };
++};
++
++&i2c5 {
++    status = "okay";
++    pinctrl-0 = <&qup_i2c5_data_clk>, <&tb378fc_amp_resets>;
++    clock-frequency = <100000>;
++
++    spk_amp1: amplifier@34 {
++        compatible = "awinic,aw88480";
++        reg = <0x34>;
++        #sound-dai-cells = <0>;
++        sound-name-prefix = "Amp1";
++        awinic,audio-channel = <1>;
++        reset-gpios = <&tlmm 106 GPIO_ACTIVE_LOW>;
++        firmware-name = "awinic/tb378fc/aw88480-native-music.acf";
++    };
++
++    spk_amp0: amplifier@35 {
++        compatible = "awinic,aw88480";
++        reg = <0x35>;
++        #sound-dai-cells = <0>;
++        sound-name-prefix = "Amp0";
++        awinic,audio-channel = <0>;
++        reset-gpios = <&tlmm 128 GPIO_ACTIVE_LOW>;
++        firmware-name = "awinic/tb378fc/aw88480-native-music.acf";
++    };
++
++    spk_amp2: amplifier@36 {
++        compatible = "awinic,aw88480";
++        reg = <0x36>;
++        #sound-dai-cells = <0>;
++        sound-name-prefix = "Amp2";
++        awinic,audio-channel = <2>;
++        reset-gpios = <&tlmm 120 GPIO_ACTIVE_LOW>;
++        firmware-name = "awinic/tb378fc/aw88480-native-music.acf";
++    };
++
++    spk_amp3: amplifier@37 {
++        compatible = "awinic,aw88480";
++        reg = <0x37>;
++        #sound-dai-cells = <0>;
++        sound-name-prefix = "Amp3";
++        awinic,audio-channel = <3>;
++        reset-gpios = <&tlmm 108 GPIO_ACTIVE_LOW>;
++        firmware-name = "awinic/tb378fc/aw88480-native-music.acf";
++    };
++};
+diff --git a/arch/arm64/boot/dts/qcom/sm8750-lenovo-tb378fc-audio.dts b/arch/arm64/boot/dts/qcom/sm8750-lenovo-tb378fc-audio.dts
+new file mode 100644
+index 000000000..3c142a06d
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/sm8750-lenovo-tb378fc-audio.dts
+@@ -0,0 +1,84 @@
++// SPDX-License-Identifier: BSD-3-Clause
++#include "sm8750-lenovo-tb378fc-audio-probe.dts"
++
++/ {
++    sound {
++        compatible = "qcom,sm8750-sndcard", "qcom,sm8450-sndcard";
++        model = "Lenovo-TB378FC";
++        widgets = "Speaker", "Speakers";
++        audio-routing = "Speakers", "Amp0 OUT",
++                        "Speakers", "Amp1 OUT",
++                        "Speakers", "Amp2 OUT",
++                        "Speakers", "Amp3 OUT";
++        pinctrl-names = "default";
++        pinctrl-0 = <&tb378fc_sec_tdm>;
++
++        speaker-playback-dai-link {
++            link-name = "Speaker Playback";
++            dai-format = "dsp_b";
++            convert-rate = <48000>;
++            convert-channels = <4>;
++            convert-sample-format = "s32_le";
++            cpu {
++                sound-dai = <&q6apmbedai SECONDARY_TDM_RX_0>;
++                dai-tdm-slot-num = <4>;
++                dai-tdm-slot-width = <32>;
++                dai-tdm-slot-rx-mask = <1 1 1 1>;
++            };
++            codec-0 {
++                sound-dai = <&spk_amp0>;
++                dai-tdm-slot-tx-mask = <1>;
++                dai-tdm-slot-rx-mask = <1>;
++                bitclock-inversion;
++            };
++            codec-1 {
++                sound-dai = <&spk_amp1>;
++                dai-tdm-slot-tx-mask = <0 1>;
++                dai-tdm-slot-rx-mask = <0 1>;
++                bitclock-inversion;
++            };
++            codec-2 {
++                sound-dai = <&spk_amp2>;
++                dai-tdm-slot-tx-mask = <0 0 1>;
++                dai-tdm-slot-rx-mask = <0 0 1>;
++                bitclock-inversion;
++            };
++            codec-3 {
++                sound-dai = <&spk_amp3>;
++                dai-tdm-slot-tx-mask = <0 0 0 1>;
++                dai-tdm-slot-rx-mask = <0 0 0 1>;
++                bitclock-inversion;
++            };
++            platform { sound-dai = <&q6apm>; };
++        };
++    };
++};
++
++&tlmm {
++    tb378fc_sec_tdm: secondary-tdm-state {
++        sck-pins {
++            pins = "gpio121";
++            function = "i2s1_sck";
++            drive-strength = <8>;
++            bias-disable;
++        };
++        data0-pins {
++            pins = "gpio122";
++            function = "i2s1_data0";
++            drive-strength = <8>;
++            bias-disable;
++        };
++        ws-pins {
++            pins = "gpio123";
++            function = "i2s1_ws";
++            drive-strength = <8>;
++            bias-disable;
++        };
++        data1-pins {
++            pins = "gpio124";
++            function = "i2s1_data1";
++            drive-strength = <8>;
++            bias-disable;
++        };
++    };
++};
+diff --git a/arch/arm64/boot/dts/qcom/sm8750-lenovo-tb378fc-battery.dts b/arch/arm64/boot/dts/qcom/sm8750-lenovo-tb378fc-battery.dts
+new file mode 100644
+index 000000000..875d797db
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/sm8750-lenovo-tb378fc-battery.dts
+@@ -0,0 +1,12 @@
++// SPDX-License-Identifier: BSD-3-Clause
++/* Separate RAM probe: native ADSP plus standard SM8750 battery protocol. */
++#include "sm8750-lenovo-tb378fc-adsp.dts"
++
++/ {
++    pmic-glink {
++        compatible = "lenovo,tb378fc-pmic-glink",
++                     "qcom,sm8750-pmic-glink",
++                     "qcom,sm8550-pmic-glink",
++                     "qcom,pmic-glink";
++    };
++};
+diff --git a/arch/arm64/boot/dts/qcom/sm8750-lenovo-tb378fc-display.dts b/arch/arm64/boot/dts/qcom/sm8750-lenovo-tb378fc-display.dts
+new file mode 100644
+index 000000000..2138b4732
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/sm8750-lenovo-tb378fc-display.dts
+@@ -0,0 +1,159 @@
++// SPDX-License-Identifier: BSD-3-Clause
++/* Native display bring-up; includes the proven minimal board definition. */
++#include "sm8750-lenovo-tb378fc.dts"
++
++/ {
++	reserved-memory {
++		tb378fc_splash: splash_region {
++			/* The boot scanout remains active while DRM attaches its domain. */
++			iommu-addresses = <&mdss 0x0 0xfc800000 0x0 0x2b00000>;
++		};
++	};
++};
++
++&apps_rsc {
++	regulators-b {
++		vdd-l12-supply = <&vreg_s3g>;
++		panel_vddio: ldo12 {
++			regulator-name = "vreg_l12b_panel_io";
++			regulator-min-microvolt = <1800000>;
++			regulator-max-microvolt = <1800000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++	};
++	regulators-i {
++		vdd-l3-supply = <&vreg_s1d>;
++		dsi_phy_supply: ldo3 {
++			regulator-name = "vreg_l3i_dsi_phy";
++			regulator-min-microvolt = <880000>;
++			regulator-max-microvolt = <880000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++	};
++};
++
++/* The I2C serial engine is a child of this disabled-by-default wrapper. */
++&qupv3_2 {
++	status = "okay";
++};
++
++&gpi_dma2 {
++	status = "okay";
++};
++
++/* Native second backlight: same address, independent serial engine. */
++&i2c8 {
++	status = "okay";
++	clock-frequency = <400000>;
++};
++
++&i2c10 {
++	status = "okay";
++	clock-frequency = <400000>;
++	panel_bias: regulator@3e {
++		compatible = "lenovo,tb378fc-panel-bias";
++		reg = <0x3e>;
++		regulator-name = "tb378fc-panel-bias";
++		positive-gpios = <&tlmm 72 GPIO_ACTIVE_HIGH>;
++		negative-gpios = <&tlmm 73 GPIO_ACTIVE_HIGH>;
++	};
++	panel_backlight: backlight@76 {
++		compatible = "lenovo,tb378fc-aw99706b";
++		reg = <0x76>;
++		enable-gpios = <&tlmm 88 GPIO_ACTIVE_HIGH>;
++		lenovo,secondary-i2c-bus = <&i2c8>;
++	};
++};
++
++&dispcc {
++	status = "okay";
++};
++
++&mdss {
++	memory-region = <&tb378fc_splash>;
++	status = "okay";
++};
++
++&mdss_dsi0 {
++	vdda-supply = <&vreg_l3g>;
++	qcom,dual-dsi-mode;
++	qcom,sync-dual-dsi;
++	qcom,master-dsi;
++	status = "okay";
++	panel: panel@0 {
++		compatible = "lenovo,tb378fc-nt36526";
++		reg = <0>;
++		reset-gpios = <&tlmm 98 GPIO_ACTIVE_LOW>;
++		pinctrl-0 = <&panel_te>;
++		pinctrl-names = "default";
++		vddio-supply = <&panel_vddio>;
++		bias-supply = <&panel_bias>;
++		backlight = <&panel_backlight>;
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			port@0 {
++				reg = <0>;
++				panel0_in: endpoint {
++					remote-endpoint = <&mdss_dsi0_out>;
++				};
++			};
++			port@1 {
++				reg = <1>;
++				panel1_in: endpoint {
++					remote-endpoint = <&mdss_dsi1_out>;
++				};
++			};
++		};
++	};
++};
++
++&mdss_dsi0_out {
++	remote-endpoint = <&panel0_in>;
++	data-lanes = <0 1 2 3>;
++};
++
++&mdss_dsi0_phy {
++	vdds-supply = <&dsi_phy_supply>;
++	status = "okay";
++};
++
++&mdss_dsi1 {
++	vdda-supply = <&vreg_l3g>;
++	qcom,dual-dsi-mode;
++	qcom,sync-dual-dsi;
++	/* The secondary link shares DSI0's PLL, as in the native display. */
++	clocks = <&dispcc DISP_CC_MDSS_BYTE1_CLK>,
++		 <&dispcc DISP_CC_MDSS_BYTE1_INTF_CLK>,
++		 <&dispcc DISP_CC_MDSS_PCLK1_CLK>,
++		 <&dispcc DISP_CC_MDSS_ESC1_CLK>,
++		 <&dispcc DISP_CC_MDSS_AHB_CLK>,
++		 <&gcc GCC_DISP_HF_AXI_CLK>,
++		 <&mdss_dsi0_phy DSI_PIXEL_PLL_CLK>,
++		 <&mdss_dsi0_phy DSI_BYTE_PLL_CLK>,
++		 <&dispcc DISP_CC_ESYNC1_CLK>,
++		 <&dispcc DISP_CC_OSC_CLK>,
++		 <&dispcc DISP_CC_MDSS_BYTE1_CLK_SRC>,
++		 <&dispcc DISP_CC_MDSS_PCLK1_CLK_SRC>;
++	status = "okay";
++};
++
++&mdss_dsi1_out {
++	remote-endpoint = <&panel1_in>;
++	data-lanes = <0 1 2 3>;
++};
++
++&mdss_dsi1_phy {
++	vdds-supply = <&dsi_phy_supply>;
++	status = "okay";
++};
++
++&tlmm {
++	panel_te: panel-te-state {
++		pins = "gpio86";
++		function = "mdp_vsync";
++		drive-strength = <2>;
++		bias-disable;
++		input-enable;
++	};
++};
+diff --git a/arch/arm64/boot/dts/qcom/sm8750-lenovo-tb378fc-gpu.dts b/arch/arm64/boot/dts/qcom/sm8750-lenovo-tb378fc-gpu.dts
+new file mode 100644
+index 000000000..8937f102d
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/sm8750-lenovo-tb378fc-gpu.dts
+@@ -0,0 +1,10 @@
++// SPDX-License-Identifier: BSD-3-Clause
++#include "sm8750-lenovo-tb378fc-touch.dts"
++
++&gpu {
++	status = "okay";
++};
++
++&gpu_zap_shader {
++	firmware-name = "qcom/sm8750/tb378fc/gen80000_zap.mbn";
++};
+diff --git a/arch/arm64/boot/dts/qcom/sm8750-lenovo-tb378fc-keys.dts b/arch/arm64/boot/dts/qcom/sm8750-lenovo-tb378fc-keys.dts
+new file mode 100644
+index 000000000..9d85d5c65
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/sm8750-lenovo-tb378fc-keys.dts
+@@ -0,0 +1,35 @@
++// SPDX-License-Identifier: BSD-3-Clause
++/* Volume wiring verified against this TB378FC's native device tree. */
++#include "sm8750-lenovo-tb378fc-wifi.dts"
++
++/ {
++    gpio-keys {
++        compatible = "gpio-keys";
++        pinctrl-names = "default";
++        pinctrl-0 = <&tb378fc_volume_up>;
++
++        key-volume-up {
++            label = "Volume Up";
++            linux,code = <KEY_VOLUMEUP>;
++            gpios = <&pm8550_gpios 6 GPIO_ACTIVE_LOW>;
++            debounce-interval = <15>;
++            linux,can-disable;
++            wakeup-source;
++        };
++    };
++};
++
++&pm8550_gpios {
++    tb378fc_volume_up: volume-up-state {
++        pins = "gpio6";
++        function = "normal";
++        power-source = <1>;
++        input-enable;
++        bias-pull-up;
++    };
++};
++
++&pon_resin {
++    linux,code = <KEY_VOLUMEDOWN>;
++    status = "okay";
++};
+diff --git a/arch/arm64/boot/dts/qcom/sm8750-lenovo-tb378fc-touch.dts b/arch/arm64/boot/dts/qcom/sm8750-lenovo-tb378fc-touch.dts
+new file mode 100644
+index 000000000..b6099fe3d
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/sm8750-lenovo-tb378fc-touch.dts
+@@ -0,0 +1,45 @@
++// SPDX-License-Identifier: BSD-3-Clause
++#include "sm8750-lenovo-tb378fc-display.dts"
++
++&qupv3_1 {
++	status = "okay";
++};
++
++&gpi_dma1 {
++	status = "okay";
++};
++
++&spi4 {
++	status = "okay";
++	touchscreen@0 {
++		compatible = "lenovo,tb378fc-nvt";
++		reg = <0>;
++		spi-max-frequency = <9600000>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&tb378fc_touch_irq>;
++		interrupt-parent = <&tlmm>;
++		/* Native nvt_36xxx.ko overrides the Android DT flags with rising edge. */
++		interrupts = <162 IRQ_TYPE_EDGE_RISING>;
++		panel = <&panel>;
++		/* Android advertises a portrait 21900x35040 report frame. */
++		touchscreen-size-x = <2190>;
++		touchscreen-size-y = <3504>;
++		touchscreen-x-mm = <175>;
++		touchscreen-y-mm = <280>;
++		/* Native portrait X becomes landscape Y; invert before swapping. */
++		touchscreen-inverted-x;
++		touchscreen-swapped-x-y;
++		firmware-name = "novatek/tb378fc.bin";
++		novatek,pen-support;
++	};
++};
++
++&tlmm {
++	tb378fc_touch_irq: tb378fc-touch-irq-state {
++		pins = "gpio162";
++		function = "gpio";
++		drive-strength = <2>;
++		bias-pull-up;
++		input-enable;
++	};
++};
+diff --git a/arch/arm64/boot/dts/qcom/sm8750-lenovo-tb378fc-wifi.dts b/arch/arm64/boot/dts/qcom/sm8750-lenovo-tb378fc-wifi.dts
+new file mode 100644
+index 000000000..ab54b84c9
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/sm8750-lenovo-tb378fc-wifi.dts
+@@ -0,0 +1,166 @@
++// SPDX-License-Identifier: BSD-3-Clause
++/* TB378FC WCN7860 bring-up: native supply/gpio mapping checked by generator.
++ * Firmware/board-data selection and Wi-Fi operation are not yet verified.
++ */
++#include "sm8750-lenovo-tb378fc-gpu.dts"
++
++/ {
++	wcn7860-pmu {
++		compatible = "qcom,wcn7860-pmu";
++
++		pinctrl-names = "default";
++		pinctrl-0 = <&tb378fc_wlan_en>, <&tb378fc_bt_enable>;
++
++		wlan-enable-gpios = <&tlmm 16 GPIO_ACTIVE_HIGH>;
++		bt-enable-gpios = <&pm8550ve_f_gpios 3 GPIO_ACTIVE_HIGH>;
++
++		vddio-supply = <&vreg_l3f_1p8>;
++		vddio1p2-supply = <&vreg_l2f_1p2>;
++		vddaon-supply = <&vreg_s4d_0p85>;
++		vdddig-supply = <&vreg_s5f_0p85>;
++		vddrfa1p2-supply = <&vreg_s7i>;
++		vddrfa1p8-supply = <&vreg_s3g>;
++
++		clocks = <&rpmhcc RPMH_RF_CLK1>;
++
++		regulators {
++			vreg_pmu_rfa_cmn: ldo0 {
++				regulator-name = "vreg_pmu_rfa_cmn";
++			};
++
++			vreg_pmu_aon_0p59: ldo1 {
++				regulator-name = "vreg_pmu_aon_0p59";
++			};
++
++			vreg_pmu_wlcx_0p8: ldo2 {
++				regulator-name = "vreg_pmu_wlcx_0p8";
++			};
++
++			vreg_pmu_wlmx_0p85: ldo3 {
++				regulator-name = "vreg_pmu_wlmx_0p85";
++			};
++
++			vreg_pmu_btcmx_0p85: ldo4 {
++				regulator-name = "vreg_pmu_btcmx_0p85";
++			};
++
++			vreg_pmu_rfa_0p8: ldo5 {
++				regulator-name = "vreg_pmu_rfa_0p8";
++			};
++
++			vreg_pmu_rfa_1p2: ldo6 {
++				regulator-name = "vreg_pmu_rfa_1p2";
++			};
++
++			vreg_pmu_rfa_1p8: ldo7 {
++				regulator-name = "vreg_pmu_rfa_1p8";
++			};
++
++			vreg_pmu_pcie_0p9: ldo8 {
++				regulator-name = "vreg_pmu_pcie_0p9";
++			};
++
++			vreg_pmu_pcie_1p8: ldo9 {
++				regulator-name = "vreg_pmu_pcie_1p8";
++			};
++		};
++	};
++};
++
++&apps_rsc {
++    regulators-d {
++        vdd-s4-supply = <&vph_pwr>;
++        vreg_s4d_0p85: smps4 {
++            regulator-name = "tb378fc-wlan-aon";
++            regulator-min-microvolt = <852000>;
++            regulator-max-microvolt = <1036000>;
++            regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++        };
++    };
++    regulators-f {
++        compatible = "qcom,pm8550ve-rpmh-regulators";
++        qcom,pmic-id = "f";
++        vdd-l1-supply = <&vreg_s1d>;
++        vdd-l2-supply = <&vreg_s7i>;
++        vdd-l3-supply = <&vreg_s3g>;
++        vdd-s5-supply = <&vph_pwr>;
++        vreg_s5f_0p85: smps5 {
++            regulator-name = "tb378fc-wlan-dig";
++            regulator-min-microvolt = <852000>;
++            regulator-max-microvolt = <1000000>;
++            regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++        };
++        vreg_l1f_0p88: ldo1 {
++            regulator-name = "tb378fc-pcie-phy";
++            regulator-min-microvolt = <880000>;
++            regulator-max-microvolt = <920000>;
++            regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++        };
++        vreg_l2f_1p2: ldo2 {
++            regulator-name = "tb378fc-wlan-io12";
++            regulator-min-microvolt = <1200000>;
++            regulator-max-microvolt = <1200000>;
++            regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++        };
++        vreg_l3f_1p8: ldo3 {
++            regulator-name = "tb378fc-wlan-io";
++            regulator-min-microvolt = <1800000>;
++            regulator-max-microvolt = <1800000>;
++            regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++        };
++    };
++};
++
++&tlmm {
++    tb378fc_wlan_en: wlan-enable-state {
++        pins = "gpio16";
++        function = "gpio";
++        drive-strength = <16>;
++        bias-pull-up;
++    };
++};
++
++&pm8550ve_f_gpios {
++    tb378fc_bt_enable: bt-enable-state {
++        pins = "gpio3";
++        function = "normal";
++        power-source = <1>;
++        bias-disable;
++        input-disable;
++        output-enable;
++    };
++};
++
++&pcie0 {
++	pinctrl-0 = <&pcie0_default_state>;
++	pinctrl-names = "default";
++
++	status = "okay";
++};
++
++&pcie0_phy {
++	vdda-phy-supply = <&vreg_l1f_0p88>;
++	vdda-pll-supply = <&vreg_l3g>;
++
++	status = "okay";
++};
++
++&pcieport0 {
++	wake-gpios = <&tlmm 104 GPIO_ACTIVE_HIGH>;
++	reset-gpios = <&tlmm 102 GPIO_ACTIVE_LOW>;
++
++	wifi@0 {
++		compatible = "pci17cb,110e";
++		reg = <0x10000 0x0 0x0 0x0 0x0>;
++
++		vddrfacmn-supply = <&vreg_pmu_rfa_cmn>;
++		vddaon-supply = <&vreg_pmu_aon_0p59>;
++		vddwlcx-supply = <&vreg_pmu_wlcx_0p8>;
++		vddwlmx-supply = <&vreg_pmu_wlmx_0p85>;
++		vddrfa0p8-supply = <&vreg_pmu_rfa_0p8>;
++		vddrfa1p2-supply = <&vreg_pmu_rfa_1p2>;
++		vddrfa1p8-supply = <&vreg_pmu_rfa_1p8>;
++		vddpcie0p9-supply = <&vreg_pmu_pcie_0p9>;
++		vddpcie1p8-supply = <&vreg_pmu_pcie_1p8>;
++	};
++};
+diff --git a/arch/arm64/boot/dts/qcom/sm8750-lenovo-tb378fc.dts b/arch/arm64/boot/dts/qcom/sm8750-lenovo-tb378fc.dts
+new file mode 100644
+index 000000000..a38cc0a30
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/sm8750-lenovo-tb378fc.dts
+@@ -0,0 +1,220 @@
++// SPDX-License-Identifier: BSD-3-Clause
++/*
++ * Lenovo TB378FC, stage 1: RAM userspace and USB2 peripheral diagnostics.
++ * USB rail assignments and constraints are from this unit's running DT.
++ * The SM8750 common DTS and PMIC descriptions provide the platform blocks.
++ */
++/dts-v1/;
++
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
++#include "sm8750.dtsi"
++#include "pm8550.dtsi"
++#define PMK8550VE_SID 8
++#include "pm8550ve.dtsi"
++#include "pmih0108.dtsi"
++#include "pmk8550.dtsi"
++#include "sm8750-pmics.dtsi"
++
++/ {
++	model = "Lenovo Xiaoxin Pad Pro GT 13 (TB378FC, RAM diagnostics)";
++	compatible = "lenovo,tb378fc", "qcom,sm8750";
++	chassis-type = "tablet";
++
++	/* Lenovo ABL updates this existing node before entering the kernel. */
++	chosen {
++	};
++
++	reserved-memory {
++		/* Preserve the UEFI scanout for the temporary screen console. */
++		splash_region {
++			label = "cont_splash_region";
++			reg = <0x0 0xfc800000 0x0 0x2b00000>;
++			no-map;
++		};
++
++		/* Match this unit's downstream 4 MiB RAM console allocation. */
++		ramoops@c2000000 {
++			compatible = "ramoops";
++			reg = <0x0 0xc2000000 0x0 0x400000>;
++			console-size = <0x200000>;
++			pmsg-size = <0x200000>;
++			record-size = <0>;
++			no-map;
++		};
++	};
++
++	clocks {
++		xo_board: xo-board {
++			compatible = "fixed-clock";
++			clock-frequency = <76800000>;
++			#clock-cells = <0>;
++		};
++
++		sleep_clk: sleep-clk {
++			compatible = "fixed-clock";
++			clock-frequency = <32000>;
++			#clock-cells = <0>;
++		};
++
++		bi_tcxo_div2: bi-tcxo-div2-clk {
++			compatible = "fixed-factor-clock";
++			#clock-cells = <0>;
++			clocks = <&rpmhcc RPMH_CXO_CLK>;
++			clock-mult = <1>;
++			clock-div = <2>;
++		};
++
++		bi_tcxo_ao_div2: bi-tcxo-ao-div2-clk {
++			compatible = "fixed-factor-clock";
++			#clock-cells = <0>;
++			clocks = <&rpmhcc RPMH_CXO_CLK_A>;
++			clock-mult = <1>;
++			clock-div = <2>;
++		};
++	};
++
++	vph_pwr: vph-pwr-regulator {
++		compatible = "regulator-fixed";
++		regulator-name = "vph_pwr";
++		regulator-min-microvolt = <3700000>;
++		regulator-max-microvolt = <3700000>;
++		regulator-always-on;
++		regulator-boot-on;
++	};
++};
++
++/* The unit reserves the full first 18 MiB for the hypervisor. */
++&gunyah_hyp_mem {
++	reg = <0x0 0x80000000 0x0 0x1200000>;
++};
++/delete-node/ &cpusys_vm_mem;
++
++/* Preserve UEFI scanout until the native DSI/panel chain is ready.
++ * The DISPCC probe reprograms PLL0/1/2 even when DRM is disabled.
++ */
++&dispcc {
++	status = "disabled";
++};
++
++&tlmm {
++	/* Live DT qcom,gpios-reserved: 36, 37, 38, 39, 74.
++	 * Exclude these from GPIO registration's get_direction() scan.
++	 */
++	gpio-reserved-ranges = <36 4>, <74 1>;
++};
++
++&apps_rsc {
++	regulators-b {
++		compatible = "qcom,pm8550-rpmh-regulators";
++		qcom,pmic-id = "b";
++		vdd-bob1-supply = <&vph_pwr>;
++		vdd-l5-l16-supply = <&vreg_bob1>;
++		vdd-l15-supply = <&vreg_s3g>;
++
++		vreg_bob1: bob1 {
++			regulator-name = "vreg_bob1";
++			regulator-min-microvolt = <3008000>;
++			regulator-max-microvolt = <4000000>;
++		};
++		vreg_l5b: ldo5 {
++			regulator-name = "vreg_l5b_usb_repeater";
++			regulator-min-microvolt = <3100000>;
++			regulator-max-microvolt = <3148000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++		vreg_l15b: ldo15 {
++			regulator-name = "vreg_l15b_usb_repeater";
++			regulator-min-microvolt = <1800000>;
++			regulator-max-microvolt = <1800000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++	};
++
++	regulators-d {
++		compatible = "qcom,pm8550ve-rpmh-regulators";
++		qcom,pmic-id = "d";
++		vdd-s1-supply = <&vph_pwr>;
++		vdd-l2-supply = <&vreg_s1d>;
++
++		vreg_s1d: smps1 {
++			regulator-name = "vreg_s1d";
++			regulator-min-microvolt = <880000>;
++			regulator-max-microvolt = <1100000>;
++		};
++		vreg_l2d: ldo2 {
++			regulator-name = "vreg_l2d_usb_hsphy";
++			regulator-min-microvolt = <880000>;
++			regulator-max-microvolt = <912000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++	};
++
++	regulators-g {
++		compatible = "qcom,pm8550ve-rpmh-regulators";
++		qcom,pmic-id = "g";
++		vdd-s3-supply = <&vph_pwr>;
++		/* PM8550VE L3 input follows the SM8750 reference supply topology. */
++		vdd-l3-supply = <&vreg_s7i>;
++
++		vreg_s3g: smps3 {
++			regulator-name = "vreg_s3g";
++			regulator-min-microvolt = <1856000>;
++			regulator-max-microvolt = <2000000>;
++		};
++		vreg_l3g: ldo3 {
++			regulator-name = "vreg_l3g_usb_hsphy";
++			regulator-min-microvolt = <1200000>;
++			regulator-max-microvolt = <1256000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++	};
++
++	regulators-i {
++		compatible = "qcom,pm8550ve-rpmh-regulators";
++		qcom,pmic-id = "i";
++		vdd-s7-supply = <&vph_pwr>;
++
++		vreg_s7i: smps7 {
++			regulator-name = "vreg_s7i_usb_supply";
++			regulator-min-microvolt = <1224000>;
++			regulator-max-microvolt = <1340000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++	};
++};
++
++&pmih0108_eusb2_repeater {
++	vdd18-supply = <&vreg_l15b>;
++	vdd3-supply = <&vreg_l5b>;
++	status = "okay";
++};
++
++&usb_hsphy {
++	vdd-supply = <&vreg_l2d>;
++	vdda12-supply = <&vreg_l3g>;
++	phys = <&pmih0108_eusb2_repeater>;
++	status = "okay";
++};
++
++/* Fixed USB2 peripheral mode avoids depending on ADSP/UCSI for first boot. */
++&usb {
++	/delete-property/ usb-role-switch;
++	dr_mode = "peripheral";
++	maximum-speed = "high-speed";
++	phys = <&usb_hsphy>;
++	phy-names = "usb2-phy";
++	status = "okay";
++};
++
++&usb_dwc3_ss {
++	/delete-property/ remote-endpoint;
++};
++
++&usb_dp_qmpphy_usb_ss_in {
++	/delete-property/ remote-endpoint;
++};
++
++&pon_pwrkey {
++	status = "okay";
++};
+diff --git a/drivers/firmware/efi/tb378fc-earlyfb.inc b/drivers/firmware/efi/tb378fc-earlyfb.inc
+new file mode 100644
+index 000000000..d59f595c2
+--- /dev/null
++++ b/drivers/firmware/efi/tb378fc-earlyfb.inc
+@@ -0,0 +1,136 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/* Included by EFI earlycon to reuse its mapping and bitmap-font helpers.
++ * This is a temporary inherited-scanout console, not a native panel driver.
++ */
++#include <asm/sysreg.h>
++#include <generated/utsrelease.h>
++
++static unsigned int tb378fb_scale, tb378fb_log_top;
++static unsigned int tb378fb_rows, tb378fb_hold_row;
++static bool tb378fb_held;
++
++static void tb378fb_scaled_char(u32 *dst, unsigned char c, unsigned int h)
++{
++	unsigned int x, repeat, bytes = BITS_TO_BYTES(font->width);
++	const u8 *src = font->data + c * font->height * bytes +
++		(h / tb378fb_scale) * bytes;
++
++	for (x = 0; x < font->width; x++) {
++		u32 color = src[x / 8] & (0x80 >> (x % 8)) ? 0x00ffffff : 0;
++
++		for (repeat = 0; repeat < tb378fb_scale; repeat++)
++			*dst++ = color;
++	}
++}
++
++static void tb378fb_hold(void)
++{
++	u64 freq = read_sysreg(cntfrq_el0);
++	u64 end;
++
++	/* Use the architectural timer: delay calibration has not run yet. */
++	if (!freq || freq > 1000000000)
++		return;
++	isb();
++	end = read_sysreg(cntvct_el0) + freq * 8;
++	while ((s64)(read_sysreg(cntvct_el0) - end) < 0)
++		cpu_relax();
++}
++
++static void tb378fb_write(struct console *con, const char *str, unsigned int num)
++{
++	const struct screen_info *si = &sysfb_primary_display.screen;
++	u32 stride = si->lfb_linelength;
++	u32 char_width = font->width * tb378fb_scale;
++	u32 char_height = font->height * tb378fb_scale;
++	unsigned int count, h, n;
++	void *dst;
++
++	while (num) {
++		count = min_t(unsigned int, strnchrnul(str, num, '\n') - str,
++				(si->lfb_width - efi_x) / char_width);
++		for (h = 0; h < char_height; h++) {
++			dst = efi_earlycon_map((efi_y + h) * stride, stride);
++			if (!dst)
++				return;
++			if (!efi_x)
++				memset(dst, 0, stride);
++			for (n = 0; n < count; n++)
++				tb378fb_scaled_char(dst + (efi_x + n * char_width) * 4,
++						    (unsigned char)str[n], h);
++			efi_earlycon_unmap(dst, stride);
++		}
++		str += count;
++		num -= count;
++		efi_x += count * char_width;
++		if ((num && *str == '\n') || efi_x + char_width > si->lfb_width) {
++			if (num && *str == '\n') {
++				str++;
++				num--;
++			}
++			efi_x = 0;
++			efi_y += char_height;
++			/* Circular rows avoid copying a 31 MB framebuffer per message. */
++			if (efi_y + char_height > si->lfb_height)
++				efi_y = tb378fb_log_top;
++			tb378fb_rows++;
++			if (tb378fb_hold_row && !tb378fb_held &&
++			    tb378fb_rows >= tb378fb_hold_row) {
++				tb378fb_held = true;
++				tb378fb_write(con, "\n[HOLD] Paused for 8 seconds.\n",
++					       sizeof("\n[HOLD] Paused for 8 seconds.\n") - 1);
++				tb378fb_hold();
++			}
++		}
++	}
++}
++
++static int __init tb378fb_setup(struct earlycon_device *device, const char *options)
++{
++	struct screen_info *si = &sysfb_primary_display.screen;
++	bool qemu = options && !strncmp(options, "qemu", 4);
++	const char *opt = options;
++
++	if (qemu) {
++		opt += 4;
++		if (*opt == '-')
++			opt++;
++	}
++	if (opt && *opt) {
++		if (strncmp(opt, "hold", 4) || kstrtouint(opt + 4, 10, &tb378fb_hold_row) ||
++		    !tb378fb_hold_row || tb378fb_hold_row > 4096)
++			return -EINVAL;
++	}
++	fb_base = qemu ? 0x60000000 : 0xfc800000;
++	si->orig_video_isVGA = VIDEO_TYPE_EFI;
++	si->lfb_base = fb_base;
++	si->ext_lfb_base = 0;
++	si->lfb_width = qemu ? 1024 : 3504;
++	si->lfb_height = qemu ? 768 : 2190;
++	si->lfb_depth = 32;
++	si->lfb_linelength = si->lfb_width * 4;
++	si->lfb_size = si->lfb_linelength * si->lfb_height;
++	si->red_size = si->green_size = si->blue_size = 8;
++	si->red_pos = 16;
++	si->green_pos = 8;
++	si->blue_pos = 0;
++	fb_wb = false;
++	font = get_default_font(si->lfb_width, si->lfb_height, NULL, NULL);
++	if (!font)
++		return -ENODEV;
++	tb378fb_scale = qemu ? 2 : 4;
++	efi_x = 0;
++	efi_y = 0;
++	tb378fb_held = true;
++	tb378fb_write(device->con, "TB378FC MAINLINE " UTS_RELEASE "\n",
++		       sizeof("TB378FC MAINLINE " UTS_RELEASE "\n") - 1);
++	tb378fb_write(device->con, "Large text / one 8-second hold\n",
++		       sizeof("Large text / one 8-second hold\n") - 1);
++	tb378fb_log_top = efi_y;
++	tb378fb_rows = 0;
++	tb378fb_held = false;
++	device->con->write = tb378fb_write;
++	earlycon_console = device->con;
++	return 0;
++}
++EARLYCON_DECLARE(tb378fb, tb378fb_setup);
+diff --git a/drivers/gpu/drm/panel/panel-novatek-nt36526.c b/drivers/gpu/drm/panel/panel-novatek-nt36526.c
+new file mode 100644
+index 000000000..4d695c863
+--- /dev/null
++++ b/drivers/gpu/drm/panel/panel-novatek-nt36526.c
+@@ -0,0 +1,383 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Lenovo TB378FC / CSOT NT36526 dual-DSI panel driver
++ * Board timing and command data extracted from this unit's live DT.
++ * Common dual-DSI glue from Erwin's pinned NT36536 driver.
++ * Copyright (c) 2026, Erwin
++ *
++ * Dual-DSI handling based on panel-himax-hx83121a.c
++ */
++
++#include <linux/backlight.h>
++#include <linux/delay.h>
++#include <linux/gpio/consumer.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/of_graph.h>
++#include <linux/regulator/consumer.h>
++
++#include <drm/display/drm_dsc.h>
++#include <drm/display/drm_dsc_helper.h>
++#include <drm/drm_connector.h>
++#include <drm/drm_mipi_dsi.h>
++#include <drm/drm_modes.h>
++#include <drm/drm_panel.h>
++
++struct novatek_nt36526 {
++	struct drm_panel panel;
++	struct mipi_dsi_device *dsi[2];
++	struct drm_dsc_config dsc;
++	struct gpio_desc *reset_gpio;
++	struct regulator *vddio;
++	struct regulator *bias;
++};
++
++static inline struct novatek_nt36526 *to_novatek_nt36526(struct drm_panel *panel)
++{
++	return container_of(panel, struct novatek_nt36526, panel);
++}
++
++static void novatek_nt36526_reset(struct novatek_nt36526 *ctx)
++{
++	/* Native physical levels: 0/11ms, 1/1ms, 0/3ms, 1/10ms.
++	 * The reset descriptor is active-low, so logical 1 asserts reset.
++	 */
++	gpiod_set_value_cansleep(ctx->reset_gpio, 1);
++	msleep(11);
++	gpiod_set_value_cansleep(ctx->reset_gpio, 0);
++	usleep_range(1000, 1500);
++	gpiod_set_value_cansleep(ctx->reset_gpio, 1);
++	usleep_range(3000, 3500);
++	gpiod_set_value_cansleep(ctx->reset_gpio, 0);
++	msleep(10);
++}
++
++/* Packet types and delays are preserved, including long writes with
++ * two-byte payloads. The standard DCS helper would shorten those packets.
++ */
++struct tb378fc_panel_cmd {
++	u8 type;
++	u8 len;
++	u16 wait_ms;
++	u8 data[17];
++};
++
++static const struct tb378fc_panel_cmd tb378fc_on[] = {
++	{ 0x39, 2, 0, { 0xff, 0x20 } },
++	{ 0x39, 2, 0, { 0xfb, 0x01 } },
++	{ 0x39, 2, 0, { 0x78, 0xd3 } },
++	{ 0x39, 2, 0, { 0xff, 0x26 } },
++	{ 0x39, 2, 0, { 0xfb, 0x01 } },
++	{ 0x39, 2, 0, { 0x93, 0xf4 } },
++	{ 0x39, 2, 0, { 0x94, 0xee } },
++	{ 0x39, 5, 0, { 0x9a, 0x26, 0x4c, 0x26, 0x26 } },
++	{ 0x39, 5, 0, { 0x9b, 0x0f, 0x0f, 0x0f, 0x0f } },
++	{ 0x39, 5, 0, { 0x9c, 0xad, 0x2c, 0xad, 0xad } },
++	{ 0x39, 5, 0, { 0x9d, 0x10, 0x0f, 0x10, 0x10 } },
++	{ 0x39, 5, 0, { 0x9e, 0x19, 0x98, 0x19, 0x19 } },
++	{ 0x39, 2, 0, { 0xff, 0x23 } },
++	{ 0x39, 2, 0, { 0xfb, 0x01 } },
++	{ 0x39, 2, 0, { 0x89, 0xa4 } },
++	{ 0x39, 2, 0, { 0xff, 0xe0 } },
++	{ 0x39, 2, 0, { 0xfb, 0x01 } },
++	{ 0x39, 2, 0, { 0xbb, 0x00 } },
++	{ 0x39, 2, 0, { 0xff, 0xf0 } },
++	{ 0x39, 2, 0, { 0xfb, 0x01 } },
++	{ 0x39, 2, 0, { 0xe6, 0x02 } },
++	{ 0x39, 2, 0, { 0xff, 0x27 } },
++	{ 0x39, 2, 0, { 0xfb, 0x01 } },
++	{ 0x39, 2, 0, { 0xd0, 0x33 } },
++	{ 0x39, 2, 0, { 0xd1, 0x05 } },
++	{ 0x39, 2, 0, { 0xde, 0x41 } },
++	{ 0x39, 2, 0, { 0xdf, 0x00 } },
++	{ 0x39, 2, 0, { 0xff, 0x25 } },
++	{ 0x39, 2, 0, { 0xfb, 0x01 } },
++	{ 0x39, 2, 0, { 0x19, 0x1f } },
++	{ 0x39, 2, 0, { 0x1c, 0x10 } },
++	{ 0x39, 2, 0, { 0xff, 0x10 } },
++	{ 0x39, 2, 0, { 0xfb, 0x01 } },
++	{ 0x39, 10, 0, { 0x3b, 0x03, 0xe0, 0x1a, 0x04, 0x04, 0x00, 0x80, 0x36, 0xa1 } },
++	{ 0x39, 2, 0, { 0x60, 0x00 } },
++	{ 0x39, 3, 0, { 0x90, 0x03, 0x00 } },
++	{ 0x39, 17, 0, { 0x91, 0xab, 0xa8, 0x00, 0x1e, 0xd2, 0x00, 0x00, 0x00, 0x03, 0x68, 0x00, 0x0c, 0x03, 0x97, 0x02, 0x17 } },
++	{ 0x39, 3, 0, { 0x92, 0x10, 0xf0 } },
++	{ 0x39, 3, 0, { 0xb2, 0x91, 0x80 } },
++	{ 0x39, 2, 0, { 0xb3, 0x40 } },
++	{ 0x05, 1, 120, { 0x11 } },
++	{ 0x05, 1, 20, { 0x29 } },
++};
++
++static const struct tb378fc_panel_cmd tb378fc_off[] = {
++	{ 0x05, 1, 16, { 0x28 } },
++	{ 0x05, 1, 120, { 0x10 } },
++};
++
++static int tb378fc_send_commands(struct novatek_nt36526 *ctx,
++		const struct tb378fc_panel_cmd *commands, size_t count, u16 flags)
++{
++	/* The pinned SM8750 dual-DSI host broadcasts commands from DSI1. */
++	struct mipi_dsi_device *dsi = ctx->dsi[1];
++	const struct mipi_dsi_host_ops *ops = dsi->host->ops;
++	unsigned int i;
++	ssize_t ret;
++
++	if (!ops || !ops->transfer)
++		return -ENOSYS;
++	for (i = 0; i < count; i++) {
++		struct mipi_dsi_msg msg = {
++			.channel = dsi->channel,
++			.type = commands[i].type,
++			.tx_buf = commands[i].data,
++			.tx_len = commands[i].len,
++			.flags = flags,
++		};
++
++		ret = ops->transfer(dsi->host, &msg);
++		if (ret < 0) {
++			dev_err(&dsi->dev, "command %u type %#x failed: %zd\n",
++				i, commands[i].type, ret);
++			return ret;
++		}
++		if (commands[i].wait_ms)
++			msleep(commands[i].wait_ms);
++	}
++	return 0;
++}
++
++static int novatek_nt36526_on(struct novatek_nt36526 *ctx)
++{
++	return tb378fc_send_commands(ctx, tb378fc_on, ARRAY_SIZE(tb378fc_on),
++				     MIPI_DSI_MSG_USE_LPM);
++}
++
++static int novatek_nt36526_off(struct novatek_nt36526 *ctx)
++{
++	/* Native off-command-state is HS, unlike the LP on sequence. */
++	return tb378fc_send_commands(ctx, tb378fc_off, ARRAY_SIZE(tb378fc_off), 0);
++}
++
++/* vddio delay from native panel supply entries; bias sequencing is handled
++ * by the paired board regulator, using the vendor's ENP/ENN order.
++ */
++static int novatek_nt36526_power_on(struct novatek_nt36526 *ctx)
++{
++	int ret;
++
++	ret = regulator_enable(ctx->vddio);
++	if (ret)
++		return ret;
++	msleep(20);
++	ret = regulator_enable(ctx->bias);
++	if (ret) {
++		regulator_disable(ctx->vddio);
++		return ret;
++	}
++	msleep(10);
++	return 0;
++}
++
++static void novatek_nt36526_power_off(struct novatek_nt36526 *ctx)
++{
++	gpiod_set_value_cansleep(ctx->reset_gpio, 1);
++	regulator_disable(ctx->bias);
++	msleep(5);
++	regulator_disable(ctx->vddio);
++}
++
++static int novatek_nt36526_prepare(struct drm_panel *panel)
++{
++	struct novatek_nt36526 *ctx = to_novatek_nt36526(panel);
++	int ret;
++
++	ret = novatek_nt36526_power_on(ctx);
++	if (ret < 0)
++		return ret;
++
++	novatek_nt36526_reset(ctx);
++
++	/* The native 0x90/0x91/0x92 commands configure the panel DSC decoder.
++	 * Retain those per-link settings; do not send an extra full-width PPS.
++	 */
++	ret = novatek_nt36526_on(ctx);
++	if (ret < 0)
++		goto err;
++
++	dev_info(&ctx->dsi[0]->dev, "TB378FC_PANEL_PREPARED 42 commands complete\n");
++	return 0;
++
++err:
++	novatek_nt36526_power_off(ctx);
++
++	return ret;
++}
++
++static int novatek_nt36526_unprepare(struct drm_panel *panel)
++{
++	struct novatek_nt36526 *ctx = to_novatek_nt36526(panel);
++	struct device *dev = &ctx->dsi[0]->dev;
++	int ret;
++
++	ret = novatek_nt36526_off(ctx);
++	if (ret < 0)
++		dev_err(dev, "failed to off panel: %d\n", ret);
++
++	novatek_nt36526_power_off(ctx);
++
++	return 0;
++}
++
++static const struct drm_display_mode novatek_nt36526_mode = {
++	.clock = (1752 + 77 + 16 + 64) * 2 * (2190 + 26 + 4 + 220) * 120 / 1000,
++	.hdisplay = 3504,
++	.hsync_start = (1752 + 77) * 2,
++	.hsync_end = (1752 + 77 + 16) * 2,
++	.htotal = (1752 + 77 + 16 + 64) * 2,
++	.vdisplay = 2190,
++	.vsync_start = 2190 + 26,
++	.vsync_end = 2190 + 26 + 4,
++	.vtotal = 2190 + 26 + 4 + 220,
++	.type = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED,
++};
++
++static int novatek_nt36526_get_modes(struct drm_panel *panel,
++				     struct drm_connector *connector)
++{
++	struct drm_display_mode *mode;
++
++	connector->display_info.width_mm = 280;
++	connector->display_info.height_mm = 175;
++	connector->display_info.bpc = 10;
++	mode = drm_mode_duplicate(connector->dev, &novatek_nt36526_mode);
++	if (!mode)
++		return -ENOMEM;
++	drm_mode_set_name(mode);
++	drm_mode_probed_add(connector, mode);
++	return 1;
++}
++
++static const struct drm_panel_funcs novatek_nt36526_panel_funcs = {
++	.prepare = novatek_nt36526_prepare,
++	.unprepare = novatek_nt36526_unprepare,
++	.get_modes = novatek_nt36526_get_modes,
++};
++
++static int novatek_nt36526_probe(struct mipi_dsi_device *dsi)
++{
++	struct mipi_dsi_device_info dsi_info = { "dsi-secondary", 0, NULL };
++	struct mipi_dsi_host *dsi1_host;
++	struct device *dev = &dsi->dev;
++	struct device_node *dsi1;
++	struct novatek_nt36526 *ctx;
++	int ret, i;
++
++	ctx = devm_drm_panel_alloc(dev, struct novatek_nt36526, panel,
++				   &novatek_nt36526_panel_funcs,
++				   DRM_MODE_CONNECTOR_DSI);
++	if (IS_ERR(ctx))
++		return PTR_ERR(ctx);
++
++	ctx->vddio = devm_regulator_get(dev, "vddio");
++	if (IS_ERR(ctx->vddio))
++		return dev_err_probe(dev, PTR_ERR(ctx->vddio),
++				     "failed to get vddio regulator\n");
++
++	ctx->bias = devm_regulator_get(dev, "bias");
++	if (IS_ERR(ctx->bias))
++		return dev_err_probe(dev, PTR_ERR(ctx->bias),
++				     "failed to get paired bias supply\n");
++
++	ctx->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_LOW);
++	if (IS_ERR(ctx->reset_gpio))
++		return dev_err_probe(dev, PTR_ERR(ctx->reset_gpio),
++				     "failed to get reset-gpios\n");
++
++	/* port@1 of the panel node points at the secondary DSI host */
++	dsi1 = of_graph_get_remote_node(dsi->dev.of_node, 1, -1);
++	if (!dsi1)
++		return dev_err_probe(dev, -ENODEV,
++				     "cannot get secondary DSI node\n");
++
++	dsi1_host = of_find_mipi_dsi_host_by_node(dsi1);
++	of_node_put(dsi1);
++	if (!dsi1_host)
++		return dev_err_probe(dev, -EPROBE_DEFER,
++				     "cannot get secondary DSI host\n");
++
++	ctx->dsi[1] = devm_mipi_dsi_device_register_full(dev, dsi1_host,
++							 &dsi_info);
++	if (IS_ERR(ctx->dsi[1]))
++		return dev_err_probe(dev, PTR_ERR(ctx->dsi[1]),
++				     "cannot get secondary DSI device\n");
++
++	ctx->dsi[0] = dsi;
++	mipi_dsi_set_drvdata(dsi, ctx);
++	mipi_dsi_set_drvdata(ctx->dsi[1], ctx);
++
++	ctx->panel.prepare_prev_first = true;
++
++	ret = drm_panel_of_backlight(&ctx->panel);
++	if (ret)
++		return dev_err_probe(dev, ret, "failed to get backlight\n");
++
++	drm_panel_add(&ctx->panel);
++
++	/* This panel only supports DSC; unconditionally enable it */
++	ctx->dsc.dsc_version_major = 1;
++	ctx->dsc.dsc_version_minor = 2;
++	ctx->dsc.slice_height = 30;
++	ctx->dsc.slice_width = 876;
++	ctx->dsc.slice_count = 1752 / ctx->dsc.slice_width;
++	ctx->dsc.bits_per_component = 10;
++	ctx->dsc.bits_per_pixel = 8 << 4; /* 4 fractional bits */
++	ctx->dsc.block_pred_enable = true;
++
++	for (i = 0; i < 2; i++) {
++		ctx->dsi[i]->lanes = 4;
++		ctx->dsi[i]->format = MIPI_DSI_FMT_RGB101010;
++		/* Vendor stock keeps the DSI clock lane in continuous HS (no
++		 * NON_CONTINUOUS property in the panel dtsi); this DSC video
++		 * panel loses receiver lock if the clock lane drops to LP
++		 * during blanking, so match the vendor and run continuous. */
++		ctx->dsi[i]->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
++					  MIPI_DSI_MODE_LPM;
++		ctx->dsi[i]->dsc = &ctx->dsc;
++		/* vendor packs two 876-px slices into each video packet */
++		ctx->dsi[i]->dsc_slice_per_pkt = 2;
++
++		ret = devm_mipi_dsi_attach(dev, ctx->dsi[i]);
++		if (ret < 0) {
++			drm_panel_remove(&ctx->panel);
++			return dev_err_probe(dev, ret,
++					     "failed to attach to DSI host\n");
++		}
++	}
++
++	return 0;
++}
++
++static void novatek_nt36526_remove(struct mipi_dsi_device *dsi)
++{
++	struct novatek_nt36526 *ctx = mipi_dsi_get_drvdata(dsi);
++
++	drm_panel_remove(&ctx->panel);
++}
++
++static const struct of_device_id novatek_nt36526_of_match[] = {
++	{ .compatible = "lenovo,tb378fc-nt36526" },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, novatek_nt36526_of_match);
++
++static struct mipi_dsi_driver novatek_nt36526_driver = {
++	.probe = novatek_nt36526_probe,
++	.remove = novatek_nt36526_remove,
++	.driver = {
++		.name = "panel-novatek-nt36526",
++		.of_match_table = novatek_nt36526_of_match,
++	},
++};
++module_mipi_dsi_driver(novatek_nt36526_driver);
++
++MODULE_AUTHOR("Erwin <yzddmr7@gmail.com>");
++MODULE_DESCRIPTION("Novatek NT36526 dual-DSI video mode panel driver");
++MODULE_LICENSE("GPL");
+diff --git a/drivers/regulator/tb378fc-panel-bias.c b/drivers/regulator/tb378fc-panel-bias.c
+new file mode 100644
+index 000000000..2a00a3cf1
+--- /dev/null
++++ b/drivers/regulator/tb378fc-panel-bias.c
+@@ -0,0 +1,144 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/* TB378FC LCD bias: board-specific because the vendor names the IC only "bias".
++ * Register values and GPIO order come from this unit's msm_drm.ko bias_enable().
++ * Do not identify it as TPS65132: the vendor writes control register 0x02.
++ */
++#include <linux/delay.h>
++#include <linux/gpio/consumer.h>
++#include <linux/i2c.h>
++#include <linux/module.h>
++#include <linux/regmap.h>
++#include <linux/regulator/driver.h>
++#include <linux/regulator/of_regulator.h>
++
++struct tb378fc_bias {
++	struct regmap *regmap;
++	struct gpio_desc *positive;
++	struct gpio_desc *negative;
++};
++
++static const struct reg_sequence tb378fc_bias_init[] = {
++	{ 0x00, 0x13 }, { 0x01, 0x13 }, { 0x02, 0x33 },
++};
++
++static int tb378fc_bias_enable(struct regulator_dev *rdev)
++{
++	struct tb378fc_bias *bias = rdev_get_drvdata(rdev);
++	int ret;
++
++	ret = regmap_multi_reg_write(bias->regmap, tb378fc_bias_init,
++				     ARRAY_SIZE(tb378fc_bias_init));
++	if (ret)
++		return ret;
++	ret = gpiod_direction_output(bias->positive, 1);
++	if (ret)
++		return ret;
++	/* The vendor repeats the configuration after asserting ENP. */
++	ret = regmap_multi_reg_write(bias->regmap, tb378fc_bias_init,
++				     ARRAY_SIZE(tb378fc_bias_init));
++	if (ret)
++		goto fail;
++	msleep(5);
++	ret = gpiod_direction_output(bias->negative, 1);
++	if (!ret)
++		return 0;
++fail:
++	gpiod_direction_output(bias->negative, 0);
++	gpiod_direction_output(bias->positive, 0);
++	return ret;
++}
++
++static int tb378fc_bias_disable(struct regulator_dev *rdev)
++{
++	struct tb378fc_bias *bias = rdev_get_drvdata(rdev);
++	int ret;
++
++	ret = gpiod_direction_output(bias->negative, 0);
++	if (ret)
++		return ret;
++	msleep(5);
++	return gpiod_direction_output(bias->positive, 0);
++}
++
++static int tb378fc_bias_is_enabled(struct regulator_dev *rdev)
++{
++	struct tb378fc_bias *bias = rdev_get_drvdata(rdev);
++	int pos = gpiod_get_value_cansleep(bias->positive);
++	int neg = gpiod_get_value_cansleep(bias->negative);
++
++	if (pos < 0)
++		return pos;
++	if (neg < 0)
++		return neg;
++	return pos && neg;
++}
++
++static const struct regulator_ops tb378fc_bias_ops = {
++	.enable = tb378fc_bias_enable,
++	.disable = tb378fc_bias_disable,
++	.is_enabled = tb378fc_bias_is_enabled,
++};
++
++static const struct regulator_desc tb378fc_bias_desc = {
++	.name = "tb378fc-panel-bias",
++	.owner = THIS_MODULE,
++	.type = REGULATOR_VOLTAGE,
++	.ops = &tb378fc_bias_ops,
++	/* One logical supply controls the positive and negative rails together.
++	 * No voltage programming API: keep the vendor's exact register values.
++	 */
++};
++
++static const struct regmap_config tb378fc_bias_regmap = {
++	.reg_bits = 8,
++	.val_bits = 8,
++	.max_register = 0x02,
++};
++
++static int tb378fc_bias_probe(struct i2c_client *client)
++{
++	struct device *dev = &client->dev;
++	struct regulator_config config = {};
++	struct regulator_dev *rdev;
++	struct tb378fc_bias *bias;
++
++	bias = devm_kzalloc(dev, sizeof(*bias), GFP_KERNEL);
++	if (!bias)
++		return -ENOMEM;
++	bias->regmap = devm_regmap_init_i2c(client, &tb378fc_bias_regmap);
++	if (IS_ERR(bias->regmap))
++		return dev_err_probe(dev, PTR_ERR(bias->regmap), "regmap init failed\n");
++	/* Leave inherited rails untouched until the panel requests a transition. */
++	bias->positive = devm_gpiod_get(dev, "positive", GPIOD_ASIS);
++	if (IS_ERR(bias->positive))
++		return dev_err_probe(dev, PTR_ERR(bias->positive), "missing ENP\n");
++	bias->negative = devm_gpiod_get(dev, "negative", GPIOD_ASIS);
++	if (IS_ERR(bias->negative))
++		return dev_err_probe(dev, PTR_ERR(bias->negative), "missing ENN\n");
++	config.dev = dev;
++	config.of_node = dev->of_node;
++	config.driver_data = bias;
++	config.init_data = of_get_regulator_init_data(dev, dev->of_node,
++						    &tb378fc_bias_desc);
++	if (!config.init_data)
++		return -EINVAL;
++	rdev = devm_regulator_register(dev, &tb378fc_bias_desc, &config);
++	return PTR_ERR_OR_ZERO(rdev);
++}
++
++static const struct of_device_id tb378fc_bias_match[] = {
++	{ .compatible = "lenovo,tb378fc-panel-bias" },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, tb378fc_bias_match);
++
++static struct i2c_driver tb378fc_bias_driver = {
++	.probe = tb378fc_bias_probe,
++	.driver = {
++		.name = "tb378fc-panel-bias",
++		.of_match_table = tb378fc_bias_match,
++	},
++};
++module_i2c_driver(tb378fc_bias_driver);
++MODULE_DESCRIPTION("Lenovo TB378FC paired LCD bias control");
++MODULE_LICENSE("GPL");
+diff --git a/drivers/tty/serial/tb378fc-earlyram.c b/drivers/tty/serial/tb378fc-earlyram.c
+new file mode 100644
+index 000000000..9fbf89f5a
+--- /dev/null
++++ b/drivers/tty/serial/tb378fc-earlyram.c
+@@ -0,0 +1,58 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Temporary early boot diagnostics for TB378FC. The first page of the
++ * reserved ramoops console uses the persistent_ram_buffer wire format,
++ * with ECC disabled, so Android can recover it after a warm reboot.
++ * CONFIG_PSTORE_RAM must be disabled in this diagnostic kernel: the normal
++ * ramoops driver would otherwise become a second writer to the same page.
++ */
++#include <linux/console.h>
++#include <linux/init.h>
++#include <linux/io.h>
++#include <linux/serial_core.h>
++#include <linux/sizes.h>
++
++#define TB378RAM_SIGNATURE 0x43474244
++#define TB378RAM_HEADER 12
++#define TB378RAM_CAPACITY (SZ_4K - TB378RAM_HEADER)
++
++static void __iomem *tb378ram_base;
++static u32 tb378ram_start;
++static u32 tb378ram_size;
++
++static void tb378ram_write(struct console *con, const char *text, unsigned int count)
++{
++	u32 chunk;
++
++	while (count) {
++		chunk = min_t(u32, count, TB378RAM_CAPACITY - tb378ram_start);
++		memcpy_toio(tb378ram_base + TB378RAM_HEADER + tb378ram_start,
++			    text, chunk);
++		tb378ram_start = (tb378ram_start + chunk) % TB378RAM_CAPACITY;
++		tb378ram_size = min_t(u32, TB378RAM_CAPACITY, tb378ram_size + chunk);
++		text += chunk;
++		count -= chunk;
++	}
++	wmb();
++	writel(tb378ram_start, tb378ram_base + 4);
++	writel(tb378ram_size, tb378ram_base + 8);
++}
++
++static int __init tb378ram_setup(struct earlycon_device *device, const char *options)
++{
++	if (IS_ENABLED(CONFIG_PSTORE_RAM))
++		return -EBUSY;
++	/* Target RAM console, or the reserved QEMU test address. */
++	if (device->port.mapbase != 0xc2000000 &&
++	    device->port.mapbase != 0x60000000)
++		return -EINVAL;
++	if (!device->port.membase)
++		return -ENODEV;
++	tb378ram_base = device->port.membase;
++	writel(TB378RAM_SIGNATURE, tb378ram_base);
++	writel(0, tb378ram_base + 4);
++	writel(0, tb378ram_base + 8);
++	device->con->write = tb378ram_write;
++	return 0;
++}
++EARLYCON_DECLARE(tb378ram, tb378ram_setup);
+diff --git a/drivers/video/backlight/tb378fc-aw99706b.c b/drivers/video/backlight/tb378fc-aw99706b.c
+new file mode 100644
+index 000000000..ac1c9fa74
+--- /dev/null
++++ b/drivers/video/backlight/tb378fc-aw99706b.c
+@@ -0,0 +1,167 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/* TB378FC AW99706B: preserve the board's vendor register configuration.
++ * Source: aw99706b_init_table and _bl_set_brightness in this unit's msm_drm.ko.
++ * No MTP writes and no guessed current limits.
++ */
++#include <linux/backlight.h>
++#include <linux/delay.h>
++#include <linux/gpio/consumer.h>
++#include <linux/i2c.h>
++#include <linux/module.h>
++#include <linux/mutex.h>
++#include <linux/of.h>
++#include <linux/regmap.h>
++
++struct tb378fc_bl {
++	struct regmap *regmap;
++	struct regmap *secondary;
++	struct gpio_desc *enable;
++	struct mutex lock;
++	bool on;
++};
++
++static int tb378fc_bl_write(struct tb378fc_bl *ctx, unsigned int reg,
++			   unsigned int value)
++{
++	int ret = regmap_write(ctx->regmap, reg, value);
++
++	if (!ret)
++		ret = regmap_write(ctx->secondary, reg, value);
++	return ret;
++}
++
++static const struct reg_sequence tb378fc_bl_init[] = {
++	{ 0x0d, 0x00 }, { 0x0c, 0x48 }, { 0x06, 0xd9 }, { 0x07, 0x05 },
++	{ 0x04, 0x00 }, { 0x05, 0x00 }, { 0x08, 0x01 }, { 0x0d, 0xfe },
++};
++
++static int tb378fc_bl_update(struct backlight_device *bl)
++{
++	struct tb378fc_bl *ctx = bl_get_data(bl);
++	unsigned int brightness = backlight_get_brightness(bl);
++	int ret = 0;
++
++	mutex_lock(&ctx->lock);
++	if (!brightness) {
++		if (ctx->on)
++			ret = tb378fc_bl_write(ctx, 0x0d, 0x00);
++		gpiod_direction_output(ctx->enable, 0);
++		ctx->on = false;
++		goto out;
++	}
++	if (!ctx->on) {
++		ret = gpiod_direction_output(ctx->enable, 1);
++		if (ret)
++			goto out;
++		usleep_range(5000, 6000);
++		ret = regmap_multi_reg_write(ctx->regmap, tb378fc_bl_init,
++					    ARRAY_SIZE(tb378fc_bl_init));
++		if (ret)
++			goto disable;
++		ret = regmap_multi_reg_write(ctx->secondary, tb378fc_bl_init,
++					    ARRAY_SIZE(tb378fc_bl_init));
++		if (ret)
++			goto disable;
++		ctx->on = true;
++	}
++	ret = tb378fc_bl_write(ctx, 0x04, (brightness >> 8) & 0x0f);
++	if (ret)
++		goto disable;
++	ret = tb378fc_bl_write(ctx, 0x05, brightness & 0xff);
++	if (!ret)
++		goto out;
++disable:
++	gpiod_direction_output(ctx->enable, 0);
++	ctx->on = false;
++out:
++	mutex_unlock(&ctx->lock);
++	return ret;
++}
++
++static const struct backlight_ops tb378fc_bl_ops = {
++	.options = BL_CORE_SUSPENDRESUME,
++	.update_status = tb378fc_bl_update,
++};
++
++static const struct regmap_config tb378fc_bl_regmap = {
++	.reg_bits = 8,
++	.val_bits = 8,
++	/* Registers 0x1e/0x1f control MTP. Keep them inaccessible. */
++	.max_register = 0x13,
++};
++
++static int tb378fc_bl_probe(struct i2c_client *client)
++{
++	struct device *dev = &client->dev;
++	struct backlight_properties props = {
++		.type = BACKLIGHT_RAW,
++		.max_brightness = 4095,
++		.brightness = 906,
++		.power = BACKLIGHT_POWER_OFF,
++	};
++	struct backlight_device *bl;
++	struct tb378fc_bl *ctx;
++	struct device_node *secondary_bus;
++	struct i2c_adapter *adapter;
++	struct i2c_client *secondary;
++	unsigned int id;
++	int ret;
++
++	ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
++	if (!ctx)
++		return -ENOMEM;
++	mutex_init(&ctx->lock);
++	ctx->regmap = devm_regmap_init_i2c(client, &tb378fc_bl_regmap);
++	if (IS_ERR(ctx->regmap))
++		return dev_err_probe(dev, PTR_ERR(ctx->regmap), "regmap init failed\n");
++	/* Native DT: primary 888000:76, secondary 880000:76; shared HWEN. */
++	secondary_bus = of_parse_phandle(dev->of_node, "lenovo,secondary-i2c-bus", 0);
++	if (!secondary_bus)
++		return dev_err_probe(dev, -EINVAL, "missing secondary backlight bus\n");
++	adapter = of_find_i2c_adapter_by_node(secondary_bus);
++	of_node_put(secondary_bus);
++	if (!adapter)
++		return dev_err_probe(dev, -EPROBE_DEFER, "secondary bus not ready\n");
++	secondary = devm_i2c_new_dummy_device(dev, adapter, 0x76);
++	i2c_put_adapter(adapter);
++	if (IS_ERR(secondary))
++		return dev_err_probe(dev, PTR_ERR(secondary), "secondary client failed\n");
++	ctx->secondary = devm_regmap_init_i2c(secondary, &tb378fc_bl_regmap);
++	if (IS_ERR(ctx->secondary))
++		return dev_err_probe(dev, PTR_ERR(ctx->secondary), "secondary regmap failed\n");
++	ctx->enable = devm_gpiod_get(dev, "enable", GPIOD_ASIS);
++	if (IS_ERR(ctx->enable))
++		return dev_err_probe(dev, PTR_ERR(ctx->enable), "missing HWEN\n");
++	/* UEFI has already enabled HWEN. Reading ID does not alter its setup. */
++	ret = regmap_read(ctx->regmap, 0x11, &id);
++	if (ret)
++		return dev_err_probe(dev, ret, "chip ID read failed\n");
++	if (id != 0x07)
++		return dev_err_probe(dev, -ENODEV, "unexpected chip ID %02x\n", id);
++	ret = regmap_read(ctx->secondary, 0x11, &id);
++	if (ret)
++		return dev_err_probe(dev, ret, "secondary chip ID read failed\n");
++	if (id != 0x07)
++		return dev_err_probe(dev, -ENODEV, "unexpected secondary ID %02x\n", id);
++	dev_info(dev, "TB378FC_DUAL_BACKLIGHT both chip IDs verified\n");
++	bl = devm_backlight_device_register(dev, "tb378fc-backlight", dev,
++					   ctx, &tb378fc_bl_ops, &props);
++	return PTR_ERR_OR_ZERO(bl);
++}
++
++static const struct of_device_id tb378fc_bl_match[] = {
++	{ .compatible = "lenovo,tb378fc-aw99706b" },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, tb378fc_bl_match);
++
++static struct i2c_driver tb378fc_bl_driver = {
++	.probe = tb378fc_bl_probe,
++	.driver = {
++		.name = "tb378fc-aw99706b",
++		.of_match_table = tb378fc_bl_match,
++	},
++};
++module_i2c_driver(tb378fc_bl_driver);
++MODULE_DESCRIPTION("Lenovo TB378FC AW99706B backlight");
++MODULE_LICENSE("GPL");
+diff --git a/sound/soc/codecs/aw88480.c b/sound/soc/codecs/aw88480.c
+new file mode 100644
+index 000000000..0af4971f7
+--- /dev/null
++++ b/sound/soc/codecs/aw88480.c
+@@ -0,0 +1,595 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/* AW88480 / PID 0x2418 ASoC bring-up.
++ * Register definitions and sequencing: Awinic AW882XX Qcom v2.0.13,
++ * aw882xx_init.[ch] and aw882xx_device.c (GPL-2.0).
++ * Uses this board's original Music register bins through the upstream ACF parser.
++ */
++#include <linux/delay.h>
++#include <linux/firmware.h>
++#include <linux/gpio/consumer.h>
++#include <linux/i2c.h>
++#include <linux/iopoll.h>
++#include <linux/module.h>
++#include <linux/property.h>
++#include <linux/regmap.h>
++#include <linux/unaligned.h>
++#include <linux/workqueue.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include <sound/tlv.h>
++#include "aw88395/aw88395_device.h"
++
++#define AW48_ID                 0x00
++#define AW48_STATUS             0x01
++#define AW48_INT                0x02
++#define AW48_INT_MASK           0x03
++#define AW48_CTRL               0x04
++#define AW48_VOLUME             0x05
++#define AW48_TX                 0x08
++#define AW48_VBAT               0x20
++#define AW48_TEMP               0x21
++#define AW48_DBG                0x25
++#define AW48_LPC                0x3a
++#define AW48_NOISE_GATE         0x52
++#define AW48_TRIM               0x76
++#define AW48_PWDN               BIT(0)
++#define AW48_AMPPD              BIT(1)
++#define AW48_MUTE               BIT(8)
++#define AW48_ULS_MUTE           BIT(15)
++#define AW48_TXEN               BIT(5)
++#define AW48_DITHER             BIT(15)
++#define AW48_CCO_BYPASS         BIT(13)
++#define AW48_LPC_EN             BIT(8)
++#define AW48_ATTENUATION        GENMASK(9, 0)
++#define AW48_PLL_READY          (BIT(4) | BIT(0))
++#define AW48_NO_SWS_READY       (BIT(9) | AW48_PLL_READY)
++#define AW48_SWS_READY          (BIT(8) | AW48_NO_SWS_READY)
++#define AW48_TRIM_LOCKED        BIT(15)
++#define AW48_FAULTS             (BIT(14) | BIT(11) | BIT(5) | BIT(3) | BIT(1))
++/* Bring-up ceiling until vendor excursion/thermal protection is available. */
++#define AW48_GAIN_MAX           487 /* At least 6 dB below native Music. */
++#define AW48_GAIN_DEFAULT       463 /* Default to 12 dB attenuation. */
++
++struct aw88480 {
++	struct aw_device aw;
++	struct regmap *regmap;
++	struct gpio_desc *reset;
++	struct mutex lock;
++	struct delayed_work start_work;
++	struct delayed_work monitor_work;
++	u8 *registers;
++	unsigned int register_bytes;
++	unsigned int channel;
++	unsigned int gain;
++	unsigned int native_attenuation;
++	unsigned int attenuation;
++	u16 dither, lpc, tx;
++	bool requested, powered, running;
++	int last_error;
++};
++
++static const struct regmap_config aw88480_regmap = {
++	.reg_bits = 8,
++	.val_bits = 16,
++	.val_format_endian = REGMAP_ENDIAN_BIG,
++	/* The native Music bins also program zeroes at 0x80..0x89. */
++	.max_register = 0x89,
++};
++
++static int aw88480_ramp(struct aw88480 *amp, unsigned int target)
++{
++	int ret;
++
++	while (amp->attenuation != target) {
++		unsigned int next = amp->attenuation;
++
++		if (next < target)
++			next += min(64U, target - next);
++		else
++			next -= min(64U, next - target);
++		ret = regmap_update_bits(amp->regmap, AW48_VOLUME,
++					 AW48_ATTENUATION, next);
++		if (ret)
++			return ret;
++		amp->attenuation = next;
++		usleep_range(500, 600);
++	}
++	return 0;
++}
++
++static void aw88480_stop(struct aw88480 *amp)
++{
++	cancel_delayed_work(&amp->monitor_work);
++	if (amp->powered) {
++		aw88480_ramp(amp, AW48_ATTENUATION);
++		regmap_update_bits(amp->regmap, AW48_CTRL,
++				   AW48_MUTE | AW48_ULS_MUTE,
++				   AW48_MUTE | AW48_ULS_MUTE);
++		usleep_range(5000, 5100);
++		regmap_update_bits(amp->regmap, AW48_TX, AW48_TXEN, 0);
++		regmap_update_bits(amp->regmap, AW48_CTRL,
++				   AW48_AMPPD | AW48_PWDN,
++				   AW48_AMPPD | AW48_PWDN);
++	}
++	/* Reset also makes a failed or partial configuration unconditionally quiet. */
++	gpiod_set_value_cansleep(amp->reset, 1);
++	amp->powered = false;
++}
++
++static int aw88480_configure(struct aw88480 *amp)
++{
++	unsigned int i, trim, id;
++	int ret;
++
++	gpiod_set_value_cansleep(amp->reset, 0);
++	usleep_range(2000, 2100);
++	/* Early probe bus traffic disrupts display initialization on this board.
++	 * Validate the real chip before any configuration writes at PCM start.
++	 */
++	ret = regmap_read(amp->regmap, AW48_ID, &id);
++	if (ret)
++		return ret;
++	if (id != 0x2418)
++		return dev_err_probe(amp->aw.dev, -ENODEV, "unexpected chip ID %#x\n", id);
++	dev_info(amp->aw.dev, "AW88480 channel%u chip ID verified=0x%04x\n",
++		 amp->channel, id);
++	ret = regmap_write(amp->regmap, AW48_ID, 0x55aa);
++	if (ret)
++		return ret;
++	usleep_range(1000, 1100);
++	ret = regmap_read(amp->regmap, AW48_TRIM, &trim);
++	if (ret)
++		return ret;
++	if (!(trim & AW48_TRIM_LOCKED))
++		return -EIO;
++
++	for (i = 0; i < amp->register_bytes; i += 4) {
++		unsigned int reg = get_unaligned_le16(amp->registers + i);
++		unsigned int value = get_unaligned_le16(amp->registers + i + 2);
++
++		if (reg == AW48_CTRL)
++			value |= AW48_PWDN | AW48_AMPPD | AW48_MUTE | AW48_ULS_MUTE;
++		if (reg == AW48_INT_MASK)
++			value = 0xffff;
++		if (reg == AW48_VOLUME) {
++			amp->native_attenuation = value & AW48_ATTENUATION;
++			value |= AW48_ATTENUATION;
++		}
++		if (reg == AW48_TX) {
++			amp->tx = value & AW48_TXEN;
++			value &= ~AW48_TXEN;
++		}
++		if (reg == AW48_DBG) {
++			amp->dither = value & AW48_DITHER;
++			value &= ~AW48_DITHER;
++		}
++		if (reg == AW48_LPC) {
++			amp->lpc = value & AW48_LPC_EN;
++			value &= ~AW48_LPC_EN;
++		}
++		ret = regmap_write(amp->regmap, reg, value);
++		if (ret)
++			return ret;
++	}
++	amp->attenuation = AW48_ATTENUATION;
++	return 0;
++}
++
++static int aw88480_start(struct aw88480 *amp)
++{
++	unsigned int status, gate, ready;
++	int ret;
++
++	ret = aw88480_configure(amp);
++	if (ret)
++		return ret;
++	ret = regmap_update_bits(amp->regmap, AW48_CTRL, AW48_PWDN, 0);
++	if (ret)
++		return ret;
++	ret = regmap_read_poll_timeout(amp->regmap, AW48_STATUS, status,
++			(status & AW48_PLL_READY) == AW48_PLL_READY, 2000, 40000);
++	if (ret)
++		return ret;
++	ret = regmap_update_bits(amp->regmap, AW48_CTRL, AW48_AMPPD, 0);
++	if (ret)
++		return ret;
++	usleep_range(1000, 1100);
++	ret = regmap_read(amp->regmap, AW48_NOISE_GATE, &gate);
++	if (ret)
++		return ret;
++	ready = gate & BIT(0) ? AW48_NO_SWS_READY : AW48_SWS_READY;
++	ret = regmap_read_poll_timeout(amp->regmap, AW48_STATUS, status,
++			(status & ready) == ready && !(status & AW48_FAULTS), 2000, 40000);
++	if (ret)
++		return ret;
++	/* No capture graph yet: do not drive the shared feedback data line. */
++	ret = regmap_update_bits(amp->regmap, AW48_TX, AW48_TXEN, 0);
++	if (ret)
++		return ret;
++	ret = regmap_update_bits(amp->regmap, AW48_CTRL,
++				 AW48_MUTE | AW48_ULS_MUTE, 0);
++	if (ret)
++		return ret;
++	ret = regmap_update_bits(amp->regmap, AW48_DBG, AW48_DITHER, amp->dither);
++	if (ret)
++		return ret;
++	ret = regmap_update_bits(amp->regmap, AW48_LPC, AW48_LPC_EN, amp->lpc);
++	if (ret)
++		return ret;
++	ret = aw88480_ramp(amp, min(1023U, amp->native_attenuation +
++						2 * (511 - amp->gain)));
++	if (ret)
++		return ret;
++	amp->powered = true;
++	dev_info(amp->aw.dev, "AW88480 channel%u running status=0x%04x attenuation=%u\n",
++		 amp->channel, status, amp->attenuation);
++	return 0;
++}
++
++static void aw88480_monitor_work(struct work_struct *work)
++{
++	struct aw88480 *amp = container_of(to_delayed_work(work), struct aw88480, monitor_work);
++	unsigned int status;
++	int ret;
++
++	mutex_lock(&amp->lock);
++	if (!amp->powered || !amp->requested || !READ_ONCE(amp->running))
++		goto out;
++	ret = regmap_read(amp->regmap, AW48_STATUS, &status);
++	/* Native silence detection can report zero; fault bits are always fatal. */
++	if (ret || (status & AW48_FAULTS)) {
++		amp->last_error = ret ?: -EIO;
++		dev_err(amp->aw.dev, "AW88480 runtime fault status=0x%04x error=%d, resetting\n",
++			ret ? 0 : status, amp->last_error);
++		aw88480_stop(amp);
++	} else {
++		schedule_delayed_work(&amp->monitor_work, msecs_to_jiffies(100));
++	}
++out:
++	mutex_unlock(&amp->lock);
++}
++
++static void aw88480_start_work(struct work_struct *work)
++{
++	struct aw88480 *amp = container_of(to_delayed_work(work), struct aw88480, start_work);
++	int attempt, ret = -EIO;
++
++	mutex_lock(&amp->lock);
++	if (!amp->requested || !READ_ONCE(amp->running)) {
++		aw88480_stop(amp);
++		goto out;
++	}
++	if (amp->powered)
++		goto out;
++	for (attempt = 0; attempt < 3; attempt++) {
++		if (!READ_ONCE(amp->running)) {
++			ret = 0;
++			break;
++		}
++		ret = aw88480_start(amp);
++		if (!ret)
++			break;
++		aw88480_stop(amp);
++		usleep_range(5000, 5100);
++	}
++	amp->last_error = ret;
++	if (ret)
++		dev_err(amp->aw.dev, "AW88480 start failed, stays muted: %d\n", ret);
++	else if (amp->powered && READ_ONCE(amp->running))
++		schedule_delayed_work(&amp->monitor_work, msecs_to_jiffies(100));
++out:
++	mutex_unlock(&amp->lock);
++}
++
++static int aw88480_mute(struct snd_soc_dai *dai, int mute, int stream)
++{
++	struct aw88480 *amp = snd_soc_component_get_drvdata(dai->component);
++
++	if (stream != SNDRV_PCM_STREAM_PLAYBACK)
++		return 0;
++	if (mute) {
++		cancel_delayed_work_sync(&amp->start_work);
++		cancel_delayed_work_sync(&amp->monitor_work);
++	}
++	mutex_lock(&amp->lock);
++	amp->requested = !mute;
++	if (mute)
++		aw88480_stop(amp);
++	else if (READ_ONCE(amp->running))
++		schedule_delayed_work(&amp->start_work, msecs_to_jiffies(2));
++	mutex_unlock(&amp->lock);
++	return 0;
++}
++
++static int aw88480_trigger(struct snd_pcm_substream *substream, int cmd,
++			  struct snd_soc_dai *dai)
++{
++	struct aw88480 *amp = snd_soc_component_get_drvdata(dai->component);
++	bool running;
++
++	if (substream->stream != SNDRV_PCM_STREAM_PLAYBACK)
++		return 0;
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_RESUME:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		running = true;
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		running = false;
++		break;
++	default:
++		return -EINVAL;
++	}
++	/* ALSA may trigger in atomic context: all I2C/reset work stays in workqueues. */
++	WRITE_ONCE(amp->running, running);
++	mod_delayed_work(system_dfl_wq, &amp->start_work,
++			 running ? msecs_to_jiffies(2) : 0);
++	return 0;
++}
++
++static int aw88480_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
++{
++	/* The board firmware supplies the native DSP_B framing registers. */
++	if ((fmt & SND_SOC_DAIFMT_FORMAT_MASK) != SND_SOC_DAIFMT_DSP_B)
++		return -EINVAL;
++	if ((fmt & SND_SOC_DAIFMT_INV_MASK) != SND_SOC_DAIFMT_NB_NF &&
++	    (fmt & SND_SOC_DAIFMT_INV_MASK) != SND_SOC_DAIFMT_IB_NF)
++		return -EINVAL;
++	return 0;
++}
++
++static int aw88480_set_slots(struct snd_soc_dai *dai, unsigned int tx,
++			    unsigned int rx, int slots, int width)
++{
++	struct aw88480 *amp = snd_soc_component_get_drvdata(dai->component);
++
++	if ((slots != 4 && slots != 8) || width != 32 || amp->channel >= slots)
++		return -EINVAL;
++	if (rx != BIT(amp->channel) || (tx && tx != BIT(amp->channel)))
++		return -EINVAL;
++	return 0;
++}
++
++static const struct snd_soc_dai_ops aw88480_ops = {
++	.set_fmt = aw88480_set_fmt,
++	.set_tdm_slot = aw88480_set_slots,
++	.mute_stream = aw88480_mute,
++	.trigger = aw88480_trigger,
++	.no_capture_mute = 1,
++};
++
++static struct snd_soc_dai_driver aw88480_dai = {
++	.name = "aw88480-aif",
++	.playback = {
++		.stream_name = "Speaker Playback",
++		.channels_min = 1,
++		.channels_max = 8,
++		.rates = SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_S32_LE,
++	},
++	.ops = &aw88480_ops,
++};
++
++static int aw88480_volume_get(struct snd_kcontrol *kcontrol,
++			     struct snd_ctl_elem_value *value)
++{
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
++	struct aw88480 *amp = snd_soc_component_get_drvdata(component);
++
++	mutex_lock(&amp->lock);
++	value->value.integer.value[0] = amp->gain;
++	mutex_unlock(&amp->lock);
++	return 0;
++}
++
++static int aw88480_volume_put(struct snd_kcontrol *kcontrol,
++			     struct snd_ctl_elem_value *value)
++{
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
++	struct aw88480 *amp = snd_soc_component_get_drvdata(component);
++	unsigned int gain = value->value.integer.value[0];
++	int ret = 1;
++
++	if (gain > AW48_GAIN_MAX)
++		return -EINVAL;
++	mutex_lock(&amp->lock);
++	if (gain == amp->gain) {
++		ret = 0;
++		goto out;
++	}
++	if (amp->powered) {
++		ret = aw88480_ramp(amp, min(1023U, amp->native_attenuation + 2 * (511 - gain)));
++		if (ret)
++			goto out;
++		ret = 1;
++	}
++	amp->gain = gain;
++out:
++	mutex_unlock(&amp->lock);
++	return ret;
++}
++
++static const DECLARE_TLV_DB_SCALE(aw88480_volume_tlv, -12775, 25, 0);
++static const struct snd_kcontrol_new aw88480_controls[] = {
++	SOC_SINGLE_EXT_TLV("Playback Volume", SND_SOC_NOPM, 0, AW48_GAIN_MAX, 0,
++			   aw88480_volume_get, aw88480_volume_put, aw88480_volume_tlv),
++};
++static const struct snd_soc_dapm_widget aw88480_widgets[] = {
++	SND_SOC_DAPM_AIF_IN("AIF_RX", "Speaker Playback", 0, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_OUTPUT("OUT"),
++};
++static const struct snd_soc_dapm_route aw88480_routes[] = {
++	{ "OUT", NULL, "AIF_RX" },
++};
++static const struct snd_soc_component_driver aw88480_component = {
++	.controls = aw88480_controls,
++	.num_controls = ARRAY_SIZE(aw88480_controls),
++	.dapm_widgets = aw88480_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(aw88480_widgets),
++	.dapm_routes = aw88480_routes,
++	.num_dapm_routes = ARRAY_SIZE(aw88480_routes),
++};
++
++static int aw88480_load_firmware(struct aw88480 *amp)
++{
++	const struct firmware *fw;
++	const char *name;
++	struct aw_container *cfg;
++	struct aw_sec_data_desc *regs;
++	unsigned int i;
++	int ret;
++
++	ret = device_property_read_string(amp->aw.dev, "firmware-name", &name);
++	if (ret)
++		return ret;
++	ret = request_firmware(&fw, name, amp->aw.dev);
++	if (ret)
++		return ret;
++	cfg = devm_kzalloc(amp->aw.dev, struct_size(cfg, data, fw->size), GFP_KERNEL);
++	if (!cfg) {
++		release_firmware(fw);
++		return -ENOMEM;
++	}
++	cfg->len = fw->size;
++	memcpy(cfg->data, fw->data, fw->size);
++	release_firmware(fw);
++	ret = aw88395_dev_load_acf_check(&amp->aw, cfg);
++	if (ret)
++		return ret;
++	ret = aw88395_dev_cfg_load(&amp->aw, cfg);
++	if (ret)
++		return ret;
++	if (amp->aw.prof_info.count != 1)
++		return -EINVAL;
++	regs = &amp->aw.prof_info.prof_desc[0].sec_desc[AW88395_DATA_TYPE_REG];
++	if (!regs->len || regs->len % 4)
++		return -EINVAL;
++	/* This bring-up driver never accepts a reset/trim-programming entry. */
++	for (i = 0; i < regs->len; i += 4) {
++		unsigned int reg = get_unaligned_le16(regs->data + i);
++
++		if (reg < 3 || reg > 0x89 || (reg >= 0x76 && reg <= 0x7f))
++			return -EINVAL;
++	}
++	amp->registers = regs->data;
++	amp->register_bytes = regs->len;
++	return 0;
++}
++
++static ssize_t runtime_status_show(struct device *dev,
++				  struct device_attribute *attr, char *buf)
++{
++	struct aw88480 *amp = dev_get_drvdata(dev);
++	unsigned int status = 0, volume = 0, vbat = 0, temp = 0;
++	int ret = 0, len;
++
++	mutex_lock(&amp->lock);
++	if (amp->powered) {
++		ret = regmap_read(amp->regmap, AW48_STATUS, &status);
++		if (!ret)
++			ret = regmap_read(amp->regmap, AW48_VOLUME, &volume);
++		if (!ret)
++			ret = regmap_read(amp->regmap, AW48_VBAT, &vbat);
++		if (!ret)
++			ret = regmap_read(amp->regmap, AW48_TEMP, &temp);
++	}
++	len = sysfs_emit(buf, "channel=%u powered=%u error=%d status=0x%04x read=%d gain=%u native=%u attenuation=%u volume=0x%04x vbat_raw=%u temp_raw=%u\n",
++			 amp->channel, amp->powered, amp->last_error, status, ret,
++			 amp->gain, amp->native_attenuation, amp->attenuation, volume,
++			 vbat, temp);
++	mutex_unlock(&amp->lock);
++	return len;
++}
++static DEVICE_ATTR_RO(runtime_status);
++static struct attribute *aw88480_attrs[] = {
++	&dev_attr_runtime_status.attr, NULL
++};
++ATTRIBUTE_GROUPS(aw88480);
++
++static void aw88480_cleanup(void *data)
++{
++	struct aw88480 *amp = data;
++
++	cancel_delayed_work_sync(&amp->start_work);
++	cancel_delayed_work_sync(&amp->monitor_work);
++	mutex_lock(&amp->lock);
++	amp->requested = false;
++	aw88480_stop(amp);
++	mutex_unlock(&amp->lock);
++}
++
++static void aw88480_assert_reset(void *data)
++{
++	gpiod_set_value_cansleep(data, 1);
++}
++
++static void aw88480_shutdown(struct i2c_client *i2c)
++{
++	aw88480_cleanup(i2c_get_clientdata(i2c));
++}
++
++static int aw88480_probe(struct i2c_client *i2c)
++{
++	struct device *dev = &i2c->dev;
++	struct aw88480 *amp;
++	int ret;
++
++	amp = devm_kzalloc(dev, sizeof(*amp), GFP_KERNEL);
++	if (!amp)
++		return -ENOMEM;
++	mutex_init(&amp->lock);
++	INIT_DELAYED_WORK(&amp->start_work, aw88480_start_work);
++	INIT_DELAYED_WORK(&amp->monitor_work, aw88480_monitor_work);
++	i2c_set_clientdata(i2c, amp);
++	amp->aw.dev = dev;
++	amp->aw.i2c = i2c;
++	amp->aw.chip_id = 0x2418;
++	amp->aw.prof_info.prof_type = AW88395_DEV_NONE_TYPE_ID;
++	amp->gain = AW48_GAIN_DEFAULT;
++	ret = device_property_read_u32(dev, "awinic,audio-channel", &amp->channel);
++	if (ret || amp->channel > 3)
++		return -EINVAL;
++	amp->aw.channel = amp->channel;
++	amp->reset = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
++	if (IS_ERR(amp->reset))
++		return dev_err_probe(dev, PTR_ERR(amp->reset), "reset GPIO\n");
++	ret = devm_add_action_or_reset(dev, aw88480_assert_reset, amp->reset);
++	if (ret)
++		return ret;
++	amp->regmap = devm_regmap_init_i2c(i2c, &aw88480_regmap);
++	if (IS_ERR(amp->regmap))
++		return PTR_ERR(amp->regmap);
++	amp->aw.regmap = amp->regmap;
++	ret = aw88480_load_firmware(amp);
++	if (ret)
++		return dev_err_probe(dev, ret, "native ACF\n");
++	gpiod_set_value_cansleep(amp->reset, 1);
++	/* This action must run before devres releases the regmap and ACF memory. */
++	ret = devm_add_action_or_reset(dev, aw88480_cleanup, amp);
++	if (ret)
++		return ret;
++	dev_info(dev, "AW88480 channel=%u native register pairs=%u, reset; ID checked at PCM start\n",
++		 amp->channel, amp->register_bytes / 4);
++	return devm_snd_soc_register_component(dev, &aw88480_component, &aw88480_dai, 1);
++}
++
++static const struct of_device_id aw88480_of_match[] = {
++	{ .compatible = "awinic,aw88480" },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, aw88480_of_match);
++static struct i2c_driver aw88480_driver = {
++	.driver = {
++		.name = "aw88480",
++		.of_match_table = aw88480_of_match,
++		.dev_groups = aw88480_groups,
++	},
++	.probe = aw88480_probe,
++	.shutdown = aw88480_shutdown,
++};
++module_i2c_driver(aw88480_driver);
++MODULE_DESCRIPTION("Awinic AW88480 native-profile ASoC amplifier");
++MODULE_LICENSE("GPL");

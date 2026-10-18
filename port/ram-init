@@ -1,0 +1,54 @@
+#!/bin/sh
+# TB378FC stage-1 diagnostic userspace. Every writable filesystem is RAM.
+export PATH=/bin
+mount -t proc proc /proc
+mount -t sysfs sysfs /sys
+mount -t devtmpfs devtmpfs /dev
+mkdir -p /dev/pts /run /sys/kernel/config
+mount -t devpts devpts /dev/pts
+mount -t tmpfs tmpfs /run
+mkdir -p /run/evidence
+exec </dev/console >/dev/console 2>&1
+echo 'TB378FC_STAGE1_INIT_STARTED' >/dev/kmsg
+( sleep 180
+  echo 'TB378FC_STAGE1_SESSION_EXPIRED' >/dev/kmsg
+  reboot -f
+  sleep 10
+  echo b >/proc/sysrq-trigger
+) &
+if [ -c /dev/watchdog0 ]; then
+    watchdog -T 30 -t 5 /dev/watchdog0
+fi
+uname -a >/run/evidence/uname.txt
+cat /proc/cmdline >/run/evidence/cmdline.txt
+cat /proc/meminfo >/run/evidence/meminfo.txt
+cat /proc/device-tree/model >/run/evidence/model.txt
+cat /etc/build-id >/run/evidence/build-id.txt
+# A slow USB/network setup must not prevent the independent console/services.
+/bin/usb-diag >/run/evidence/usb-setup.txt 2>&1 &
+while :; do
+    dmesg >/run/evidence/dmesg.txt
+    cat /proc/uptime >/run/evidence/uptime.txt
+    sleep 3
+done &
+httpd -p 8081 -h /run/evidence
+telnetd -p 2323 -l /bin/sh
+echo 'TB378FC_DIAGNOSTIC_SERVICES_STARTED' >/dev/kmsg
+case " $(cat /proc/cmdline) " in
+    *" tb378fc.kms=1 "*)
+        (
+            for count in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20; do
+                [ ! -e /dev/dri/card0 ] || break
+                sleep 1
+            done
+            /bin/kms-test 90
+            echo "KMS_EXIT=$?"
+        ) >/run/evidence/kms.txt 2>&1 &
+        ;;
+esac
+while :; do
+    if [ -c /dev/ttyGS0 ]; then
+        getty -L -n -l /bin/sh ttyGS0 115200 vt100
+    fi
+    sleep 1
+done

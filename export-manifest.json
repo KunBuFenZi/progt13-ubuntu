@@ -1,0 +1,730 @@
+{
+  "kernel_commit": "958a2b4654196bb52dfa0217a0f65ffeaa919f81",
+  "files": {
+    "kernel/patches/0001-tb378fc-platform.patch": {
+      "source": "Build host tracked diff and new driver/DTS sources",
+      "bytes": 99580,
+      "sha256": "92700569a7aba33daeb8385646500a19f73221da615df66e9baaf836c4d44b0d"
+    },
+    "kernel/configs/base.config": {
+      "source": "out/kernel-usbc70b/.config",
+      "bytes": 241726,
+      "sha256": "443b34fcaefceed62dc7890f3188c9b800b488bfcbea923fef2b71f50de10082"
+    },
+    "kernel/configs/camera.config": {
+      "source": "out/module-camera-sdk74/.config",
+      "bytes": 242033,
+      "sha256": "6a67c32e8c4aa9363abf18efedf2648aec005014c904fca68436f3231e4e7344"
+    },
+    "kernel/configs/microphone.config": {
+      "source": "out/module-microphone-sdk71/.config",
+      "bytes": 241840,
+      "sha256": "2ddfb146262afe84abf89254c98592fb786870bbf12e268188498445b2e55b8a"
+    },
+    "kernel/configs/ext4.config": {
+      "source": "out/kernel-ext4-78/.config",
+      "bytes": 241891,
+      "sha256": "31d2a6143d3a97abb8b6aea497f0ed33c4ac5fee967e1eaaacefb3a76be5782f"
+    },
+    "kernel/configs/ufs.config": {
+      "source": "out/kernel-ufs77/.config",
+      "bytes": 244447,
+      "sha256": "9a0af72293db7d24e3b36323e35b4cdea1529c6a8e006e189475443d5f940da0"
+    },
+    "kernel/board/sm8750-lenovo-tb378fc-final.dts": {
+      "source": "out/recovery-tree75b/sm8750-lenovo-tb378fc-recovery75.dtb",
+      "bytes": 168301,
+      "sha256": "25629c013af861c04d315530f1ffc2f5a267cda7ccc048781ec5436390667f36"
+    },
+    "snapshots/camera74/Makefile": {
+      "source": "out/camera74/Makefile",
+      "bytes": 43,
+      "sha256": "27f1d47b95288e4e3db0cd4e225f21a2afee7c0a31f9183385521f98ca049668"
+    },
+    "snapshots/camera74/camss/Makefile": {
+      "source": "out/camera74/camss/Makefile",
+      "bytes": 703,
+      "sha256": "afb80bebf0e5e3f4caa934d2eae053c04cd3dc8ae5a5d8f61d5c88d3306caf46"
+    },
+    "snapshots/camera74/camss/camss-csid-340.c": {
+      "source": "out/camera74/camss/camss-csid-340.c",
+      "bytes": 5980,
+      "sha256": "75c352a85330a813fb02271e0f52208b380b8e6b002fcdfd7a291ac191848658"
+    },
+    "snapshots/camera74/camss/camss-csid-4-1.c": {
+      "source": "out/camera74/camss/camss-csid-4-1.c",
+      "bytes": 5618,
+      "sha256": "12e2907fbc8aa5e09670e2169ac93cd103795d07dfad9be3c00598ad91420f64"
+    },
+    "snapshots/camera74/camss/camss-csid-4-7.c": {
+      "source": "out/camera74/camss/camss-csid-4-7.c",
+      "bytes": 6380,
+      "sha256": "de87454462a015d7a01a2d29f63da4793f5953d62c2038f446b66e7149c31973"
+    },
+    "snapshots/camera74/camss/camss-csid-680.c": {
+      "source": "out/camera74/camss/camss-csid-680.c",
+      "bytes": 14056,
+      "sha256": "7e5c8bbd6fe7ff9bfcb6bfbf6cba9ae07445f9f340a2477b3558de2001e540db"
+    },
+    "snapshots/camera74/camss/camss-csid-980.c": {
+      "source": "out/camera74/camss/camss-csid-980.c",
+      "bytes": 14043,
+      "sha256": "5015cd9f2fe0a10803a515ccc232ef851d069c2eef2be1fa6de28542fd59cd08"
+    },
+    "snapshots/camera74/camss/camss-csid-gen1.h": {
+      "source": "out/camera74/camss/camss-csid-gen1.h",
+      "bytes": 908,
+      "sha256": "973bb1c556229fa190dcdb9e77cdc98fae3b964df3bb97af650fc0c0c4392d7f"
+    },
+    "snapshots/camera74/camss/camss-csid-gen2.c": {
+      "source": "out/camera74/camss/camss-csid-gen2.c",
+      "bytes": 13613,
+      "sha256": "b12324980ee9759e34f6591f3dc6669c1dd70ec16859e50d177929953e60b3c0"
+    },
+    "snapshots/camera74/camss/camss-csid-gen2.h": {
+      "source": "out/camera74/camss/camss-csid-gen2.h",
+      "bytes": 1375,
+      "sha256": "aa06ec13ac34c76ee71f646dea5b3e7fc98d6d3fc6e19b137eacb1ee37ad6a49"
+    },
+    "snapshots/camera74/camss/camss-csid-gen3.c": {
+      "source": "out/camera74/camss/camss-csid-gen3.c",
+      "bytes": 10270,
+      "sha256": "bf9d0a39dacf71733e724435af94fcab01386f54ad873e0225b952072d369fa9"
+    },
+    "snapshots/camera74/camss/camss-csid-gen3.h": {
+      "source": "out/camera74/camss/camss-csid-gen3.h",
+      "bytes": 896,
+      "sha256": "059c9bdf11de22f39f3abeff2bf780eb66eb0d553fb7f9dc6f2ca55a74ee5e57"
+    },
+    "snapshots/camera74/camss/camss-csid.c": {
+      "source": "out/camera74/camss/camss-csid.c",
+      "bytes": 32187,
+      "sha256": "64abba53e758982a3f0072c367337d7f6237d391d3549f80c239c7c69c9dbba4"
+    },
+    "snapshots/camera74/camss/camss-csid.h": {
+      "source": "out/camera74/camss/camss-csid.h",
+      "bytes": 7112,
+      "sha256": "637bc07f63ea78bd20c5f87331de97f3d15275389b16bd81a5f087e5c50768f1"
+    },
+    "snapshots/camera74/camss/camss-csiphy-2ph-1-0.c": {
+      "source": "out/camera74/camss/camss-csiphy-2ph-1-0.c",
+      "bytes": 5208,
+      "sha256": "370181d484c6284820e867089b72ec4e2e7d21becce512cbf0902db9f1e8080f"
+    },
+    "snapshots/camera74/camss/camss-csiphy-3ph-1-0.c": {
+      "source": "out/camera74/camss/camss-csiphy-3ph-1-0.c",
+      "bytes": 54803,
+      "sha256": "571529bc4ea491c23b54322ffe0ade30714c464f5ec718889bafd559a16f6232"
+    },
+    "snapshots/camera74/camss/camss-csiphy.c": {
+      "source": "out/camera74/camss/camss-csiphy.c",
+      "bytes": 21412,
+      "sha256": "9694bc604c745f17ebe7962752af510b3657030560b3597aabdde2c970da6eab"
+    },
+    "snapshots/camera74/camss/camss-csiphy.h": {
+      "source": "out/camera74/camss/camss-csiphy.h",
+      "bytes": 3321,
+      "sha256": "b07b8ac6e5911c4d8a7f35e5a4937e4735d1845aca22622898cbab910cdbe51a"
+    },
+    "snapshots/camera74/camss/camss-format.c": {
+      "source": "out/camera74/camss/camss-format.c",
+      "bytes": 2543,
+      "sha256": "6241fd017d136af2d2a8483c7811d1338e8a5ede65b499a953efc0885c43f53d"
+    },
+    "snapshots/camera74/camss/camss-format.h": {
+      "source": "out/camera74/camss/camss-format.h",
+      "bytes": 2065,
+      "sha256": "6c777565a3cf5e90a6380dc2ab11753759c509ac2fb2a2b8c6e3a4de679d2b36"
+    },
+    "snapshots/camera74/camss/camss-ispif.c": {
+      "source": "out/camera74/camss/camss-ispif.c",
+      "bytes": 39517,
+      "sha256": "e24b81817abbca48a81e12285867e585a76b5e116de175edf2fc4b725b744baa"
+    },
+    "snapshots/camera74/camss/camss-ispif.h": {
+      "source": "out/camera74/camss/camss-ispif.h",
+      "bytes": 1718,
+      "sha256": "36045eece5c4b3e98a35a68fcfed569d588b52a0b80bd80439245ba6e1906842"
+    },
+    "snapshots/camera74/camss/camss-tpg-gen1.c": {
+      "source": "out/camera74/camss/camss-tpg-gen1.c",
+      "bytes": 7641,
+      "sha256": "7def09f8c4f44720b72a19fa98ee92b611dc66f0e0dab365d4b95a5e3cf8faef"
+    },
+    "snapshots/camera74/camss/camss-tpg.c": {
+      "source": "out/camera74/camss/camss-tpg.c",
+      "bytes": 11258,
+      "sha256": "f17719e34631e91a780aafcc288526dd1682372d70d4aa991f75ccafc498aaaa"
+    },
+    "snapshots/camera74/camss/camss-tpg.h": {
+      "source": "out/camera74/camss/camss-tpg.h",
+      "bytes": 2896,
+      "sha256": "4a9b6e4e2b859661134d462a02556c9573c756e1c9bc88ef9656e528950671ab"
+    },
+    "snapshots/camera74/camss/camss-vfe-17x.c": {
+      "source": "out/camera74/camss/camss-vfe-17x.c",
+      "bytes": 16780,
+      "sha256": "e9a8f613f6dffc849af29c262adb6a7ee59e289f3896d4c11d89b453acc44dbd"
+    },
+    "snapshots/camera74/camss/camss-vfe-340.c": {
+      "source": "out/camera74/camss/camss-vfe-340.c",
+      "bytes": 11821,
+      "sha256": "e2668fe9d8e590cc5922d92a01cb1001ac79477c9f31330c4580639350150170"
+    },
+    "snapshots/camera74/camss/camss-vfe-4-1.c": {
+      "source": "out/camera74/camss/camss-vfe-4-1.c",
+      "bytes": 31298,
+      "sha256": "b2aa4150cddedd87c6be180a70d44d9a86eba75a8022f36533537c0d0aa47be7"
+    },
+    "snapshots/camera74/camss/camss-vfe-4-7.c": {
+      "source": "out/camera74/camss/camss-vfe-4-7.c",
+      "bytes": 36279,
+      "sha256": "50f4f0eecbab9b9b1359bd35bcf574ce5ece9b0e5d01103d924681cfaa7b3e58"
+    },
+    "snapshots/camera74/camss/camss-vfe-4-8.c": {
+      "source": "out/camera74/camss/camss-vfe-4-8.c",
+      "bytes": 36175,
+      "sha256": "d95684c0f18b53ec0d7385fd0a62d5757db1d02cd7bcddcf9ee7e9b8ef7b1eb1"
+    },
+    "snapshots/camera74/camss/camss-vfe-480.c": {
+      "source": "out/camera74/camss/camss-vfe-480.c",
+      "bytes": 9485,
+      "sha256": "923f8e6bf779e62555ce24f46ae40b35417dc86b147dcc7d3b326528e6111a4d"
+    },
+    "snapshots/camera74/camss/camss-vfe-680.c": {
+      "source": "out/camera74/camss/camss-vfe-680.c",
+      "bytes": 7846,
+      "sha256": "c5e1b8b57c0aca5cf2d0d92bbd47cf9513f4aac70bb3385f4c7c2e7d8c414375"
+    },
+    "snapshots/camera74/camss/camss-vfe-gen1.c": {
+      "source": "out/camera74/camss/camss-vfe-gen1.c",
+      "bytes": 18692,
+      "sha256": "4ea6d35ea13ef50cc25b5bdc00ecb92361bc8b69da5828186989368d442f22ba"
+    },
+    "snapshots/camera74/camss/camss-vfe-gen1.h": {
+      "source": "out/camera74/camss/camss-vfe-gen1.h",
+      "bytes": 3927,
+      "sha256": "ca014d421ab7d93ceb01005d415953c65bc483f9991937d9a5681a92cc3cb8a8"
+    },
+    "snapshots/camera74/camss/camss-vfe-gen3.c": {
+      "source": "out/camera74/camss/camss-vfe-gen3.c",
+      "bytes": 5960,
+      "sha256": "8944ab518964bba7d705f8fe057c3e4a04cd75bf832ed3b7926d3f6343e76255"
+    },
+    "snapshots/camera74/camss/camss-vfe-gen4.c": {
+      "source": "out/camera74/camss/camss-vfe-gen4.c",
+      "bytes": 5920,
+      "sha256": "29c970836132ceee021dfaf90faab43b18066d3b27d782c73b5757299b03648d"
+    },
+    "snapshots/camera74/camss/camss-vfe-vbif.c": {
+      "source": "out/camera74/camss/camss-vfe-vbif.c",
+      "bytes": 650,
+      "sha256": "f11e75cb2e52d9afa6ee374d6dda30d50857a0daea68aab3926943318d7aada8"
+    },
+    "snapshots/camera74/camss/camss-vfe-vbif.h": {
+      "source": "out/camera74/camss/camss-vfe-vbif.h",
+      "bytes": 445,
+      "sha256": "69642214067893253c6da1e32c7ad11f83f66b3d48158bbc34fa86d96d969cb6"
+    },
+    "snapshots/camera74/camss/camss-vfe.c": {
+      "source": "out/camera74/camss/camss-vfe.c",
+      "bytes": 57304,
+      "sha256": "83de5d90a1443733abf4d7e0f8a937e51c3ac8ed7665d45572e3ac355c15226c"
+    },
+    "snapshots/camera74/camss/camss-vfe.h": {
+      "source": "out/camera74/camss/camss-vfe.h",
+      "bytes": 8665,
+      "sha256": "0dcd8814074db29438c75a1c9b66259557ac5a67de6df7abffb2610edfb95d3c"
+    },
+    "snapshots/camera74/camss/camss-video.c": {
+      "source": "out/camera74/camss/camss-video.c",
+      "bytes": 20702,
+      "sha256": "b4550ee896ae2d14ef16c2fe05a40476419cd2f2e3311c822a664dc67fbeaccf"
+    },
+    "snapshots/camera74/camss/camss-video.h": {
+      "source": "out/camera74/camss/camss-video.h",
+      "bytes": 1516,
+      "sha256": "d481a30032ece7751d280bb89d782567f388fb9e901c59efc7fb4e865feb0240"
+    },
+    "snapshots/camera74/camss/camss.c": {
+      "source": "out/camera74/camss/camss.c",
+      "bytes": 147035,
+      "sha256": "62f3bbc5c393a26ef6488e8c0b2eed19bdcb61db1dd7ac61982b21260554704f"
+    },
+    "snapshots/camera74/camss/camss.h": {
+      "source": "out/camera74/camss/camss.h",
+      "bytes": 4633,
+      "sha256": "d06b62be6874a9d27f009a853b268a96403f7339fd5c489d960f707581f533c4"
+    },
+    "snapshots/camera74/cci/Makefile": {
+      "source": "out/camera74/cci/Makefile",
+      "bytes": 24,
+      "sha256": "7798c098a83fb513d053f9f25a7a5843401f16dfe9aac680fa9ed95013512410"
+    },
+    "snapshots/camera74/cci/i2c-qcom-cci.c": {
+      "source": "out/camera74/cci/i2c-qcom-cci.c",
+      "bytes": 20178,
+      "sha256": "880915dfacd79eb78b70fa06defa3e12c8ff0c64cd73784150ba51c0a950608d"
+    },
+    "snapshots/camera74/clocks/Makefile": {
+      "source": "out/camera74/clocks/Makefile",
+      "bytes": 47,
+      "sha256": "c3cd2dbbd7b68696330320e9b533e7e4fc29135ef51199ffb7fe3c5e4e868dd8"
+    },
+    "snapshots/camera74/clocks/cambistmclkcc-sm8750.c": {
+      "source": "out/camera74/clocks/cambistmclkcc-sm8750.c",
+      "bytes": 13296,
+      "sha256": "b9368cf617af714f47273b24f674677213a2b6189cf51ff02b61b9e7b7568dfa"
+    },
+    "snapshots/camera74/clocks/camcc-sm8750.c": {
+      "source": "out/camera74/clocks/camcc-sm8750.c",
+      "bytes": 73195,
+      "sha256": "191c1754ca0f1408cdd9e2e1c9caaa290b5f707633f7bb84e443dfde08f29b93"
+    },
+    "snapshots/camera74/clocks/clk-alpha-pll.h": {
+      "source": "out/camera74/clocks/clk-alpha-pll.h",
+      "bytes": 9343,
+      "sha256": "6eb0ff4de568da94e486fc1c5e2b9ddf3db51383ce35ab45908832e780d26697"
+    },
+    "snapshots/camera74/clocks/clk-branch.h": {
+      "source": "out/camera74/clocks/clk-branch.h",
+      "bytes": 3986,
+      "sha256": "bac7dcf51a0da5b27eaa0d4dc276f540fec80013bd4862cfbbc115a50161ef72"
+    },
+    "snapshots/camera74/clocks/clk-hfpll.h": {
+      "source": "out/camera74/clocks/clk-hfpll.h",
+      "bytes": 754,
+      "sha256": "5b69f9614ca06439a6162cdac041fa5d8a8e681130926ae207f84bf29c1a3606"
+    },
+    "snapshots/camera74/clocks/clk-krait.h": {
+      "source": "out/camera74/clocks/clk-krait.h",
+      "bytes": 735,
+      "sha256": "075ae44118bc9b17203704161525b36fa838481bb96b21e3b6100de0cc224f9a"
+    },
+    "snapshots/camera74/clocks/clk-pll.h": {
+      "source": "out/camera74/clocks/clk-pll.h",
+      "bytes": 1728,
+      "sha256": "8eca6afa9577d99872c39dba393ce7a21874f8ff899e9476718dc1e0edb821cc"
+    },
+    "snapshots/camera74/clocks/clk-rcg.h": {
+      "source": "out/camera74/clocks/clk-rcg.h",
+      "bytes": 5525,
+      "sha256": "128e149a3f94d356a16e294e0ba406452e2a47af0443396cc2ff078da7731e1d"
+    },
+    "snapshots/camera74/clocks/clk-regmap-divider.h": {
+      "source": "out/camera74/clocks/clk-regmap-divider.h",
+      "bytes": 452,
+      "sha256": "a7dad4fcf36cd4dae19aa712636456a053a7c8c04f6bc70283bbb23e563341ff"
+    },
+    "snapshots/camera74/clocks/clk-regmap-mux-div.h": {
+      "source": "out/camera74/clocks/clk-regmap-mux-div.h",
+      "bytes": 1304,
+      "sha256": "a51e4292681a842f02495ba470f4d20e31a890b230019390be090bb7816e6f9a"
+    },
+    "snapshots/camera74/clocks/clk-regmap-mux.h": {
+      "source": "out/camera74/clocks/clk-regmap-mux.h",
+      "bytes": 459,
+      "sha256": "3ada36bf130ccfc6b5de7e6cedf9fd27da88f3589ed505def758289107e8f28e"
+    },
+    "snapshots/camera74/clocks/clk-regmap-phy-mux.h": {
+      "source": "out/camera74/clocks/clk-regmap-phy-mux.h",
+      "bytes": 999,
+      "sha256": "8ed1d6af2f70ae1fcccca1e4b4b7152b53c2bbc763924c11fdcca606536bb531"
+    },
+    "snapshots/camera74/clocks/clk-regmap.h": {
+      "source": "out/camera74/clocks/clk-regmap.h",
+      "bytes": 1151,
+      "sha256": "3c8dab9af916ecc46ed515533eb2535222a2ecd172cb9f0abfcbe16ca726735a"
+    },
+    "snapshots/camera74/clocks/common.h": {
+      "source": "out/camera74/clocks/common.h",
+      "bytes": 2674,
+      "sha256": "9a2f6db86a796403b600f7e0f3a5b3b6a8cfc8f84feccf2d1ec7eeee68f9bc4a"
+    },
+    "snapshots/camera74/clocks/gdsc.h": {
+      "source": "out/camera74/clocks/gdsc.h",
+      "bytes": 3055,
+      "sha256": "bea8e934482c13e1318ebe59bfd881cb91536e32afd9dae2676da9514d140ae9"
+    },
+    "snapshots/camera74/clocks/reset.h": {
+      "source": "out/camera74/clocks/reset.h",
+      "bytes": 605,
+      "sha256": "ee4ae7a90e5e3544ffa5335ad96511cee659bad16f09f1fa9fc28f1d10db06a3"
+    },
+    "snapshots/camera74/core/Makefile": {
+      "source": "out/camera74/core/Makefile",
+      "bytes": 66,
+      "sha256": "376ac7de424445df85e56fde2ca3120645b8335c47b478f8be7287936589d2ff"
+    },
+    "snapshots/camera74/core/v4l2-async.c": {
+      "source": "out/camera74/core/v4l2-async.c",
+      "bytes": 24418,
+      "sha256": "fda2c5340455b62eb5c2145ed6e12b929692514bf7ab0a6d4abcd5d414ba0fa8"
+    },
+    "snapshots/camera74/core/v4l2-cci.c": {
+      "source": "out/camera74/core/v4l2-cci.c",
+      "bytes": 4098,
+      "sha256": "eec4bcf6b4706132d101076b913399e3efb9ae597864769aee028abb86826622"
+    },
+    "snapshots/camera74/core/v4l2-ctrls-priv.h": {
+      "source": "out/camera74/core/v4l2-ctrls-priv.h",
+      "bytes": 3195,
+      "sha256": "2160e08a0d94dc678cd0ebc8663936f4d313321793057834274cedfac3c0a5c3"
+    },
+    "snapshots/camera74/core/v4l2-fwnode.c": {
+      "source": "out/camera74/core/v4l2-fwnode.c",
+      "bytes": 33973,
+      "sha256": "f0e4b64c9d83280e7ca2d128d89604119d14100e3cc671301912484d6e678a04"
+    },
+    "snapshots/camera74/core/v4l2-subdev-priv.h": {
+      "source": "out/camera74/core/v4l2-subdev-priv.h",
+      "bytes": 333,
+      "sha256": "d871ad0c34b30c7d2234459cb34cc30c513c4cdd4a700de01682a0b084fec18f"
+    },
+    "snapshots/camera74/core/videobuf2-dma-sg.c": {
+      "source": "out/camera74/core/videobuf2-dma-sg.c",
+      "bytes": 16246,
+      "sha256": "30a61669e50b0364757d8f7131c6651962e9acb3fef40140a0304c0a519ca9fb"
+    },
+    "snapshots/camera74/sensor/Makefile": {
+      "source": "out/camera74/sensor/Makefile",
+      "bytes": 28,
+      "sha256": "68c773ed365dc80f9e5f69cc4403e004ea73f50b99d4d3f4a1ab5e47636021ad"
+    },
+    "snapshots/camera74/sensor/gc08a8.c": {
+      "source": "out/camera74/sensor/gc08a8.c",
+      "bytes": 25490,
+      "sha256": "076011f77292ab9692d650fdd0fb4bcb94934b7ea15b46ca16a6ebd4e03f1274"
+    },
+    "snapshots/camera74/sensor/ov13b10.c": {
+      "source": "out/camera74/sensor/ov13b10.c",
+      "bytes": 40838,
+      "sha256": "e1677ff8117a1da720c7d51bbf8048769dcc0855e4602f88c07bd943a7807fd5"
+    },
+    "snapshots/camera74/sensor-adjustments.patch": {
+      "source": "out/camera74/sensor-adjustments.patch",
+      "bytes": 3910,
+      "sha256": "494a318489cdfd24a3d62ce665bbb66552e2f65dada9295272d3894ffd836042"
+    },
+    "snapshots/camera-app75/camss/Makefile": {
+      "source": "out/camera-app75/camss/Makefile",
+      "bytes": 703,
+      "sha256": "afb80bebf0e5e3f4caa934d2eae053c04cd3dc8ae5a5d8f61d5c88d3306caf46"
+    },
+    "snapshots/camera-app75/camss/camss-csid-340.c": {
+      "source": "out/camera-app75/camss/camss-csid-340.c",
+      "bytes": 5980,
+      "sha256": "75c352a85330a813fb02271e0f52208b380b8e6b002fcdfd7a291ac191848658"
+    },
+    "snapshots/camera-app75/camss/camss-csid-4-1.c": {
+      "source": "out/camera-app75/camss/camss-csid-4-1.c",
+      "bytes": 5618,
+      "sha256": "12e2907fbc8aa5e09670e2169ac93cd103795d07dfad9be3c00598ad91420f64"
+    },
+    "snapshots/camera-app75/camss/camss-csid-4-7.c": {
+      "source": "out/camera-app75/camss/camss-csid-4-7.c",
+      "bytes": 6380,
+      "sha256": "de87454462a015d7a01a2d29f63da4793f5953d62c2038f446b66e7149c31973"
+    },
+    "snapshots/camera-app75/camss/camss-csid-680.c": {
+      "source": "out/camera-app75/camss/camss-csid-680.c",
+      "bytes": 14056,
+      "sha256": "7e5c8bbd6fe7ff9bfcb6bfbf6cba9ae07445f9f340a2477b3558de2001e540db"
+    },
+    "snapshots/camera-app75/camss/camss-csid-980.c": {
+      "source": "out/camera-app75/camss/camss-csid-980.c",
+      "bytes": 14043,
+      "sha256": "5015cd9f2fe0a10803a515ccc232ef851d069c2eef2be1fa6de28542fd59cd08"
+    },
+    "snapshots/camera-app75/camss/camss-csid-gen1.h": {
+      "source": "out/camera-app75/camss/camss-csid-gen1.h",
+      "bytes": 908,
+      "sha256": "973bb1c556229fa190dcdb9e77cdc98fae3b964df3bb97af650fc0c0c4392d7f"
+    },
+    "snapshots/camera-app75/camss/camss-csid-gen2.c": {
+      "source": "out/camera-app75/camss/camss-csid-gen2.c",
+      "bytes": 13613,
+      "sha256": "b12324980ee9759e34f6591f3dc6669c1dd70ec16859e50d177929953e60b3c0"
+    },
+    "snapshots/camera-app75/camss/camss-csid-gen2.h": {
+      "source": "out/camera-app75/camss/camss-csid-gen2.h",
+      "bytes": 1375,
+      "sha256": "aa06ec13ac34c76ee71f646dea5b3e7fc98d6d3fc6e19b137eacb1ee37ad6a49"
+    },
+    "snapshots/camera-app75/camss/camss-csid-gen3.c": {
+      "source": "out/camera-app75/camss/camss-csid-gen3.c",
+      "bytes": 10270,
+      "sha256": "bf9d0a39dacf71733e724435af94fcab01386f54ad873e0225b952072d369fa9"
+    },
+    "snapshots/camera-app75/camss/camss-csid-gen3.h": {
+      "source": "out/camera-app75/camss/camss-csid-gen3.h",
+      "bytes": 896,
+      "sha256": "059c9bdf11de22f39f3abeff2bf780eb66eb0d553fb7f9dc6f2ca55a74ee5e57"
+    },
+    "snapshots/camera-app75/camss/camss-csid.c": {
+      "source": "out/camera-app75/camss/camss-csid.c",
+      "bytes": 32187,
+      "sha256": "64abba53e758982a3f0072c367337d7f6237d391d3549f80c239c7c69c9dbba4"
+    },
+    "snapshots/camera-app75/camss/camss-csid.h": {
+      "source": "out/camera-app75/camss/camss-csid.h",
+      "bytes": 7112,
+      "sha256": "637bc07f63ea78bd20c5f87331de97f3d15275389b16bd81a5f087e5c50768f1"
+    },
+    "snapshots/camera-app75/camss/camss-csiphy-2ph-1-0.c": {
+      "source": "out/camera-app75/camss/camss-csiphy-2ph-1-0.c",
+      "bytes": 5208,
+      "sha256": "370181d484c6284820e867089b72ec4e2e7d21becce512cbf0902db9f1e8080f"
+    },
+    "snapshots/camera-app75/camss/camss-csiphy-3ph-1-0.c": {
+      "source": "out/camera-app75/camss/camss-csiphy-3ph-1-0.c",
+      "bytes": 54803,
+      "sha256": "571529bc4ea491c23b54322ffe0ade30714c464f5ec718889bafd559a16f6232"
+    },
+    "snapshots/camera-app75/camss/camss-csiphy.c": {
+      "source": "out/camera-app75/camss/camss-csiphy.c",
+      "bytes": 21412,
+      "sha256": "9694bc604c745f17ebe7962752af510b3657030560b3597aabdde2c970da6eab"
+    },
+    "snapshots/camera-app75/camss/camss-csiphy.h": {
+      "source": "out/camera-app75/camss/camss-csiphy.h",
+      "bytes": 3321,
+      "sha256": "b07b8ac6e5911c4d8a7f35e5a4937e4735d1845aca22622898cbab910cdbe51a"
+    },
+    "snapshots/camera-app75/camss/camss-format.c": {
+      "source": "out/camera-app75/camss/camss-format.c",
+      "bytes": 2543,
+      "sha256": "6241fd017d136af2d2a8483c7811d1338e8a5ede65b499a953efc0885c43f53d"
+    },
+    "snapshots/camera-app75/camss/camss-format.h": {
+      "source": "out/camera-app75/camss/camss-format.h",
+      "bytes": 2065,
+      "sha256": "6c777565a3cf5e90a6380dc2ab11753759c509ac2fb2a2b8c6e3a4de679d2b36"
+    },
+    "snapshots/camera-app75/camss/camss-ispif.c": {
+      "source": "out/camera-app75/camss/camss-ispif.c",
+      "bytes": 39517,
+      "sha256": "e24b81817abbca48a81e12285867e585a76b5e116de175edf2fc4b725b744baa"
+    },
+    "snapshots/camera-app75/camss/camss-ispif.h": {
+      "source": "out/camera-app75/camss/camss-ispif.h",
+      "bytes": 1718,
+      "sha256": "36045eece5c4b3e98a35a68fcfed569d588b52a0b80bd80439245ba6e1906842"
+    },
+    "snapshots/camera-app75/camss/camss-tpg-gen1.c": {
+      "source": "out/camera-app75/camss/camss-tpg-gen1.c",
+      "bytes": 7641,
+      "sha256": "7def09f8c4f44720b72a19fa98ee92b611dc66f0e0dab365d4b95a5e3cf8faef"
+    },
+    "snapshots/camera-app75/camss/camss-tpg.c": {
+      "source": "out/camera-app75/camss/camss-tpg.c",
+      "bytes": 11258,
+      "sha256": "f17719e34631e91a780aafcc288526dd1682372d70d4aa991f75ccafc498aaaa"
+    },
+    "snapshots/camera-app75/camss/camss-tpg.h": {
+      "source": "out/camera-app75/camss/camss-tpg.h",
+      "bytes": 2896,
+      "sha256": "4a9b6e4e2b859661134d462a02556c9573c756e1c9bc88ef9656e528950671ab"
+    },
+    "snapshots/camera-app75/camss/camss-vfe-17x.c": {
+      "source": "out/camera-app75/camss/camss-vfe-17x.c",
+      "bytes": 16780,
+      "sha256": "e9a8f613f6dffc849af29c262adb6a7ee59e289f3896d4c11d89b453acc44dbd"
+    },
+    "snapshots/camera-app75/camss/camss-vfe-340.c": {
+      "source": "out/camera-app75/camss/camss-vfe-340.c",
+      "bytes": 11821,
+      "sha256": "e2668fe9d8e590cc5922d92a01cb1001ac79477c9f31330c4580639350150170"
+    },
+    "snapshots/camera-app75/camss/camss-vfe-4-1.c": {
+      "source": "out/camera-app75/camss/camss-vfe-4-1.c",
+      "bytes": 31298,
+      "sha256": "b2aa4150cddedd87c6be180a70d44d9a86eba75a8022f36533537c0d0aa47be7"
+    },
+    "snapshots/camera-app75/camss/camss-vfe-4-7.c": {
+      "source": "out/camera-app75/camss/camss-vfe-4-7.c",
+      "bytes": 36279,
+      "sha256": "50f4f0eecbab9b9b1359bd35bcf574ce5ece9b0e5d01103d924681cfaa7b3e58"
+    },
+    "snapshots/camera-app75/camss/camss-vfe-4-8.c": {
+      "source": "out/camera-app75/camss/camss-vfe-4-8.c",
+      "bytes": 36175,
+      "sha256": "d95684c0f18b53ec0d7385fd0a62d5757db1d02cd7bcddcf9ee7e9b8ef7b1eb1"
+    },
+    "snapshots/camera-app75/camss/camss-vfe-480.c": {
+      "source": "out/camera-app75/camss/camss-vfe-480.c",
+      "bytes": 9485,
+      "sha256": "923f8e6bf779e62555ce24f46ae40b35417dc86b147dcc7d3b326528e6111a4d"
+    },
+    "snapshots/camera-app75/camss/camss-vfe-680.c": {
+      "source": "out/camera-app75/camss/camss-vfe-680.c",
+      "bytes": 7846,
+      "sha256": "c5e1b8b57c0aca5cf2d0d92bbd47cf9513f4aac70bb3385f4c7c2e7d8c414375"
+    },
+    "snapshots/camera-app75/camss/camss-vfe-gen1.c": {
+      "source": "out/camera-app75/camss/camss-vfe-gen1.c",
+      "bytes": 18692,
+      "sha256": "4ea6d35ea13ef50cc25b5bdc00ecb92361bc8b69da5828186989368d442f22ba"
+    },
+    "snapshots/camera-app75/camss/camss-vfe-gen1.h": {
+      "source": "out/camera-app75/camss/camss-vfe-gen1.h",
+      "bytes": 3927,
+      "sha256": "ca014d421ab7d93ceb01005d415953c65bc483f9991937d9a5681a92cc3cb8a8"
+    },
+    "snapshots/camera-app75/camss/camss-vfe-gen3.c": {
+      "source": "out/camera-app75/camss/camss-vfe-gen3.c",
+      "bytes": 5960,
+      "sha256": "8944ab518964bba7d705f8fe057c3e4a04cd75bf832ed3b7926d3f6343e76255"
+    },
+    "snapshots/camera-app75/camss/camss-vfe-gen4.c": {
+      "source": "out/camera-app75/camss/camss-vfe-gen4.c",
+      "bytes": 5932,
+      "sha256": "396d7b9c0bdd7a18ed35a123481a287b53c1b5122385d6341d8c9e30c9d36058"
+    },
+    "snapshots/camera-app75/camss/camss-vfe-vbif.c": {
+      "source": "out/camera-app75/camss/camss-vfe-vbif.c",
+      "bytes": 650,
+      "sha256": "f11e75cb2e52d9afa6ee374d6dda30d50857a0daea68aab3926943318d7aada8"
+    },
+    "snapshots/camera-app75/camss/camss-vfe-vbif.h": {
+      "source": "out/camera-app75/camss/camss-vfe-vbif.h",
+      "bytes": 445,
+      "sha256": "69642214067893253c6da1e32c7ad11f83f66b3d48158bbc34fa86d96d969cb6"
+    },
+    "snapshots/camera-app75/camss/camss-vfe.c": {
+      "source": "out/camera-app75/camss/camss-vfe.c",
+      "bytes": 57304,
+      "sha256": "83de5d90a1443733abf4d7e0f8a937e51c3ac8ed7665d45572e3ac355c15226c"
+    },
+    "snapshots/camera-app75/camss/camss-vfe.h": {
+      "source": "out/camera-app75/camss/camss-vfe.h",
+      "bytes": 8665,
+      "sha256": "0dcd8814074db29438c75a1c9b66259557ac5a67de6df7abffb2610edfb95d3c"
+    },
+    "snapshots/camera-app75/camss/camss-video.c": {
+      "source": "out/camera-app75/camss/camss-video.c",
+      "bytes": 20886,
+      "sha256": "02bd222eb2a652980b62fb601d2f99eccde872bfe2ec37e93bc749eb38fb25e1"
+    },
+    "snapshots/camera-app75/camss/camss-video.h": {
+      "source": "out/camera-app75/camss/camss-video.h",
+      "bytes": 1551,
+      "sha256": "dd0e7d49d5cc70532fa0065599d2e8ce266b421e51f08445e95a264dbc3ea00f"
+    },
+    "snapshots/camera-app75/camss/camss.c": {
+      "source": "out/camera-app75/camss/camss.c",
+      "bytes": 147035,
+      "sha256": "62f3bbc5c393a26ef6488e8c0b2eed19bdcb61db1dd7ac61982b21260554704f"
+    },
+    "snapshots/camera-app75/camss/camss.h": {
+      "source": "out/camera-app75/camss/camss.h",
+      "bytes": 4633,
+      "sha256": "d06b62be6874a9d27f009a853b268a96403f7339fd5c489d960f707581f533c4"
+    },
+    "snapshots/camera-app75/heap/Makefile": {
+      "source": "out/camera-app75/heap/Makefile",
+      "bytes": 23,
+      "sha256": "a63a58e3fd57f2a3ec82854d38bef4382b94da68da1953681f787d3b93754ecd"
+    },
+    "snapshots/camera-app75/heap/system_heap.c": {
+      "source": "out/camera-app75/heap/system_heap.c",
+      "bytes": 13022,
+      "sha256": "31ea2d70886b35c9327ed13fd3ca5c60785304a6207a86bb4477b6eb09a6e32c"
+    },
+    "snapshots/microphone72/codec/wcd939x-sdw.c": {
+      "source": "out/microphone72/codec/wcd939x-sdw.c",
+      "bytes": 50195,
+      "sha256": "01911022b2298736cc6eaced421007b3216068d4cc7555b1c8017e2367045ef8"
+    },
+    "snapshots/microphone72/codec/wcd939x.c": {
+      "source": "out/microphone72/codec/wcd939x.c",
+      "bytes": 119516,
+      "sha256": "d6421cce2e598d59e490c12c548e0045db381c33c9a4f3ef2782b89de874451e"
+    },
+    "snapshots/microphone73/codec/wcd939x-sdw.c": {
+      "source": "out/microphone73/codec/wcd939x-sdw.c",
+      "bytes": 51895,
+      "sha256": "91985a8a714895123c9e3018eb0df9f99502c06ac6d7af7a43aa59d8295cb789"
+    },
+    "snapshots/bt-uart-live68b/Makefile": {
+      "source": "out/bt-uart-live68b/Makefile",
+      "bytes": 29,
+      "sha256": "4eb44e57b4381667efc04698e4ed1891b9be115221313587298bf8dc7eb5436f"
+    },
+    "snapshots/bt-uart-live68b/tb378fc_geni_uart.c": {
+      "source": "out/bt-uart-live68b/tb378fc_geni_uart.c",
+      "bytes": 58342,
+      "sha256": "410843a386a75e2fb9c5b4008dc3a329c26d32f10eb0ebde14d91a0fbbadffe3"
+    },
+    "snapshots/native-pps71b/Makefile": {
+      "source": "out/native-pps71b/Makefile",
+      "bytes": 30,
+      "sha256": "3b3cae5996ece0c97d7f8ec8e718c54683784a2ef7100ea0f2f07ed60a9fe7cc"
+    },
+    "snapshots/native-pps71b/qcom_battmgr_pps71.c": {
+      "source": "out/native-pps71b/qcom_battmgr_pps71.c",
+      "bytes": 58776,
+      "sha256": "04f270a51e7722d02a5db101b2651ad85ae2b09dd480006b629dcb80652a60d5"
+    },
+    "snapshots/live-flash70c/Makefile": {
+      "source": "out/live-flash70c/Makefile",
+      "bytes": 68,
+      "sha256": "8e1dd39169478bbbd4cd7b1cee524386921593327185a984800663990d292257"
+    },
+    "snapshots/live-flash70c/led-class-flash.c": {
+      "source": "out/live-flash70c/led-class-flash.c",
+      "bytes": 11321,
+      "sha256": "7c4afffcb97e22d677ddae90ee58d895a8ae1a594da577054c9d19ec9f082aa7"
+    },
+    "snapshots/live-flash70c/leds-qcom-flash.c": {
+      "source": "out/live-flash70c/leds-qcom-flash.c",
+      "bytes": 28158,
+      "sha256": "770ba6ed706184e3017ebee3c06784569ad7f13a0f20326c6fa7fc56607ef4e0"
+    },
+    "snapshots/live-flash70c/live-flash-overlay70.c": {
+      "source": "out/live-flash70c/live-flash-overlay70.c",
+      "bytes": 3356,
+      "sha256": "845d75ee0882047cbc650e982fa38e40acbac2e7adce48dfbde0c5946f6f1927"
+    },
+    "snapshots/ufs77b-overlay-build/Makefile": {
+      "source": "out/ufs77b-overlay-build/Makefile",
+      "bytes": 30,
+      "sha256": "0d16edfe54f03ded42be3564deb391a1d99c8b6289c8f9f9089ce0035764123d"
+    },
+    "snapshots/ufs77b-overlay-build/live-ufs-overlay77.c": {
+      "source": "out/ufs77b-overlay-build/live-ufs-overlay77.c",
+      "bytes": 2952,
+      "sha256": "ef3c107620ac709fa7b94a5d24a8c809b114e915c55bc52a689d53bed3a0ad61"
+    },
+    "snapshots/ufs77b-overlay-build/tb378fc-ufs77.dtso": {
+      "source": "out/ufs77b-overlay-build/tb378fc-ufs77.dtso",
+      "bytes": 2821,
+      "sha256": "23f36bab5730acfc3bce394fecf9ce90cab65f290f8da9a54db584e56c9bf7a0"
+    },
+    "snapshots/patches/changes.patch": {
+      "source": "out/camera-app75/changes.patch",
+      "bytes": 14831,
+      "sha256": "8ef7a1dc2c99242b4791826d850253aaae0846e64360ecccfbd4fa6e458f5da6"
+    },
+    "snapshots/patches/wcd939x-irq-lifetime.patch": {
+      "source": "out/microphone72/wcd939x-irq-lifetime.patch",
+      "bytes": 3861,
+      "sha256": "e1cb68369728d39d882b0e743bb5fc4eecca9833ba77fd0622bb46e96d8cdc88"
+    },
+    "snapshots/patches/wcd939x-native-adc-map.patch": {
+      "source": "out/microphone73/wcd939x-native-adc-map.patch",
+      "bytes": 2350,
+      "sha256": "e5ebd3319fb71059dec885d67bdd64a1b3f2b72183807a08f41678730f7fd658"
+    },
+    "snapshots/patches/libcamera-final.patch": {
+      "source": "out/camera-app75/libcamera-v0.7.0-b7854fd07d42168f099b5ce30d1702e0e0875bf5 compared with upstream release tarball",
+      "bytes": 12623,
+      "sha256": "01a2845e679eb026d805474213350c6fc050a3804cd81f79632669d53ba07e08"
+    },
+    "LICENSE": {
+      "source": "Linux GPL-2.0 license text",
+      "bytes": 18600,
+      "sha256": "8780e78a1a737e127f25a65f6d95269bffd36158dc261114de7859b490bfc5aa"
+    }
+  }
+}

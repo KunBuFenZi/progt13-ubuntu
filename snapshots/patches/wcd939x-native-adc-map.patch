@@ -1,0 +1,60 @@
+--- a/sound/soc/codecs/wcd939x-sdw.c
++++ b/sound/soc/codecs/wcd939x-sdw.c
+@@ -50,6 +50,38 @@
+ 	WCD_SDW_CH(WCD939X_DMIC6, WCD939X_DMIC_3_7_PORT, BIT(2)),
+ 	WCD_SDW_CH(WCD939X_DMIC7, WCD939X_DMIC_3_7_PORT, BIT(3)),
+ };
++
++/* Lenovo's stock qcom,tx_swr_ch_map separates ADC1/2 on DP1
++ * from ADC3/4 on DP2. Stock's slave port indices are zero based.
++ * Keep the generic map for every other machine.
++ */
++static const struct wcd_sdw_ch_info tb378fc_native_tx_ch_info[] = {
++	WCD_SDW_CH(WCD939X_ADC1, WCD939X_ADC_1_4_PORT, BIT(0)),
++	WCD_SDW_CH(WCD939X_ADC2, WCD939X_ADC_1_4_PORT, BIT(1)),
++	WCD_SDW_CH(WCD939X_ADC3, WCD939X_ADC_DMIC_1_2_PORT, BIT(0)),
++	WCD_SDW_CH(WCD939X_ADC4, WCD939X_ADC_DMIC_1_2_PORT, BIT(1)),
++	WCD_SDW_CH(WCD939X_DMIC0, WCD939X_DMIC_0_3_MBHC_PORT, BIT(0)),
++	WCD_SDW_CH(WCD939X_DMIC1, WCD939X_DMIC_0_3_MBHC_PORT, BIT(1)),
++	WCD_SDW_CH(WCD939X_MBHC, WCD939X_DMIC_0_3_MBHC_PORT, BIT(2)),
++	WCD_SDW_CH(WCD939X_DMIC2, WCD939X_DMIC_0_3_MBHC_PORT, BIT(2)),
++	WCD_SDW_CH(WCD939X_DMIC3, WCD939X_DMIC_0_3_MBHC_PORT, BIT(3)),
++	WCD_SDW_CH(WCD939X_DMIC4, WCD939X_DMIC_3_7_PORT, BIT(0)),
++	WCD_SDW_CH(WCD939X_DMIC5, WCD939X_DMIC_3_7_PORT, BIT(1)),
++	WCD_SDW_CH(WCD939X_DMIC6, WCD939X_DMIC_3_7_PORT, BIT(2)),
++	WCD_SDW_CH(WCD939X_DMIC7, WCD939X_DMIC_3_7_PORT, BIT(3)),
++};
++
++static bool wcd939x_is_tb378fc(void)
++{
++	struct device_node *node;
++	bool found;
++
++	node = of_find_compatible_node(NULL, NULL, "lenovo,tb378fc-pmic-glink");
++	found = !!node;
++	of_node_put(node);
++
++	return found;
++}
+ 
+ static struct sdw_dpn_prop wcd939x_rx_dpn_prop[WCD939X_MAX_RX_SWR_PORTS] = {
+ 	{
+@@ -1385,6 +1417,18 @@
+ 		pdev->prop.source_ports = GENMASK(WCD939X_MAX_TX_SWR_PORTS - 1, 0);
+ 		pdev->prop.src_dpn_prop = wcd939x_tx_dpn_prop;
+ 		wcd->ch_info = &wcd939x_sdw_tx_ch_info[0];
++		if (wcd939x_is_tb378fc()) {
++			/* Native SWRM_TX2_CH1 -> master DP3 -> SWR_MIC4,
++			 * and SWRM_TX3_CH1 -> master DP4 -> SWR_MIC8.
++			 * Also normalize the old trial DT for online replacement.
++			 */
++			pdev->m_port_map[1] = 3;
++			pdev->m_port_map[2] = 4;
++			pdev->m_port_map[3] = 3;
++			pdev->m_port_map[4] = 4;
++			wcd->ch_info = tb378fc_native_tx_ch_info;
++			dev_info(dev, "TB378FC native ADC map: DP1/ch1->DP3/ch1, DP2/ch1->DP4/ch1\n");
++		}
+ 		pdev->prop.wake_capable = true;
+ 	} else {
+ 		pdev->prop.sink_ports = GENMASK(WCD939X_MAX_RX_SWR_PORTS - 1, 0);

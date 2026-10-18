@@ -1,0 +1,5 @@
+#!/bin/sh
+# Keep the established RAM-only diagnostics, watchdog and automatic reboot.
+(while [ ! -d /run/evidence ]; do /bin/sleep 1; done
+ /bin/audio-probe >/run/evidence/audio-test.txt 2>&1) &
+exec /bin/ram-base-init

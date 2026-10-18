@@ -1,0 +1,8 @@
+[Unit]
+Description=Assign a local RAM WLAN address before starting NetworkManager
+After=local-fs.target systemd-udev-trigger.service
+Before=NetworkManager.service
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /usr/local/libexec/tb378fc-wifi-identity
+RemainAfterExit=yes

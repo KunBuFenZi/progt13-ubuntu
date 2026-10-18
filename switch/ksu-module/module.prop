@@ -1,0 +1,6 @@
+id=tb378fc_ubuntu_switch
+name=TB378FC Ubuntu / ColorOS Switch
+version=0.1.0-source
+versionCode=100
+author=KunBuFenZi and upstream contributors
+description=Switch to the installed Ubuntu root on this configured TB378FC

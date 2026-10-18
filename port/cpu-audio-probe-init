@@ -1,0 +1,59 @@
+#!/bin/sh
+export PATH=/bin
+(while [ ! -d /run/evidence ]; do /bin/sleep 1; done
+ /bin/sleep 20
+ (
+  echo CPU_PROBE_BEGIN
+  cat /etc/build-id
+  cat /sys/devices/system/cpu/possible
+  cat /sys/devices/system/cpu/online
+  export LD_LIBRARY_PATH=/lib/aarch64-linux-gnu ALSA_CONFIG_PATH=/usr/share/alsa/alsa.conf
+  audio_zero_probe() {
+      echo "AUDIO_ZERO_PHASE=$1"
+      cat /proc/asound/cards
+      amixer -c0 cset numid=8 1
+      aplay -D hw:0,0 -t raw -f S16_LE -r48000 -c2 -d3 /dev/zero &
+      pcm=$!
+      sleep 1
+      cat /sys/bus/i2c/devices/*/runtime_status
+      wait "$pcm"
+      echo "AUDIO_ZERO_EXIT=$?"
+      sleep 1
+      cat /sys/bus/i2c/devices/*/runtime_status
+      amixer -c0 cset numid=8 0
+      if dmesg | grep -qE 'I2C timeout|Unhandled context fault|Kernel panic|Oops:'; then
+          echo CPU_AUDIO_PROBE_ABORT_DMA_FAULT
+          dmesg >/run/evidence/cpu-audio-fault.txt
+          sync
+          sleep 15
+          reboot -f
+          exit 1
+      fi
+  }
+  audio_zero_probe single_cpu
+  for cpu in 1 2 3 4 5 6 7; do
+      echo "ENABLE_CPU=$cpu"
+      echo 1 >"/sys/devices/system/cpu/cpu$cpu/online"
+      echo "CPU_ENABLE_EXIT=$?"
+      cat /sys/devices/system/cpu/online
+  done
+  audio_zero_probe online_cpus
+  echo ALSA_CARD_AFTER_DEFER
+  cat /proc/asound/cards
+  cat /sys/bus/i2c/devices/*/runtime_status
+  echo CPU_POLICIES
+  for policy in /sys/devices/system/cpu/cpufreq/policy*; do
+      echo "$policy"
+      for name in affected_cpus related_cpus scaling_driver scaling_governor cpuinfo_min_freq cpuinfo_max_freq scaling_cur_freq scaling_available_frequencies; do
+          echo "$name"
+          cat "$policy/$name"
+      done
+  done
+  cat /proc/interrupts
+  sleep 45
+  audio_zero_probe after_idle
+  dmesg
+  echo CPU_PROBE_DONE
+ ) >/run/evidence/cpu-probe.txt 2>&1
+) &
+exec /bin/ram-base-init

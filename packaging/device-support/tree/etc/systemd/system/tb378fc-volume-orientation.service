@@ -1,0 +1,9 @@
+[Unit]
+Description=Orient only the TB378FC native volume buttons with GNOME
+After=display-manager.service
+[Service]
+ExecStart=/usr/bin/python3 /usr/local/libexec/tb378fc-volume-orientation
+Restart=on-failure
+RestartSec=5
+[Install]
+WantedBy=graphical.target

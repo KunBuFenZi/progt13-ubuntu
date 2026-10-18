@@ -1,0 +1,34 @@
+#!/bin/sh
+# Only load this candidate's checked modules. No device storage is touched.
+set -eu
+test "$(cat /etc/tb378fc-candidate)" = peripherals68
+test "$(uname -r)" = 7.2.0-tb378fc-wifi+
+mkdir -p /run/evidence/peripherals68
+printf '%s\n' '{"pickFallback":false,"trace":false}' >/run/tb378fc-touch-dispatch.json
+# The established display must be running before the audio DSP path is loaded.
+# GDM alone is insufficient: wait for pad's actual Mutter display service.
+ready=false
+for attempt in $(seq 1 120); do
+    if runuser -u pad -- env XDG_RUNTIME_DIR=/run/user/1000 \
+       DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus \
+       timeout 2 gdbus call --session --dest org.gnome.Mutter.DisplayConfig \
+       --object-path /org/gnome/Mutter/DisplayConfig --method org.freedesktop.DBus.Properties.Get \
+       org.gnome.Mutter.DisplayConfig PowerSaveMode 2>/dev/null | grep -Eq '<(int32 )?0>'; then
+        ready=true;break
+    fi
+    sleep 1
+done
+test "$ready" = true
+chgrp -R fastrpc /usr/share/tb378fc/sensors/hexagonrpcd
+find /usr/share/tb378fc/sensors/hexagonrpcd -type d -exec chmod 0750 {} +
+# Ubuntu's legacy snd install hook requests unused OSS/sequencer modules.
+# Preload this checked core without that hook; dependencies still use depmod.
+/sbin/modprobe --ignore-install snd
+for module in socinfo tb378fc_gpu_telemetry snd_soc_sc8280xp apr snd_q6apm \
+              q6prm q6prm_clocks q6apm_lpass_dais q6apm_dai snd_soc_aw88480 i2c_gpio fastrpc; do
+    /sbin/modprobe "$module"
+done
+/bin/udevadm settle --timeout=20
+test -c /dev/tb378fc-sensors-fastrpc
+cat /proc/sys/kernel/random/boot_id >/run/evidence/peripherals68/boot-id.txt
+cat /proc/asound/cards >/run/evidence/peripherals68/sound-cards.txt

@@ -1,0 +1,23 @@
+#!/bin/sh
+# systemd returns here in RAM after terminating the persistent-root processes.
+export PATH=/bin
+mount -t proc proc /proc 2>/dev/null
+mount -t sysfs sysfs /sys 2>/dev/null
+mount -t devtmpfs devtmpfs /dev 2>/dev/null
+sync
+# A nested /run mount containing the root's lower/upper layers can be pinned
+# under /oldroot. Lazy detach only that tmpfs view, then release the overlay.
+umount -l /oldroot/run 2>/dev/null
+umount /oldroot 2>/dev/null
+umount /run/desktop/standard 2>/dev/null
+umount /run/desktop/minimal 2>/dev/null
+losetup -D 2>/dev/null
+sync
+umount /run/tb378fc-root 2>/dev/null
+sync
+case "$1" in
+    poweroff) poweroff -f ;;
+    halt) halt -f ;;
+    *) reboot -f ;;
+esac
+while :; do sleep 1; done

@@ -1,0 +1,7 @@
+# SPDX-License-Identifier: GPL-2.0-only
+# Temporary board workaround: MDSS power collapse loses state needed for
+# subsequent frame commits. Keep the parent active while allowing the DPU,
+# DSI hosts, PHYs and backlight to follow normal display blanking.
+# This costs power while blanked and does not fix system suspend/resume.
+# Remove when the SM8750 display context is correctly restored after collapse.
+ACTION=="add|change", SUBSYSTEM=="platform", KERNEL=="ae00000.display-subsystem", ATTR{power/control}="on"

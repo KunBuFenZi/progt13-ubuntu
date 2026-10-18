@@ -1,0 +1,13 @@
+[Unit]
+Description=TB378FC checked runtime modules and desktop configuration
+After=local-fs.target systemd-sysusers.service systemd-udev-trigger.service display-manager.service
+Before=iio-sensor-proxy.service tb378fc-sensors-rpcd.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/libexec/tb378fc-runtime68
+RemainAfterExit=yes
+TimeoutStartSec=180s
+
+[Install]
+WantedBy=graphical.target

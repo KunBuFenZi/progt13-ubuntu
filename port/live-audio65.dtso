@@ -1,0 +1,135 @@
+// SPDX-License-Identifier: BSD-3-Clause
+/dts-v1/;
+/plugin/;
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/sound/qcom,q6dsp-lpass-ports.h>
+
+/ {
+    fragment@0 {
+        target-path = "/soc@0/pinctrl@f100000";
+        __overlay__ {
+            tb378fc_gpio_i2c_live: tb378fc-live-i2c-state {
+                pins = "gpio52", "gpio53";
+                function = "gpio";
+                drive-strength = <2>;
+                bias-pull-up;
+            };
+            tb378fc_resets_live: tb378fc-live-amp-resets-state {
+                pins = "gpio106", "gpio128", "gpio120", "gpio108";
+                function = "gpio";
+                drive-strength = <2>;
+                bias-disable;
+            };
+            tb378fc_tdm_live: tb378fc-live-tdm-state {
+                sck-pins { pins = "gpio121"; function = "i2s1_sck"; drive-strength = <8>; bias-disable; };
+                data0-pins { pins = "gpio122"; function = "i2s1_data0"; drive-strength = <8>; bias-disable; };
+                ws-pins { pins = "gpio123"; function = "i2s1_ws"; drive-strength = <8>; bias-disable; };
+                data1-pins { pins = "gpio124"; function = "i2s1_data1"; drive-strength = <8>; bias-disable; };
+            };
+        };
+    };
+    fragment@1 {
+        target-path = "/soc@0/remoteproc@6800000/glink-edge/gpr";
+        __overlay__ {
+            #address-cells = <1>;
+            #size-cells = <0>;
+            /* Original nodes have no phandles; add a removable replacement. */
+            service@1 { status = "disabled"; };
+            q6apm_live: tb378fc-service@1 {
+                compatible = "qcom,q6apm";
+                reg = <1>;
+                #sound-dai-cells = <0>;
+                qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
+                q6bedai_live: bedais {
+                    compatible = "qcom,q6apm-lpass-dais";
+                    #sound-dai-cells = <1>;
+                };
+                dais {
+                    compatible = "qcom,q6apm-dais";
+                    /* Exact running baseline mapping, checked before apply. */
+                    iommus = <0x29 0x1001 0x80>, <0x29 0x1041 0x20>;
+                };
+            };
+        };
+    };
+    fragment@3 {
+        target-path = "/";
+        __overlay__ {
+            tb378fc-live-i2c {
+                compatible = "i2c-gpio";
+                #address-cells = <1>;
+                #size-cells = <0>;
+                /* 0x37 is checked against this exact live tree before apply. */
+                sda-gpios = <0x37 52 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
+                scl-gpios = <0x37 53 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
+                i2c-gpio,delay-us = <5>;
+                pinctrl-names = "default";
+                pinctrl-0 = <&tb378fc_gpio_i2c_live>, <&tb378fc_resets_live>;
+                live_amp1: amplifier@34 {
+                    compatible = "awinic,aw88480";
+                    reg = <0x34>;
+                    #sound-dai-cells = <0>;
+                    sound-name-prefix = "Amp1";
+                    awinic,audio-channel = <1>;
+                    reset-gpios = <0x37 106 GPIO_ACTIVE_LOW>;
+                    firmware-name = "awinic/tb378fc/aw88480-native-music.acf";
+                };
+                live_amp0: amplifier@35 {
+                    compatible = "awinic,aw88480";
+                    reg = <0x35>;
+                    #sound-dai-cells = <0>;
+                    sound-name-prefix = "Amp0";
+                    awinic,audio-channel = <0>;
+                    reset-gpios = <0x37 128 GPIO_ACTIVE_LOW>;
+                    firmware-name = "awinic/tb378fc/aw88480-native-music.acf";
+                };
+                live_amp2: amplifier@36 {
+                    compatible = "awinic,aw88480";
+                    reg = <0x36>;
+                    #sound-dai-cells = <0>;
+                    sound-name-prefix = "Amp2";
+                    awinic,audio-channel = <2>;
+                    reset-gpios = <0x37 120 GPIO_ACTIVE_LOW>;
+                    firmware-name = "awinic/tb378fc/aw88480-native-music.acf";
+                };
+                live_amp3: amplifier@37 {
+                    compatible = "awinic,aw88480";
+                    reg = <0x37>;
+                    #sound-dai-cells = <0>;
+                    sound-name-prefix = "Amp3";
+                    awinic,audio-channel = <3>;
+                    reset-gpios = <0x37 108 GPIO_ACTIVE_LOW>;
+                    firmware-name = "awinic/tb378fc/aw88480-native-music.acf";
+                };
+            };
+            tb378fc-live-sound {
+                compatible = "qcom,sm8750-sndcard", "qcom,sm8450-sndcard";
+                model = "Lenovo-TB378FC";
+                widgets = "Speaker", "Speakers";
+                audio-routing = "Speakers", "Amp0 OUT", "Speakers", "Amp1 OUT",
+                                "Speakers", "Amp2 OUT", "Speakers", "Amp3 OUT";
+                pinctrl-names = "default";
+                pinctrl-0 = <&tb378fc_tdm_live>;
+                speaker-playback-dai-link {
+                    link-name = "Speaker Playback";
+                    dai-format = "dsp_b";
+                    convert-rate = <48000>;
+                    convert-channels = <4>;
+                    convert-sample-format = "s32_le";
+                    cpu {
+                        sound-dai = <&q6bedai_live SECONDARY_TDM_RX_0>;
+                        dai-tdm-slot-num = <4>;
+                        dai-tdm-slot-width = <32>;
+                        dai-tdm-slot-rx-mask = <1 1 1 1>;
+                    };
+                    codec-0 { sound-dai = <&live_amp0>; dai-tdm-slot-tx-mask = <1>; dai-tdm-slot-rx-mask = <1>; bitclock-inversion; };
+                    codec-1 { sound-dai = <&live_amp1>; dai-tdm-slot-tx-mask = <0 1>; dai-tdm-slot-rx-mask = <0 1>; bitclock-inversion; };
+                    codec-2 { sound-dai = <&live_amp2>; dai-tdm-slot-tx-mask = <0 0 1>; dai-tdm-slot-rx-mask = <0 0 1>; bitclock-inversion; };
+                    codec-3 { sound-dai = <&live_amp3>; dai-tdm-slot-tx-mask = <0 0 0 1>; dai-tdm-slot-rx-mask = <0 0 0 1>; bitclock-inversion; };
+                    platform { sound-dai = <&q6apm_live>; };
+                };
+            };
+        };
+    };
+};

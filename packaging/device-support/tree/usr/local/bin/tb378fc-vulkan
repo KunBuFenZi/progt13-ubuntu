@@ -1,0 +1,12 @@
+#!/bin/sh
+# Select the independently validated Turnip for one application only.
+set -eu
+icd=/usr/lib/tb378fc/turnip/share/vulkan/icd.d/freedreno_icd.aarch64.json
+test -r "$icd"
+if [ "$#" -eq 0 ]; then
+    printf '%s\n' 'Usage: tb378fc-vulkan APPLICATION [ARGUMENTS...]' >&2
+    exit 2
+fi
+export VK_DRIVER_FILES="$icd"
+export VK_ICD_FILENAMES="$icd"
+exec "$@"

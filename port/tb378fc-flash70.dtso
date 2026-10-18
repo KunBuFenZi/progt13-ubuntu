@@ -1,0 +1,26 @@
+// SPDX-License-Identifier: BSD-3-Clause
+/* Native rear camera uses vendor channels 0 + 3 (one-based 1 + 4).
+ * First Linux trial limits: 100 mA total torch, 200 mA total flash, 200 ms.
+ * These are trial limits, not the tablet's maximum output.
+ */
+/dts-v1/;
+/plugin/;
+
+/ {
+	fragment@0 {
+		target-path = "/soc@0/spmi@c400000/pmic@1/led-controller@ee00";
+		__overlay__ {
+			status = "okay";
+			led-0 {
+				label = "white:flash:tb378fc";
+				function = "flash";
+				color = <0>;
+				led-sources = <1 4>;
+				led-max-microamp = <100000>;
+				flash-max-microamp = <200000>;
+				flash-max-timeout-us = <200000>;
+				default-state = "off";
+			};
+		};
+	};
+};

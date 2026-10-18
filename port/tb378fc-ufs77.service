@@ -1,0 +1,12 @@
+[Unit]
+Description=TB378FC read-only UFS discovery for RAM desktop
+After=tb378fc-refresh76.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /usr/local/libexec/tb378fc-ufs77.py
+RemainAfterExit=yes
+TimeoutStartSec=45s
+
+[Install]
+WantedBy=graphical.target

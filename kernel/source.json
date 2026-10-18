@@ -1,0 +1,12 @@
+{
+  "repository": "https://github.com/yzddmr6/linux-sm8750-erhai.git",
+  "commit": "958a2b4654196bb52dfa0217a0f65ffeaa919f81",
+  "baseline": "Linux 7.2",
+  "patches": [
+    "patches/0001-tb378fc-platform.patch"
+  ],
+  "toolchain_tested": "aarch64-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0",
+  "runtime_kernel_release": "7.2.0-tb378fc-wifi+",
+  "tested_image_sha256": "21c91b2dddf71e38ed6ae4366135a56ec9e02fe9d617bba33937b3e40c6483e9",
+  "snapshot_note": "Exported final development source and external modules; a clean end-to-end image rebuild has not yet been device-validated."
+}

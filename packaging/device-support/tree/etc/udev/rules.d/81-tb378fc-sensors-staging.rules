@@ -1,0 +1,5 @@
+# Real accelerometer/gyro only. Light has not yet been discovered on this unit.
+# This unit: upright native landscape gives raw X=+9.5,Y=0 and left-up.
+# Rotate that measured frame so native landscape gives Y=-9.5 and normal.
+# The user verified picture and touch in all four orientations on 2026-10-18.
+SUBSYSTEM=="misc", KERNEL=="fastrpc-adsp|fastrpc-adsp-secure", GROUP="fastrpc", MODE="0660", SYMLINK+="tb378fc-sensors-fastrpc", ENV{IIO_SENSOR_PROXY_TYPE}="ssc-accel ssc-gyro", ENV{ACCEL_MOUNT_MATRIX}="0, 1, 0; -1, 0, 0; 0, 0, 1"

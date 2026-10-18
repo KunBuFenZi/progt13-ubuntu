@@ -1,0 +1,58 @@
+// SPDX-License-Identifier: BSD-3-Clause
+/* Native amp enumeration only: no sound card or automatic playback. */
+#include "sm8750-lenovo-tb378fc-battery.dts"
+
+&tlmm {
+    tb378fc_amp_resets: amp-resets-state {
+        pins = "gpio106", "gpio128", "gpio120", "gpio108";
+        function = "gpio";
+        drive-strength = <2>;
+        bias-disable;
+    };
+};
+
+&i2c5 {
+    status = "okay";
+    pinctrl-0 = <&qup_i2c5_data_clk>, <&tb378fc_amp_resets>;
+    clock-frequency = <100000>;
+
+    spk_amp1: amplifier@34 {
+        compatible = "awinic,aw88480";
+        reg = <0x34>;
+        #sound-dai-cells = <0>;
+        sound-name-prefix = "Amp1";
+        awinic,audio-channel = <1>;
+        reset-gpios = <&tlmm 106 GPIO_ACTIVE_LOW>;
+        firmware-name = "awinic/tb378fc/aw88480-native-music.acf";
+    };
+
+    spk_amp0: amplifier@35 {
+        compatible = "awinic,aw88480";
+        reg = <0x35>;
+        #sound-dai-cells = <0>;
+        sound-name-prefix = "Amp0";
+        awinic,audio-channel = <0>;
+        reset-gpios = <&tlmm 128 GPIO_ACTIVE_LOW>;
+        firmware-name = "awinic/tb378fc/aw88480-native-music.acf";
+    };
+
+    spk_amp2: amplifier@36 {
+        compatible = "awinic,aw88480";
+        reg = <0x36>;
+        #sound-dai-cells = <0>;
+        sound-name-prefix = "Amp2";
+        awinic,audio-channel = <2>;
+        reset-gpios = <&tlmm 120 GPIO_ACTIVE_LOW>;
+        firmware-name = "awinic/tb378fc/aw88480-native-music.acf";
+    };
+
+    spk_amp3: amplifier@37 {
+        compatible = "awinic,aw88480";
+        reg = <0x37>;
+        #sound-dai-cells = <0>;
+        sound-name-prefix = "Amp3";
+        awinic,audio-channel = <3>;
+        reset-gpios = <&tlmm 108 GPIO_ACTIVE_LOW>;
+        firmware-name = "awinic/tb378fc/aw88480-native-music.acf";
+    };
+};

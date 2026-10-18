@@ -1,0 +1,13 @@
+[Unit]
+Description=TB378FC native microphone codec and capture interface
+Requires=tb378fc-runtime68.service
+After=tb378fc-runtime68.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /usr/local/libexec/tb378fc-microphone72.py --load
+RemainAfterExit=yes
+TimeoutStartSec=60
+
+[Install]
+WantedBy=graphical.target

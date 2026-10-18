@@ -1,0 +1,28 @@
+#!/bin/sh
+(while [ ! -d /run/evidence ]; do /bin/sleep 1; done
+ /bin/sleep 20
+ (
+  echo CPU_PROBE_BEGIN
+  cat /etc/build-id
+  cat /sys/devices/system/cpu/possible
+  cat /sys/devices/system/cpu/online
+  for cpu in 1 2 3 4 5 6 7; do
+      echo "ENABLE_CPU=$cpu"
+      echo 1 >"/sys/devices/system/cpu/cpu$cpu/online"
+      echo "CPU_ENABLE_EXIT=$?"
+      cat /sys/devices/system/cpu/online
+  done
+  echo CPU_POLICIES
+  for policy in /sys/devices/system/cpu/cpufreq/policy*; do
+      echo "$policy"
+      for name in affected_cpus related_cpus scaling_driver scaling_governor cpuinfo_min_freq cpuinfo_max_freq scaling_cur_freq scaling_available_frequencies; do
+          echo "$name"
+          cat "$policy/$name"
+      done
+  done
+  cat /proc/interrupts
+  dmesg
+  echo CPU_PROBE_DONE
+ ) >/run/evidence/cpu-probe.txt 2>&1
+) &
+exec /bin/ram-base-init

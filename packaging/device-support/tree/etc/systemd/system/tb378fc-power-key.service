@@ -1,0 +1,14 @@
+[Unit]
+Description=Lenovo tablet power key for GNOME lock, display off and wake
+After=systemd-logind.service display-manager.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /usr/local/libexec/tb378fc-power-key.py
+Restart=on-failure
+RestartSec=2
+RuntimeDirectory=tb378fc-power-key
+RuntimeDirectoryMode=0755
+
+[Install]
+WantedBy=graphical.target

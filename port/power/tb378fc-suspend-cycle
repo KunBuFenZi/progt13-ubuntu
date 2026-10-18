@@ -1,0 +1,14 @@
+#!/bin/sh
+# SPDX-License-Identifier: GPL-2.0-only
+# Mark before user sessions freeze. A wake press must not suspend again.
+# This follows the pre-phase marker used by the audited onepluspad reference.
+set -eu
+case "$1" in
+pre)
+    rm -f /run/tb378fc-suspend-resumed
+    : > /run/tb378fc-suspend-cycle
+    ;;
+post)
+    touch /run/tb378fc-suspend-resumed
+    ;;
+esac

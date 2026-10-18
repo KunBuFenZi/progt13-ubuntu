@@ -1,0 +1,15 @@
+#!/bin/sh
+export PATH=/bin
+(while [ ! -d /run/evidence ]; do sleep 1; done
+ sleep 12
+ (
+  /bin/kms-test 120 cycle
+  echo DISPLAY_PCM_KMS_EXIT=$?
+ ) >/run/evidence/display-pcm-kms.txt 2>&1
+) &
+(while [ ! -d /run/evidence ]; do sleep 1; done
+ sleep 18
+ dmesg -c >/run/evidence/display-pcm-before.txt
+ /bin/cpu-audio-probe-init
+) &
+exec /bin/ram-base-init

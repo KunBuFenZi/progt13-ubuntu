@@ -1,0 +1,84 @@
+// SPDX-License-Identifier: BSD-3-Clause
+#include "sm8750-lenovo-tb378fc-audio-probe.dts"
+
+/ {
+    sound {
+        compatible = "qcom,sm8750-sndcard", "qcom,sm8450-sndcard";
+        model = "Lenovo-TB378FC";
+        widgets = "Speaker", "Speakers";
+        audio-routing = "Speakers", "Amp0 OUT",
+                        "Speakers", "Amp1 OUT",
+                        "Speakers", "Amp2 OUT",
+                        "Speakers", "Amp3 OUT";
+        pinctrl-names = "default";
+        pinctrl-0 = <&tb378fc_sec_tdm>;
+
+        speaker-playback-dai-link {
+            link-name = "Speaker Playback";
+            dai-format = "dsp_b";
+            convert-rate = <48000>;
+            convert-channels = <4>;
+            convert-sample-format = "s32_le";
+            cpu {
+                sound-dai = <&q6apmbedai SECONDARY_TDM_RX_0>;
+                dai-tdm-slot-num = <4>;
+                dai-tdm-slot-width = <32>;
+                dai-tdm-slot-rx-mask = <1 1 1 1>;
+            };
+            codec-0 {
+                sound-dai = <&spk_amp0>;
+                dai-tdm-slot-tx-mask = <1>;
+                dai-tdm-slot-rx-mask = <1>;
+                bitclock-inversion;
+            };
+            codec-1 {
+                sound-dai = <&spk_amp1>;
+                dai-tdm-slot-tx-mask = <0 1>;
+                dai-tdm-slot-rx-mask = <0 1>;
+                bitclock-inversion;
+            };
+            codec-2 {
+                sound-dai = <&spk_amp2>;
+                dai-tdm-slot-tx-mask = <0 0 1>;
+                dai-tdm-slot-rx-mask = <0 0 1>;
+                bitclock-inversion;
+            };
+            codec-3 {
+                sound-dai = <&spk_amp3>;
+                dai-tdm-slot-tx-mask = <0 0 0 1>;
+                dai-tdm-slot-rx-mask = <0 0 0 1>;
+                bitclock-inversion;
+            };
+            platform { sound-dai = <&q6apm>; };
+        };
+    };
+};
+
+&tlmm {
+    tb378fc_sec_tdm: secondary-tdm-state {
+        sck-pins {
+            pins = "gpio121";
+            function = "i2s1_sck";
+            drive-strength = <8>;
+            bias-disable;
+        };
+        data0-pins {
+            pins = "gpio122";
+            function = "i2s1_data0";
+            drive-strength = <8>;
+            bias-disable;
+        };
+        ws-pins {
+            pins = "gpio123";
+            function = "i2s1_ws";
+            drive-strength = <8>;
+            bias-disable;
+        };
+        data1-pins {
+            pins = "gpio124";
+            function = "i2s1_data1";
+            drive-strength = <8>;
+            bias-disable;
+        };
+    };
+};

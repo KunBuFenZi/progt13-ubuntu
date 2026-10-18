@@ -1,0 +1,159 @@
+// SPDX-License-Identifier: BSD-3-Clause
+/* Native display bring-up; includes the proven minimal board definition. */
+#include "sm8750-lenovo-tb378fc.dts"
+
+/ {
+	reserved-memory {
+		tb378fc_splash: splash_region {
+			/* The boot scanout remains active while DRM attaches its domain. */
+			iommu-addresses = <&mdss 0x0 0xfc800000 0x0 0x2b00000>;
+		};
+	};
+};
+
+&apps_rsc {
+	regulators-b {
+		vdd-l12-supply = <&vreg_s3g>;
+		panel_vddio: ldo12 {
+			regulator-name = "vreg_l12b_panel_io";
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <1800000>;
+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+		};
+	};
+	regulators-i {
+		vdd-l3-supply = <&vreg_s1d>;
+		dsi_phy_supply: ldo3 {
+			regulator-name = "vreg_l3i_dsi_phy";
+			regulator-min-microvolt = <880000>;
+			regulator-max-microvolt = <880000>;
+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+		};
+	};
+};
+
+/* The I2C serial engine is a child of this disabled-by-default wrapper. */
+&qupv3_2 {
+	status = "okay";
+};
+
+&gpi_dma2 {
+	status = "okay";
+};
+
+/* Native second backlight: same address, independent serial engine. */
+&i2c8 {
+	status = "okay";
+	clock-frequency = <400000>;
+};
+
+&i2c10 {
+	status = "okay";
+	clock-frequency = <400000>;
+	panel_bias: regulator@3e {
+		compatible = "lenovo,tb378fc-panel-bias";
+		reg = <0x3e>;
+		regulator-name = "tb378fc-panel-bias";
+		positive-gpios = <&tlmm 72 GPIO_ACTIVE_HIGH>;
+		negative-gpios = <&tlmm 73 GPIO_ACTIVE_HIGH>;
+	};
+	panel_backlight: backlight@76 {
+		compatible = "lenovo,tb378fc-aw99706b";
+		reg = <0x76>;
+		enable-gpios = <&tlmm 88 GPIO_ACTIVE_HIGH>;
+		lenovo,secondary-i2c-bus = <&i2c8>;
+	};
+};
+
+&dispcc {
+	status = "okay";
+};
+
+&mdss {
+	memory-region = <&tb378fc_splash>;
+	status = "okay";
+};
+
+&mdss_dsi0 {
+	vdda-supply = <&vreg_l3g>;
+	qcom,dual-dsi-mode;
+	qcom,sync-dual-dsi;
+	qcom,master-dsi;
+	status = "okay";
+	panel: panel@0 {
+		compatible = "lenovo,tb378fc-nt36526";
+		reg = <0>;
+		reset-gpios = <&tlmm 98 GPIO_ACTIVE_LOW>;
+		pinctrl-0 = <&panel_te>;
+		pinctrl-names = "default";
+		vddio-supply = <&panel_vddio>;
+		bias-supply = <&panel_bias>;
+		backlight = <&panel_backlight>;
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			port@0 {
+				reg = <0>;
+				panel0_in: endpoint {
+					remote-endpoint = <&mdss_dsi0_out>;
+				};
+			};
+			port@1 {
+				reg = <1>;
+				panel1_in: endpoint {
+					remote-endpoint = <&mdss_dsi1_out>;
+				};
+			};
+		};
+	};
+};
+
+&mdss_dsi0_out {
+	remote-endpoint = <&panel0_in>;
+	data-lanes = <0 1 2 3>;
+};
+
+&mdss_dsi0_phy {
+	vdds-supply = <&dsi_phy_supply>;
+	status = "okay";
+};
+
+&mdss_dsi1 {
+	vdda-supply = <&vreg_l3g>;
+	qcom,dual-dsi-mode;
+	qcom,sync-dual-dsi;
+	/* The secondary link shares DSI0's PLL, as in the native display. */
+	clocks = <&dispcc DISP_CC_MDSS_BYTE1_CLK>,
+		 <&dispcc DISP_CC_MDSS_BYTE1_INTF_CLK>,
+		 <&dispcc DISP_CC_MDSS_PCLK1_CLK>,
+		 <&dispcc DISP_CC_MDSS_ESC1_CLK>,
+		 <&dispcc DISP_CC_MDSS_AHB_CLK>,
+		 <&gcc GCC_DISP_HF_AXI_CLK>,
+		 <&mdss_dsi0_phy DSI_PIXEL_PLL_CLK>,
+		 <&mdss_dsi0_phy DSI_BYTE_PLL_CLK>,
+		 <&dispcc DISP_CC_ESYNC1_CLK>,
+		 <&dispcc DISP_CC_OSC_CLK>,
+		 <&dispcc DISP_CC_MDSS_BYTE1_CLK_SRC>,
+		 <&dispcc DISP_CC_MDSS_PCLK1_CLK_SRC>;
+	status = "okay";
+};
+
+&mdss_dsi1_out {
+	remote-endpoint = <&panel1_in>;
+	data-lanes = <0 1 2 3>;
+};
+
+&mdss_dsi1_phy {
+	vdds-supply = <&dsi_phy_supply>;
+	status = "okay";
+};
+
+&tlmm {
+	panel_te: panel-te-state {
+		pins = "gpio86";
+		function = "mdp_vsync";
+		drive-strength = <2>;
+		bias-disable;
+		input-enable;
+	};
+};

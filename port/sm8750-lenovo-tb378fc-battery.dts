@@ -1,0 +1,12 @@
+// SPDX-License-Identifier: BSD-3-Clause
+/* Separate RAM probe: native ADSP plus standard SM8750 battery protocol. */
+#include "sm8750-lenovo-tb378fc-adsp.dts"
+
+/ {
+    pmic-glink {
+        compatible = "lenovo,tb378fc-pmic-glink",
+                     "qcom,sm8750-pmic-glink",
+                     "qcom,sm8550-pmic-glink",
+                     "qcom,pmic-glink";
+    };
+};

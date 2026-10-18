@@ -1,0 +1,76 @@
+/dts-v1/;
+/plugin/;
+/ {
+    fragment@0 {
+        target-path = "/soc@0/rsc@16500000";
+        __overlay__ {
+            ufs77-regulators-b {
+                compatible = "qcom,pm8550-rpmh-regulators";
+                qcom,pmic-id = "b";
+                vdd-bob2-supply = <285>;
+                vdd-l17-supply = <&ufs77_bob2>;
+                ufs77_bob2: bob2 {
+                    regulator-name = "vreg_bob2_ufs77";
+                    /* Mainline minimum3.0V, within stock2.704..3.008V. */
+                    regulator-min-microvolt = <3000000>;
+                    regulator-max-microvolt = <3000000>;
+                    regulator-initial-mode = <3>;
+                };
+                ufs77_l17b: ldo17 {
+                    regulator-name = "vreg_l17b_ufs77";
+                    regulator-min-microvolt = <2504000>;
+                    regulator-max-microvolt = <2504000>;
+                    regulator-initial-mode = <3>;
+                    regulator-allow-set-load;
+                    regulator-allowed-modes = <1 3>;
+                };
+            };
+            ufs77-regulators-d {
+                compatible = "qcom,pm8550ve-rpmh-regulators";
+                qcom,pmic-id = "d";
+                vdd-l1-supply = <289>;
+                ufs77_l1d: ldo1 {
+                    regulator-name = "vreg_l1d_ufs77";
+                    regulator-min-microvolt = <1200000>;
+                    regulator-max-microvolt = <1200000>;
+                    regulator-initial-mode = <3>;
+                    regulator-allow-set-load;
+                    regulator-allowed-modes = <1 3>;
+                };
+            };
+            ufs77-regulators-j {
+                compatible = "qcom,pm8550vs-rpmh-regulators";
+                qcom,pmic-id = "j";
+                vdd-l1-supply = <288>;
+                ufs77_l1j: ldo1 {
+                    regulator-name = "vreg_l1j_ufs77";
+                    /* Stock PHY requires >=912mV; within its 880..920mV rail. */
+                    regulator-min-microvolt = <912000>;
+                    regulator-max-microvolt = <912000>;
+                    regulator-initial-mode = <3>;
+                    regulator-allow-set-load;
+                    regulator-allowed-modes = <1 3>;
+                };
+            };
+        };
+    };
+    fragment@1 {
+        target-path = "/soc@0/phy@1d80000";
+        __overlay__ {
+            vdda-phy-supply = <&ufs77_l1j>;
+            vdda-pll-supply = <142>;
+            status = "okay";
+        };
+    };
+    fragment@2 {
+        target-path = "/soc@0/ufs@1d84000";
+        __overlay__ {
+            reset-gpios = <55 215 1>;
+            vcc-supply = <&ufs77_l17b>;
+            vcc-max-microamp = <1300000>;
+            vccq-supply = <&ufs77_l1d>;
+            vccq-max-microamp = <1200000>;
+            status = "okay";
+        };
+    };
+};

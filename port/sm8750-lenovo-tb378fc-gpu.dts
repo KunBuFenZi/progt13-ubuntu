@@ -1,0 +1,10 @@
+// SPDX-License-Identifier: BSD-3-Clause
+#include "sm8750-lenovo-tb378fc-touch.dts"
+
+&gpu {
+	status = "okay";
+};
+
+&gpu_zap_shader {
+	firmware-name = "qcom/sm8750/tb378fc/gen80000_zap.mbn";
+};

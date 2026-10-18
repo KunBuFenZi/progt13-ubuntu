@@ -1,0 +1,364 @@
+--- a/include/libcamera/internal/software_isp/swisp_stats.h
++++ b/include/libcamera/internal/software_isp/swisp_stats.h
+@@ -31,6 +31,7 @@
+ 	 * \brief Sums of colour channels of all the sampled pixels
+ 	 */
+ 	RGB<uint64_t> sum_;
++	std::array<std::array<uint32_t, 256>, 3> rgbHistogram;
+ 	/**
+ 	 * \brief Number of bins in the yHistogram
+ 	 */
+--- a/src/ipa/libipa/camera_sensor_helper.cpp
++++ b/src/ipa/libipa/camera_sensor_helper.cpp
+@@ -789,6 +789,28 @@
+ };
+ REGISTER_CAMERA_SENSOR_HELPER("ov13858", CameraSensorHelperOv13858)
+ 
++class CameraSensorHelperGc08a8 : public CameraSensorHelper
++{
++public:
++	CameraSensorHelperGc08a8()
++	{
++		blackLevel_ = 4096;
++		gain_ = AnalogueGainLinear{ 1, 0, 0, 1024 };
++	}
++};
++REGISTER_CAMERA_SENSOR_HELPER("gc08a8", CameraSensorHelperGc08a8)
++
++class CameraSensorHelperOv13b10 : public CameraSensorHelper
++{
++public:
++	CameraSensorHelperOv13b10()
++	{
++		blackLevel_ = 4096;
++		gain_ = AnalogueGainLinear{ 1, 0, 0, 128 };
++	}
++};
++REGISTER_CAMERA_SENSOR_HELPER("ov13b10", CameraSensorHelperOv13b10)
++
+ class CameraSensorHelperVd55g1 : public CameraSensorHelper
+ {
+ public:
+--- a/src/ipa/simple/algorithms/awb.cpp
++++ b/src/ipa/simple/algorithms/awb.cpp
+@@ -8,6 +8,8 @@
+ #include "awb.h"
+ 
+ #include <numeric>
++#include <cmath>
++#include <limits>
+ #include <stdint.h>
+ 
+ #include <libcamera/base/log.h>
+@@ -25,13 +27,36 @@
+ 
+ namespace ipa::soft::algorithms {
+ 
++int Awb::init(IPAContext &context, const YamlObject &tuningData)
++{
++	context.ctrlMap[&controls::AwbEnable] = ControlInfo(false, true, true);
++	context.ctrlMap[&controls::ColourGains] = ControlInfo(0.25f, 4.0f);
++	moment_ = tuningData["moment"].get<unsigned int>(1);
++	for (const auto &point : tuningData["whiteCurve"].asList())
++		whiteCurve_.push_back(RGB<float>({ point["r"].get<float>(1), 1.0f, point["b"].get<float>(1) }));
++	if (moment_ != 1 && moment_ != 4)
++		return -EINVAL;
++	return 0;
++}
++
+ int Awb::configure(IPAContext &context,
+ 		   [[maybe_unused]] const IPAConfigInfo &configInfo)
+ {
+ 	auto &gains = context.activeState.awb.gains;
++	autoEnabled_ = true;
+ 	gains = { { 1.0, 1.0, 1.0 } };
+ 
+ 	return 0;
++}
++
++void Awb::queueRequest(IPAContext &context, [[maybe_unused]] uint32_t frame,
++                       [[maybe_unused]] IPAFrameContext &frameContext, const ControlList &requestControls)
++{
++	if (const auto enable = requestControls.get(controls::AwbEnable))
++		autoEnabled_ = *enable;
++	if (!autoEnabled_)
++		if (const auto gains = requestControls.get(controls::ColourGains))
++			context.activeState.awb.gains = { { std::clamp((*gains)[0], 0.25f, 4.0f), 1.0f, std::clamp((*gains)[1], 0.25f, 4.0f) } };
+ }
+ 
+ void Awb::prepare(IPAContext &context,
+@@ -67,7 +92,8 @@
+ 	};
+ 	metadata.set(controls::ColourGains, mdGains);
+ 
+-	if (!stats->valid)
++	metadata.set(controls::AwbEnable, autoEnabled_);
++	if (!stats->valid || !autoEnabled_)
+ 		return;
+ 
+ 	/*
+@@ -96,6 +122,38 @@
+ 		sum.b() <= sum.g() / 4 ? 4.0f : static_cast<float>(sum.g()) / sum.b(),
+ 	} };
+ 
++	if (moment_ == 4) {
++		std::array<double, 3> moments{};
++		for (unsigned int c = 0; c < 3; c++)
++			for (unsigned int i = blackLevel + 1; i < 250; i++) {
++				const double signal = i - blackLevel;
++				moments[c] += stats->rgbHistogram[c][i] * std::pow(signal, 4);
++			}
++		if (moments[0] > 0 && moments[1] > 0 && moments[2] > 0)
++			gains = { { std::clamp(static_cast<float>(std::pow(moments[1] / moments[0], 0.25)), 0.25f, 4.0f),
++				    1.0f,
++				    std::clamp(static_cast<float>(std::pow(moments[1] / moments[2], 0.25)), 0.25f, 4.0f) } };
++	}
++
++	if (whiteCurve_.size() >= 2) {
++		float bestDistance = std::numeric_limits<float>::max();
++		RGB<float> bestGains = gains;
++		for (unsigned int i = 1; i < whiteCurve_.size(); i++) {
++			const auto &a = whiteCurve_[i - 1];
++			const auto &b = whiteCurve_[i];
++			const float ar = std::log(a.r()), ab = std::log(a.b());
++			const float dr = std::log(b.r()) - ar, db = std::log(b.b()) - ab;
++			const float t = std::clamp(((std::log(gains.r()) - ar) * dr + (std::log(gains.b()) - ab) * db) / (dr * dr + db * db), 0.0f, 1.0f);
++			const float rr = ar + t * dr, bb = ab + t * db;
++			const float distance = std::pow(rr - std::log(gains.r()), 2) + std::pow(bb - std::log(gains.b()), 2);
++			if (distance < bestDistance) {
++				bestDistance = distance;
++				bestGains = { { std::exp(rr), 1.0f, std::exp(bb) } };
++			}
++		}
++		gains = bestGains;
++	}
++
+ 	RGB<double> rgbGains{ { 1 / gains.r(), 1 / gains.g(), 1 / gains.b() } };
+ 	context.activeState.awb.temperatureK = estimateCCT(rgbGains);
+ 	metadata.set(controls::ColourTemperature, context.activeState.awb.temperatureK);
+--- a/src/ipa/simple/algorithms/awb.h
++++ b/src/ipa/simple/algorithms/awb.h
+@@ -8,6 +8,7 @@
+ #pragma once
+ 
+ #include "algorithm.h"
++#include <vector>
+ 
+ namespace libcamera {
+ 
+@@ -19,7 +20,9 @@
+ 	Awb() = default;
+ 	~Awb() = default;
+ 
++	int init(IPAContext &context, const YamlObject &tuningData) override;
+ 	int configure(IPAContext &context, const IPAConfigInfo &configInfo) override;
++	void queueRequest(IPAContext &context, uint32_t frame, IPAFrameContext &frameContext, const ControlList &controls) override;
+ 	void prepare(IPAContext &context,
+ 		     const uint32_t frame,
+ 		     IPAFrameContext &frameContext,
+@@ -29,6 +32,10 @@
+ 		     IPAFrameContext &frameContext,
+ 		     const SwIspStats *stats,
+ 		     ControlList &metadata) override;
++private:
++	unsigned int moment_ = 1;
++	bool autoEnabled_ = true;
++	std::vector<RGB<float>> whiteCurve_;
+ };
+ 
+ } /* namespace ipa::soft::algorithms */
+--- a/src/ipa/simple/data/meson.build
++++ b/src/ipa/simple/data/meson.build
+@@ -2,6 +2,8 @@
+ 
+ conf_files = files([
+     'uncalibrated.yaml',
++    'gc08a8.yaml',
++    'ov13b10.yaml',
+ ])
+ 
+ # The install_dir must match the name from the IPAModuleInfo
+--- a/src/ipa/simple/soft_simple.cpp
++++ b/src/ipa/simple/soft_simple.cpp
+@@ -163,6 +163,7 @@
+ 		params_->gamma = 1.0 / algorithms::kDefaultGamma;
+ 		params_->contrastExp = 1.0;
+ 		params_->gains = { { 1.0, 1.0, 1.0 } };
++		params_->combinedMatrix = Matrix<float, 3, 3>::identity();
+ 		/* combinedMatrix is reset for each frame. */
+ 	}
+ 
+--- a/src/libcamera/pipeline/simple/simple.cpp
++++ b/src/libcamera/pipeline/simple/simple.cpp
+@@ -206,6 +206,7 @@
+ 	void create(Request *request, bool metadataRequested);
+ 	void destroy(uint32_t frame);
+ 	void clear();
++	std::vector<Request *> takeRequests();
+ 
+ 	SimpleFrameInfo *find(uint32_t frame);
+ 
+@@ -228,6 +229,15 @@
+ void SimpleFrames::clear()
+ {
+ 	frameInfo_.clear();
++}
++
++std::vector<Request *> SimpleFrames::takeRequests()
++{
++	std::vector<Request *> requests;
++	for (auto &[frame, info] : frameInfo_)
++		requests.push_back(info.request);
++	frameInfo_.clear();
++	return requests;
+ }
+ 
+ SimpleFrameInfo *SimpleFrames::find(uint32_t frame)
+@@ -978,6 +988,7 @@
+ void SimpleCameraData::clearIncompleteRequests()
+ {
+ 	while (!conversionQueue_.empty()) {
++		frameInfo_.destroy(conversionQueue_.front().request->sequence());
+ 		pipe()->cancelRequest(conversionQueue_.front().request);
+ 		conversionQueue_.pop();
+ 	}
+@@ -1683,9 +1694,15 @@
+ 		}
+ 
+ 		/* Queue all internal buffers for capture. */
+-		if (!data->rawStream_)
+-			for (std::unique_ptr<FrameBuffer> &buffer : data->conversionBuffers_)
+-				video->queueBuffer(buffer.get());
++		if (!data->rawStream_) {
++			for (std::unique_ptr<FrameBuffer> &buffer : data->conversionBuffers_) {
++				ret = video->queueBuffer(buffer.get());
++				if (ret < 0) {
++					stop(camera);
++					return ret;
++				}
++			}
++		}
+ 	}
+ 
+ 	return 0;
+@@ -1715,8 +1732,9 @@
+ 
+ 	video->bufferReady.disconnect(data, &SimpleCameraData::imageBufferReady);
+ 
+-	data->frameInfo_.clear();
+ 	data->clearIncompleteRequests();
++	for (Request *request : data->frameInfo_.takeRequests())
++		cancelRequest(request);
+ 	data->conversionBuffers_.clear();
+ 
+ 	releasePipeline(data);
+--- a/src/libcamera/sensor/camera_sensor_legacy.cpp
++++ b/src/libcamera/sensor/camera_sensor_legacy.cpp
+@@ -6,6 +6,7 @@
+  */
+ 
+ #include <algorithm>
++#include <fstream>
+ #include <cmath>
+ #include <float.h>
+ #include <iomanip>
+@@ -598,6 +599,13 @@
+ 	const auto &rotationControl = controls.find(V4L2_CID_CAMERA_SENSOR_ROTATION);
+ 	if (rotationControl != controls.end()) {
+ 		int32_t propertyValue = rotationControl->second.def().get<int32_t>();
++		std::ifstream boardCamera("/proc/device-tree/soc@0/cci@ac7b000/i2c-bus@0/camera@36/compatible");
++		std::string boardCompatible;
++		std::getline(boardCamera, boardCompatible, '\0');
++		if (boardCompatible == "lenovo,tb378fc-ov13b10" &&
++		    ((model_ == "gc08a8" && propertyValue == 270) ||
++		     (model_ == "ov13b10" && propertyValue == 90)))
++			propertyValue = 0;
+ 
+ 		/*
+ 		 * Cache the Transform associated with the camera mounting
+--- a/src/libcamera/software_isp/debayer_cpu.cpp
++++ b/src/libcamera/software_isp/debayer_cpu.cpp
+@@ -803,17 +803,19 @@
+ 			const unsigned int redIndex = swapRedBlueGains_ ? 2 : 0;
+ 			const unsigned int greenIndex = 1;
+ 			const unsigned int blueIndex = swapRedBlueGains_ ? 0 : 2;
++			const float pedestal = params.blackLevel.g() * gammaTableSize * div;
+ 			for (unsigned int i = 0; i < kRGBLookupSize; i++) {
+-				red[i].r = std::round(i * params.combinedMatrix[redIndex][0]);
+-				red[i].g = std::round(i * params.combinedMatrix[greenIndex][0]);
+-				red[i].b = std::round(i * params.combinedMatrix[blueIndex][0]);
+-				green[i].r = std::round(i * params.combinedMatrix[redIndex][1]);
+-				green[i].g = std::round(i * params.combinedMatrix[greenIndex][1]);
+-				green[i].b = std::round(i * params.combinedMatrix[blueIndex][1]);
+-				blue[i].r = std::round(i * params.combinedMatrix[redIndex][2]);
+-				blue[i].g = std::round(i * params.combinedMatrix[greenIndex][2]);
+-				blue[i].b = std::round(i * params.combinedMatrix[blueIndex][2]);
+-				gammaLut_[i] = gammaTable_[i / div];
++				const float signal = std::max(static_cast<float>(i) - pedestal, 0.0f);
++				red[i].r = std::round(signal * params.combinedMatrix[redIndex][0]);
++				red[i].g = std::round(signal * params.combinedMatrix[greenIndex][0]);
++				red[i].b = std::round(signal * params.combinedMatrix[blueIndex][0]);
++				green[i].r = std::round(signal * params.combinedMatrix[redIndex][1]);
++				green[i].g = std::round(signal * params.combinedMatrix[greenIndex][1]);
++				green[i].b = std::round(signal * params.combinedMatrix[blueIndex][1]);
++				blue[i].r = std::round(signal * params.combinedMatrix[redIndex][2]);
++				blue[i].g = std::round(signal * params.combinedMatrix[greenIndex][2]);
++				blue[i].b = std::round(signal * params.combinedMatrix[blueIndex][2]);
++				gammaLut_[i] = gammaTable_[std::min(static_cast<unsigned int>((i + pedestal) / div), gammaTableSize - 1)];
+ 			}
+ 		}
+ 	} else {
+@@ -824,7 +826,9 @@
+ 			auto &blue = swapRedBlueGains_ ? red_ : blue_;
+ 			for (unsigned int i = 0; i < kRGBLookupSize; i++) {
+ 				/* Apply gamma after gain! */
+-				const RGB<float> lutGains = (gains * i / div).min(gammaTableSize - 1);
++				const float blackIndex = params.blackLevel.g() * gammaTableSize;
++				const float signal = std::max(static_cast<float>(i / div) - blackIndex, 0.0f);
++				const RGB<float> lutGains = (gains * signal + RGB<float>(blackIndex)).min(gammaTableSize - 1);
+ 				red[i] = gammaTable_[static_cast<unsigned int>(lutGains.r())];
+ 				green[i] = gammaTable_[static_cast<unsigned int>(lutGains.g())];
+ 				blue[i] = gammaTable_[static_cast<unsigned int>(lutGains.b())];
+--- a/src/libcamera/software_isp/software_isp.cpp
++++ b/src/libcamera/software_isp/software_isp.cpp
+@@ -159,6 +159,9 @@
+ 		return;
+ 	}
+ 
++	/* IPA init supplies defined neutral parameters before its first async response. */
++	debayerParams_ = *sharedParams_;
++
+ 	ipa_->setIspParams.connect(this, &SoftwareIsp::saveIspParams);
+ 	ipa_->metadataReady.connect(this,
+ 				    [this](uint32_t frame, const ControlList &metadata) {
+@@ -363,6 +366,9 @@
+  */
+ void SoftwareIsp::stop()
+ {
++	if (!ispWorkerThread_.isRunning())
++		return;
++
+ 	debayer_->invokeMethod(&Debayer::stop,
+ 			       ConnectionTypeBlocking);
+ 
+--- a/src/libcamera/software_isp/swstats_cpu.cpp
++++ b/src/libcamera/software_isp/swstats_cpu.cpp
+@@ -178,6 +178,9 @@
+ 	sumR += r;                         \
+ 	sumG += g;                         \
+ 	sumB += b;                         \
++	stats_.rgbHistogram[0][r / (div)]++; \
++	stats_.rgbHistogram[1][g / (div)]++; \
++	stats_.rgbHistogram[2][b / (div)]++;                         \
+                                            \
+ 	yVal = r * kRedYMul;               \
+ 	yVal += g * kGreenYMul;            \
+@@ -334,6 +337,8 @@
+ 
+ 	stats_.sum_ = RGB<uint64_t>({ 0, 0, 0 });
+ 	stats_.yHistogram.fill(0);
++	for (auto &channel : stats_.rgbHistogram)
++		channel.fill(0);
+ }
+ 
+ /**

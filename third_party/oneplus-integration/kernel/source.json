@@ -1,0 +1,52 @@
+{
+  "kernel": {
+    "repository_layout": "Separate Git checkout at kernel/linux under ERHAI_WORKSPACE (the integration checkout by default)",
+    "upstream": "https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git",
+    "baseline_tag": "v7.2",
+    "branch": "erhai/v0.2",
+    "commit": "958a2b4654196bb52dfa0217a0f65ffeaa919f81",
+    "board_dts": "arch/arm64/boot/dts/qcom/sm8750-erhai.dts",
+    "config_fragment": "arch/arm64/configs/erhai-firstboot.config",
+    "toolchain": "aarch64-linux-gnu-gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1)",
+    "repository": "https://github.com/yzddmr6/linux-sm8750-erhai"
+  },
+  "tool_inputs": {
+    "busybox-arm64": {
+      "package": "busybox-static",
+      "version": "1:1.36.1-6ubuntu3.1",
+      "architecture": "arm64",
+      "url": "http://ports.ubuntu.com/pool/main/b/busybox/busybox-static_1.36.1-6ubuntu3.1_arm64.deb",
+      "archive_sha256": "d96535e0402c011e0ee43449799df2f4504d44b842e4f2b3a6cbc845508eaafc",
+      "archive_path": "usr/bin/busybox",
+      "destination": "cache/busybox-arm64",
+      "sha256": "52151e7f322f926b64049cdaa1410dc3ea6485525e0624b05813791c219ae933",
+      "archive": "busybox-static_1.36.1-6ubuntu3.1_arm64.deb"
+    },
+    "mkbootimg.py": {
+      "repository": "https://android.googlesource.com/platform/system/tools/mkbootimg",
+      "commit": "954bc3ead5e679005fddf3484d247f2557b3c2c9",
+      "url": "https://android.googlesource.com/platform/system/tools/mkbootimg/+archive/954bc3ead5e679005fddf3484d247f2557b3c2c9.tar.gz",
+      "archive_sha256": "434f155d717564c2c2cf4760afd05c338a37a5fbc3fa2eb6a474409dbf28c503",
+      "archive_path": "mkbootimg.py",
+      "destination": "cache/tools/mkbootimg.py",
+      "sha256": "37d84b3d162e0bc62e36c1f4e1c63c85ea0caa9f29be023eb2f8efe006ad948c",
+      "extraction": "Extract the complete archive into cache/tools, including the imported gki Python package",
+      "archive": "aosp-mkbootimg-954bc3ead5e679005fddf3484d247f2557b3c2c9.tar.gz",
+      "bundled_archive": "packaging/build-inputs/aosp-mkbootimg-954bc3ead5e679005fddf3484d247f2557b3c2c9.tar.gz"
+    },
+    "stock-dtbo": "packaging/boot-reference/source.json pins the included original stock inputs; tools/prepare-inputs.py unpacks them into the build cache",
+    "avbtool.py": {
+      "repository": "https://android.googlesource.com/platform/external/avb",
+      "commit": "c92ce4cb9a1b6d20a1bc11b7e5864af9f78615bb",
+      "url": "https://android.googlesource.com/platform/external/avb/+archive/c92ce4cb9a1b6d20a1bc11b7e5864af9f78615bb.tar.gz",
+      "archive": "aosp-avb-c92ce4cb9a1b6d20a1bc11b7e5864af9f78615bb.tar.gz",
+      "archive_sha256": "0b21089986c41991ae06bb68208a1d09239da25253ecd11b1d0d4d45a01b1ba3",
+      "archive_path": "avbtool.py",
+      "destination": "cache/tools/avbtool.py",
+      "sha256": "14dc8d6ec533f551ec05ffd9a986ced0fd1290a201f62c91dad329dd51dfe3ed",
+      "bundled_archive": "packaging/build-inputs/aosp-avb-c92ce4cb9a1b6d20a1bc11b7e5864af9f78615bb.tar.gz"
+    }
+  },
+  "device_firmware": "packaging/firmware/ contains the device firmware inputs; packaging/firmware-manifest.json records each original source, size and SHA-256. See packaging/firmware/README.md for distribution restrictions.",
+  "desktop_inputs": "packaging/desktop/source.json pins the official Ubuntu Desktop ARM64 ISO, layers and build/runtime packages"
+}

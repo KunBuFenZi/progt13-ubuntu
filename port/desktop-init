@@ -1,0 +1,96 @@
+#!/bin/sh
+# RAM-only desktop trial. Never mounts a tablet storage partition.
+export PATH=/bin
+mount -t proc proc /proc
+mount -t sysfs sysfs /sys
+mount -t devtmpfs devtmpfs /dev
+mkdir -p /dev/pts /run /sys/kernel/config
+mount -t devpts devpts /dev/pts
+mount -t tmpfs -o size=6G,mode=0755 tmpfs /run
+mkdir -p /run/evidence /run/desktop
+exec </dev/console >/dev/console 2>&1
+echo TB378FC_DESKTOP_INIT_STARTED >/dev/kmsg
+uname -a >/run/evidence/uname.txt
+cat /etc/build-id >/run/evidence/build-id.txt
+cat /proc/cmdline >/run/evidence/cmdline.txt
+cat /proc/meminfo >/run/evidence/meminfo.txt
+/bin/usb-diag >/run/evidence/usb-setup.txt 2>&1 &
+httpd -p 8081 -h /run/evidence
+while :; do
+    dmesg >/run/evidence/dmesg.txt
+    cat /proc/uptime >/run/evidence/uptime.txt
+    sleep 3
+done &
+while :; do
+    [ ! -c /dev/ttyGS0 ] || getty -L -n -l /bin/sh ttyGS0 115200 vt100
+    sleep 1
+done &
+# Bound preparation to 20 min. The root's systemd takes over the hardware
+# watchdog and supplies a separate desktop-session shutdown timer.
+( sleep 1200; reboot -f; sleep 10; echo b >/proc/sysrq-trigger ) &
+deadline=$!
+if [ -c /dev/watchdog0 ]; then
+    watchdog -F -T 30 -t 5 /dev/watchdog0 &
+    wdpid=$!
+fi
+fail() {
+    echo "TB378FC_DESKTOP_FAILED $*" | tee /run/evidence/desktop-stage.txt
+    sleep 90
+    reboot -f
+    sleep 10
+    echo b >/proc/sysrq-trigger
+}
+stage() {
+    echo "TB378FC_DESKTOP_STAGE $*" | tee /run/evidence/desktop-stage.txt
+    echo "TB378FC_DESKTOP_STAGE $*" >/dev/kmsg
+}
+# Only online CPUs exposed by this candidate's nr_cpus limit.
+for cpu in 1 2 3 4 5 6 7; do
+    [ ! -f /sys/devices/system/cpu/cpu$cpu/online ] || echo 1 >/sys/devices/system/cpu/cpu$cpu/online
+done
+cat /sys/devices/system/cpu/online >/run/evidence/cpus.txt
+for count in $(seq 1 30); do
+    [ ! -e /sys/class/net/usb0/operstate ] || [ "$(cat /sys/class/net/usb0/operstate)" != up ] || break
+    sleep 1
+done
+base=http://192.168.77.11:8088
+cd /run/desktop || fail cd
+stage download-settings
+wget -T 60 -O settings.tar "$base/settings.tar" || fail settings-download
+echo '@SETTINGS_SHA@  settings.tar' | sha256sum -c - || fail settings-hash
+stage download-minimal
+wget -T 900 -O minimal.squashfs "$base/minimal.squashfs" > /run/evidence/download.txt 2>&1 || fail minimal-download
+echo '82613d06f973778f6d49c817d7eb764a7fd812016a30a7f8006e8f61d718b393  minimal.squashfs' | sha256sum -c - || fail minimal-hash
+stage download-standard
+wget -T 300 -O standard.squashfs "$base/minimal.standard.squashfs" >> /run/evidence/download.txt 2>&1 || fail standard-download
+echo 'fce0e2440cdbb6ebaf03efe3dd844c0e1a3b5facaca913e18f312e30a8f9fdaf  standard.squashfs' | sha256sum -c - || fail standard-hash
+stage mount-root
+mkdir -p minimal standard upper work /newroot
+mount -t squashfs -o ro,loop minimal.squashfs minimal || fail mount-minimal
+mount -t squashfs -o ro,loop standard.squashfs standard || fail mount-standard
+mount -t overlay overlay -o lowerdir=/run/desktop/standard:/run/desktop/minimal,upperdir=/run/desktop/upper,workdir=/run/desktop/work /newroot || fail mount-overlay
+tar -xf settings.tar -C /newroot || fail settings-extract
+rm settings.tar
+chown -R 1000:1000 /newroot/home/pad
+cp /etc/build-id /newroot/etc/tb378fc-build-id
+cat /proc/mounts >/run/evidence/pre-switch-mounts.txt
+stage switch-root
+mkdir -p /newroot/run /newroot/dev /newroot/proc /newroot/sys
+# Stop RAM preparation workers, including their children, before rootfs deletion.
+# Every userspace process here belongs to this disposable PID-1 environment.
+for process in /proc/[0-9]*; do
+    pid=${process##*/}
+    [ "$pid" = 1 ] || [ ! -e "$process/exe" ] || kill "$pid" 2>/dev/null
+done
+sleep 1
+# An interactive diagnostic shell may ignore SIGTERM. It must not retain the
+# deleted initramfs root and contend with systemd's replacement USB getty.
+for process in /proc/[0-9]*; do
+    pid=${process##*/}
+    [ "$pid" = 1 ] || [ ! -e "$process/exe" ] || kill -KILL "$pid" 2>/dev/null
+done
+mount --move /dev /newroot/dev || fail move-dev
+mount --move /proc /newroot/proc || fail move-proc
+mount --move /sys /newroot/sys || fail move-sys
+mount --move /run /newroot/run || fail move-run
+exec switch_root /newroot /sbin/init

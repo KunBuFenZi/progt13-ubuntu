@@ -1,0 +1,8 @@
+#!/bin/sh
+set -eu
+test "$(uname -r)" = '7.2.0-tb378fc-wifi+'
+modules=/usr/local/lib/tb378fc/flash70
+test -d /sys/module/led_class_flash || insmod "$modules/led-class-flash.ko"
+test -d /sys/module/leds_qcom_flash || insmod "$modules/leds-qcom-flash.ko"
+test -d /sys/module/live_flash_overlay70 || insmod "$modules/live-flash-overlay70.ko"
+test -e /sys/class/leds/white:flash:tb378fc/brightness

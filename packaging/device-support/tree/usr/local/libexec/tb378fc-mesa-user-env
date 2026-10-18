@@ -1,0 +1,27 @@
+#!/bin/sh
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# Select this package's Mesa for a systemd user manager -- the GDM greeter's
+# and every logged-in user's, and so GNOME Shell and the applications it
+# starts -- only while the Adreno GPU is bound to its kernel driver. Without
+# it nothing is printed and the whole session uses Ubuntu's Mesa, which on
+# this machine means software rendering. This private build has no software
+# renderer of its own.
+#
+# The check runs when a user manager starts. A GPU that fails later in a
+# running session is not caught here; the next session start picks again.
+#
+# EGL is selected by vendor directory, not by vendor file: a file list given
+# in __EGL_VENDOR_LIBRARY_FILENAMES overrides the directories a sandboxed
+# application's own runtime adds, while a directory that does not exist there
+# is simply skipped.
+set -eu
+
+gpu=/sys/bus/platform/drivers/adreno/3d00000.gpu
+prefix=/usr/lib/erhai/mesa
+
+[ -e "$gpu" ] || exit 0
+echo "LD_LIBRARY_PATH=$prefix/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+echo "LIBGL_DRIVERS_PATH=$prefix/lib/dri"
+echo "GBM_BACKENDS_PATH=$prefix/lib/gbm"
+echo "__EGL_VENDOR_LIBRARY_DIRS=$prefix/share/glvnd/egl_vendor.d"

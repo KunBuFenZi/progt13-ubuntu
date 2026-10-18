@@ -1,0 +1,135 @@
+--- a/sound/soc/codecs/wcd939x.c
++++ b/sound/soc/codecs/wcd939x.c
+@@ -2950,18 +2950,59 @@
+ 	.map = wcd_irq_chip_map,
+ };
+ 
++static void wcd939x_irq_exit(struct wcd939x_priv *wcd, struct device *dev)
++{
++	unsigned int irq;
++	int i;
++
++	if (!wcd->virq)
++		return;
++
++	/* The SDW wrapper holds this lock throughout the nested callback. Clear
++	 * both pointers and wait for any callback before freeing its domain.
++	 * This lock is independent of the SoundWire driver's sdw_dev_lock.
++	 */
++	for (i = 0; i < NUM_CODEC_DAIS; i++) {
++		if (!wcd->sdw_priv[i])
++			continue;
++		mutex_lock(&wcd->sdw_priv[i]->irq_lock);
++		wcd->sdw_priv[i]->slave_irq = NULL;
++		mutex_unlock(&wcd->sdw_priv[i]->irq_lock);
++	}
++
++	irq = irq_find_mapping(wcd->virq, 0);
++	if (wcd->irq_chip) {
++		devm_regmap_del_irq_chip(dev, irq, wcd->irq_chip);
++		wcd->irq_chip = NULL;
++	}
++	if (irq)
++		irq_dispose_mapping(irq);
++	irq_domain_remove(wcd->virq);
++	wcd->virq = NULL;
++}
++
+ static int wcd939x_irq_init(struct wcd939x_priv *wcd, struct device *dev)
+ {
++	unsigned int irq;
++	int ret;
++
+ 	wcd->virq = irq_domain_create_linear(NULL, 1, &wcd_domain_ops, NULL);
+ 	if (!(wcd->virq)) {
+ 		dev_err(dev, "%s: Failed to add IRQ domain\n", __func__);
+ 		return -EINVAL;
+ 	}
+ 
+-	return devm_regmap_add_irq_chip(dev, wcd->regmap,
+-					irq_create_mapping(wcd->virq, 0),
+-					IRQF_ONESHOT, 0, &wcd939x_regmap_irq_chip,
+-					&wcd->irq_chip);
++	irq = irq_create_mapping(wcd->virq, 0);
++	if (!irq) {
++		wcd939x_irq_exit(wcd, dev);
++		return -ENOMEM;
++	}
++	ret = devm_regmap_add_irq_chip(dev, wcd->regmap, irq,
++				       IRQF_ONESHOT, 0, &wcd939x_regmap_irq_chip,
++				       &wcd->irq_chip);
++	if (ret)
++		wcd939x_irq_exit(wcd, dev);
++	return ret;
+ }
+ 
+ static int wcd939x_soc_codec_probe(struct snd_soc_component *component)
+@@ -3381,8 +3422,12 @@
+ 		goto err_remove_rx_link;
+ 	}
+ 
++	mutex_lock(&wcd939x->sdw_priv[AIF1_PB]->irq_lock);
+ 	wcd939x->sdw_priv[AIF1_PB]->slave_irq = wcd939x->virq;
++	mutex_unlock(&wcd939x->sdw_priv[AIF1_PB]->irq_lock);
++	mutex_lock(&wcd939x->sdw_priv[AIF1_CAP]->irq_lock);
+ 	wcd939x->sdw_priv[AIF1_CAP]->slave_irq = wcd939x->virq;
++	mutex_unlock(&wcd939x->sdw_priv[AIF1_CAP]->irq_lock);
+ 
+ 	wcd939x_set_micbias_data(dev, wcd939x);
+ 
+@@ -3402,6 +3447,7 @@
+ 	if (ret) {
+ 		dev_err(dev, "%s: Codec registration failed\n",
+ 			__func__);
++		wcd939x_irq_exit(wcd939x, dev);
+ 		goto err_remove_rx_link;
+ 	}
+ 
+@@ -3433,6 +3479,7 @@
+ 	struct wcd939x_priv *wcd939x = dev_get_drvdata(dev);
+ 
+ 	snd_soc_unregister_component(dev);
++	wcd939x_irq_exit(wcd939x, dev);
+ 	device_link_remove(dev, wcd939x->txdev);
+ 	device_link_remove(dev, wcd939x->rxdev);
+ 	device_link_remove(wcd939x->rxdev, wcd939x->txdev);
+--- a/sound/soc/codecs/wcd939x-sdw.c
++++ b/sound/soc/codecs/wcd939x-sdw.c
+@@ -196,8 +196,16 @@
+ {
+ 	struct wcd939x_sdw_priv *wcd = dev_get_drvdata(&slave->dev);
+ 
+-	return wcd_interrupt_callback(slave, wcd->slave_irq, WCD939X_DIGITAL_INTR_STATUS_0,
+-			WCD939X_DIGITAL_INTR_STATUS_1, WCD939X_DIGITAL_INTR_STATUS_2);
++	int ret = IRQ_NONE;
++
++	mutex_lock(&wcd->irq_lock);
++	if (wcd->slave_irq)
++		ret = wcd_interrupt_callback(slave, wcd->slave_irq,
++			WCD939X_DIGITAL_INTR_STATUS_0, WCD939X_DIGITAL_INTR_STATUS_1,
++			WCD939X_DIGITAL_INTR_STATUS_2);
++	mutex_unlock(&wcd->irq_lock);
++
++	return ret;
+ }
+ 
+ static const struct reg_default wcd939x_defaults[] = {
+@@ -1344,6 +1352,7 @@
+ 	wcd = devm_kzalloc(dev, sizeof(*wcd), GFP_KERNEL);
+ 	if (!wcd)
+ 		return -ENOMEM;
++	mutex_init(&wcd->irq_lock);
+ 
+ 	/*
+ 	 * Port map index starts with 0, however the data port for this codec
+--- a/sound/soc/codecs/wcd939x.h
++++ b/sound/soc/codecs/wcd939x.h
+@@ -904,6 +904,8 @@
+ 	int active_ports;
+ 	bool is_tx;
+ 	struct wcd939x_priv *wcd939x;
++	/* Serialize callback completion with codec IRQ-domain removal. */
++	struct mutex irq_lock;
+ 	struct irq_domain *slave_irq;
+ 	struct regmap *regmap;
+ };

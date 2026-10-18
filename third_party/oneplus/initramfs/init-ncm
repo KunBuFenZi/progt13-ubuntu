@@ -1,0 +1,407 @@
+#!/bin/sh
+# SPDX-License-Identifier: GPL-2.0-only
+# Mainline first-boot evidence profile: the kernel has DEVTMPFS and all USB
+# gadget support built in; no module loading. RAM evidence is exported over
+# NCM/HTTP; the session ends via telnet or the watchdog.
+#
+# Cmdline knobs:
+#   erhai.watchdog=<s>          bound the initramfs phase (default 600)
+#   erhai.session=<s>           bound a test session after switch_root; with an
+#                               installed root, 60..3600s then return to fastboot
+#   erhai.wb=1                  DRM writeback capture before the NCM bring-up
+#   erhai.rootfs=<url>          fetch a squashfs over NCM, mount it as an overlay
+#   erhai.rootfs.sha256=<hash>  required digest for a downloaded RAM image
+#   erhai.switchroot=1          hand PID1 to systemd in the RAM overlay
+#   erhai.weston=1              autostart weston in the RAM session
+#   erhai.root=PARTLABEL=<name> mount that partition rw and boot it as the
+#                               persistent root (no expiry unless explicitly set)
+#   erhai.debug=1               enable USB NCM diagnostics; desktop handoff
+#                               requires the optional erhai-debug package.
+#                               Ordinary installed boots expose no channel.
+export PATH=/bin
+mount -t proc proc /proc
+mount -t sysfs sysfs /sys
+# Prebuilt nodes give the kernel its early console; devtmpfs on top provides
+# the rest (ptmx for telnetd, etc.). Mount it unconditionally.
+mount -t devtmpfs devtmpfs /dev
+mkdir -p /dev/pts /run
+mount -t devpts devpts /dev/pts
+mount -t tmpfs tmpfs /run
+mkdir -p /run/evidence
+
+WATCHDOG_SECONDS=600
+SESSION_SECONDS=
+SESSION_EXPLICIT=0
+WB=0
+ROOTFS_URL=; SWITCHROOT=0; ROOTFS_SHA=; WESTON=0; ROOT_SPEC=; DEBUG_CHANNEL=0
+for arg in $(cat /proc/cmdline); do
+	case "$arg" in
+	erhai.watchdog=*) WATCHDOG_SECONDS=${arg#erhai.watchdog=} ;;
+	erhai.session=*) SESSION_SECONDS=${arg#erhai.session=}; SESSION_EXPLICIT=1 ;;
+	erhai.wb=1) WB=1 ;;
+	erhai.rootfs=*) ROOTFS_URL=${arg#erhai.rootfs=} ;;
+	erhai.switchroot=1) SWITCHROOT=1 ;;
+	erhai.rootfs.sha256=*) ROOTFS_SHA=${arg#erhai.rootfs.sha256=} ;;
+	erhai.weston=1) WESTON=1 ;;
+	erhai.root=*) ROOT_SPEC=${arg#erhai.root=} ;;
+	erhai.debug=1) DEBUG_CHANNEL=1 ;;
+	esac
+done
+# erhai.watchdog bounds the initramfs phase only (a boot that wedges before the
+# hand-off must not sit for a whole desktop session); erhai.session, when
+# given, is the length of the desktop session installed at switch_root.
+[ -n "$SESSION_SECONDS" ] || SESSION_SECONDS=$WATCHDOG_SECONDS
+echo "WATCHDOG_ARMED=$WATCHDOG_SECONDS" > /run/evidence/watchdog-armed.txt
+# Bounded self-recovery with observable stages: armed marker above, fired
+# marker before the reboot attempt, sysrq fallback if reboot -f returns.
+# The PID travels so a switch_root hand-off can disarm it (systemd installs
+# its own session-expiry timer before taking over).
+# The timer sleeps in the background and the subshell waits on it, so a
+# SIGTERM from the hand-off ends the subshell at once; a foreground sleep
+# would only be reaped after it expired and the reboot would still run.
+( timer_pid=
+  trap 'kill "$timer_pid" 2>/dev/null; wait "$timer_pid" 2>/dev/null; exit 0' TERM
+  sleep "$WATCHDOG_SECONDS" &
+  timer_pid=$!
+  wait "$timer_pid"
+  echo "WATCHDOG_FIRED uptime=$(cat /proc/uptime)" > /run/evidence/watchdog.txt
+  timeout -k 1 5 sync; reboot -f -n
+  sleep 15; echo s > /proc/sysrq-trigger; echo b > /proc/sysrq-trigger ) &
+WATCHDOG_PID=$!
+echo "erhai: initramfs running; recovery timer armed" > /dev/console
+
+# Resolve PARTLABEL=<name> to a block device. The initramfs has no blkid and
+# no udev, but the partition uevents carry PARTNAME for every GPT entry.
+find_partlabel() {
+	for u in /sys/class/block/*/uevent; do
+		[ -e "$u" ] || continue
+		grep -qx "PARTNAME=$1" "$u" || continue
+		d=${u%/uevent}
+		echo "/dev/${d##*/}"
+		return 0
+	done
+	return 1
+}
+
+# Hand PID1 to systemd in /newroot, recording the hand-off in $1. The initramfs
+# watchdog is disarmed here, and the initramfs daemons must die BEFORE the
+# switch: their deleted binaries keep serving sockets that would otherwise
+# collide with the package-owned services in the new root. The host keeps
+# its lease while the package takes over DHCP on the existing USB interface.
+switch_to_newroot() {
+	# Never manufacture persistent service files here. An explicit debug
+	# desktop needs the package that owns its services and dependencies.
+	if [ "$DEBUG_CHANNEL" = 1 ] &&
+	   { [ ! -f /newroot/usr/lib/systemd/system/erhai-debug.service ] ||
+	     [ ! -x /newroot/usr/libexec/erhai-ncm ] ||
+	     [ ! -x /newroot/usr/bin/busybox ]; }; then
+		echo DEBUG_PACKAGE_MISSING >> "$1"
+		return 1
+	fi
+	# Correct the exported firmware identity before the real PID1's first
+	# virtualization query. A sysinit service alone is too late for its cache.
+	# Prepare the sysfs instance that survives switch_root; masking the old
+	# initramfs /sys would be lost when systemd mounts a fresh /sys.
+	mkdir -p /newroot/sys
+	if ! grep -q ' /newroot/sys sysfs ' /proc/mounts; then
+		mount -t sysfs -o nosuid,nodev,noexec sysfs /newroot/sys
+	fi
+	if ! /bin/erhai-physical-platform /newroot/sys >> "$1" 2>&1; then
+		echo PHYSICAL_IDENTITY_CORRECTION_FAILED >> "$1"
+	fi
+	# A temporary kernel may use the installed root. An explicit session
+	# bound must survive the handoff too, without leaving files in /etc.
+	# Mount the new root's /run now so PID1 sees these runtime units.
+	if [ -n "$ROOT_SPEC" ] && [ "$SESSION_EXPLICIT" = 1 ]; then
+		case "$SESSION_SECONDS" in
+			''|*[!0-9]*) echo INVALID_TEST_SESSION >> "$1"; return 1 ;;
+		esac
+		if [ "$SESSION_SECONDS" -lt 60 ] || [ "$SESSION_SECONDS" -gt 3600 ]; then
+			echo INVALID_TEST_SESSION >> "$1"
+			return 1
+		fi
+		mkdir -p /newroot/run || return 1
+		if ! grep -q ' /newroot/run ' /proc/mounts; then
+			mount -t tmpfs -o mode=0755,nosuid,nodev tmpfs /newroot/run || return 1
+		fi
+		mkdir -p /newroot/run/systemd/system/sysinit.target.wants || return 1
+		# Keep disk writeback from indefinitely delaying the recovery attempt.
+		# -n prevents reboot from starting another unbounded sync afterwards.
+		# Userspace recovery cannot cover a stalled kernel or scheduler.
+		cat > /newroot/run/systemd/system/erhai-test-session.service <<EOF || return 1
+[Unit]
+Description=Bound a temporary kernel test on the installed root
+DefaultDependencies=no
+After=local-fs.target
+Before=basic.target
+IgnoreOnIsolate=yes
+[Service]
+Type=simple
+ExecStart=/bin/sh -c 'echo started > /run/erhai-test-session.started; echo ERHAI_TEST_SESSION_STARTED > /dev/kmsg; sleep $SESSION_SECONDS; echo expired > /run/erhai-test-session.expired; echo ERHAI_TEST_SESSION_EXPIRED > /dev/kmsg; timeout -k 1 5 sync; /sbin/reboot -f -n bootloader'
+TimeoutStopSec=5
+EOF
+		ln -sf ../erhai-test-session.service \
+			/newroot/run/systemd/system/sysinit.target.wants/erhai-test-session.service || return 1
+		echo "TEST_SESSION_ARMED=$SESSION_SECONDS" >> "$1"
+	fi
+	kill "$WATCHDOG_PID" 2>/dev/null
+	kill "$TELNET_LOOP_PID" "$HEARTBEAT_PID" 2>/dev/null
+	for p in $(pidof telnetd httpd udhcpd dd 2>/dev/null); do kill "$p" 2>/dev/null; done
+	echo "SWITCHROOT systemd $(cat /proc/uptime)" >> "$1"
+	sync
+	exec switch_root /newroot /sbin/init
+}
+
+# Liveness + clock observability: refreshed evidence for late HTTP fetches.
+( while :; do
+	date > /run/evidence/heartbeat.tmp
+	cat /proc/uptime >> /run/evidence/heartbeat.tmp
+	dmesg > /run/evidence/dmesg-live.txt
+	mv /run/evidence/heartbeat.tmp /run/evidence/heartbeat.txt
+	sleep 10
+  done ) &
+HEARTBEAT_PID=$!
+
+exec >/run/evidence/probe.log 2>&1
+
+echo ERHAI_MAINLINE_FIRSTBOOT
+cat /etc/build-id
+cp /etc/build-id /run/evidence/build-id
+uname -a > /run/evidence/uname.txt
+cat /proc/cmdline > /run/evidence/cmdline.txt
+# Which DT did the kernel actually get: our --dtb or an ABL fallback?
+tr '\0' '\n' < /proc/device-tree/compatible > /run/evidence/dt-compatible.txt
+tr -d '\0' < /proc/device-tree/model > /run/evidence/dt-model.txt
+cat /sys/firmware/fdt > /run/evidence/fdt
+cat /proc/meminfo > /run/evidence/meminfo.txt
+cat /proc/iomem > /run/evidence/iomem.txt
+cat /proc/partitions > /run/evidence/partitions.txt
+cat /proc/modules > /run/evidence/modules.txt
+
+# Ordinary boot must not read unpowered display registers or clock debugfs.
+# Those bring-up probes can stall the SoC before any recovery channel exists.
+# The partition inventory above is sufficient for the rescue channel.
+echo 'BLOCK_READONLY=true' > /run/evidence/block-guard.txt
+
+# Optional writeback capture (erhai.wb=1): grab what the DPU actually scans
+# out (fbcon content, then known color bars painted into fb0). Runs before
+# usb-ncm on purpose: once udhcpd hands the host its address the
+# orchestrator starts pulling immediately, so the frames must already exist
+# when httpd opens. Bounded so a capture fault can never wedge the session.
+if [ "$WB" = 1 ] && [ -x /bin/wb-capture ]; then
+	timeout 25 /bin/wb-capture --fb0-pattern --prefix /run/evidence/wb \
+		> /run/evidence/wb-info.txt 2>&1 || \
+		echo "wb-capture rc=$?" >> /run/evidence/wb-info.txt
+fi
+
+# A plain installed boot must not expose an early root shell either. A
+# rootless initramfs session is itself the explicitly selected rescue profile.
+EARLY_DEBUG=$DEBUG_CHANNEL
+[ -n "$ROOT_SPEC" ] || EARLY_DEBUG=1
+NCM_READY=0
+if [ "$EARLY_DEBUG" = 1 ]; then
+	echo "erhai: preparing USB network" > /dev/console
+	if /bin/usb-ncm; then
+		NCM_READY=1
+	else
+		echo ERHAI_NCM_UNAVAILABLE > /dev/kmsg
+	fi
+fi
+# Diagnostics may be unavailable while the USB-C port serves a peripheral.
+# A locally installed root must still boot; the runtime UDC event restores NCM.
+if [ "$EARLY_DEBUG" = 0 ] || [ "$NCM_READY" = 1 ] || [ -n "$ROOT_SPEC" ]; then
+	if [ "$NCM_READY" = 1 ]; then
+		dmesg > /run/evidence/dmesg.txt
+		cat /proc/mounts > /run/evidence/mounts.txt
+		httpd -p 192.168.77.2:8080 -h /run/evidence
+		# Respawn only inside the bounded diagnostic initramfs session.
+		( while :; do telnetd -b 192.168.77.2:2323 -l /bin/sh; sleep 2; done ) &
+		TELNET_LOOP_PID=$!
+		echo ERHAI_MAINLINE_READY
+	elif [ "$EARLY_DEBUG" = 0 ]; then
+		echo ERHAI_DEBUG_DISABLED > /dev/kmsg
+	fi
+
+	# Optional RAM root or installed root, selected before starting any
+	# network services. Root construction and diagnostics are separate.
+	if [ -n "$ROOTFS_URL" ]; then
+		(
+			echo "url=$ROOTFS_URL"
+			# Stop only this RAM-root attempt. Diagnostics and the original
+			# watchdog remain available when download or verification fails.
+			[ -n "$ROOTFS_SHA" ] || { echo "ROOTFS_SHA256_REQUIRED"; exit 1; }
+			# The NCM data path stalls on very long transfers (~200MB in);
+			# chunked fetch from <image>.parts/partNN sidesteps it. Whole-file
+			# fetch with a timeout stays the fallback for small images.
+			rm -f /run/rpart00
+			if wget -q -T 10 -O /run/rpart00 "$ROOTFS_URL.parts/part00"; then
+				{ cat /run/rpart00
+				  i=1
+				  while wget -q -T 15 -O /run/rpart "$ROOTFS_URL.parts/part$(printf %02d $i)"; do
+					cat /run/rpart
+					i=$((i+1))
+				  done
+				} > /run/rootfs.sqfs
+				rm -f /run/rpart /run/rpart00
+				echo "chunked fetch parts=$i"
+			else
+				rm -f /run/rpart00
+				wget -q -T 60 -O /run/rootfs.sqfs "$ROOTFS_URL" || {
+					echo "fetch failed: $?"; exit 1;
+				}
+			fi
+			got=$(sha256sum /run/rootfs.sqfs | cut -d' ' -f1)
+			echo "sha256=$got"
+			[ "$got" = "$ROOTFS_SHA" ] || { echo "SHA256 MISMATCH"; exit 1; }
+			mkdir -p /run/rootfs.ro /run/rootfs.rw /run/rootfs.wk /newroot
+			mount -o loop,ro -t squashfs /run/rootfs.sqfs /run/rootfs.ro &&
+				mount -t overlay overlay -o lowerdir=/run/rootfs.ro,upperdir=/run/rootfs.rw,workdir=/run/rootfs.wk /newroot || exit 1
+			grep -E "rootfs|newroot" /proc/mounts
+			if [ -x /newroot/usr/lib/systemd/systemd ]; then
+				/newroot/usr/lib/systemd/systemd --version | head -1
+				echo "chroot smoke:"
+				chroot /newroot /usr/bin/uname -a
+			fi
+			[ "$SWITCHROOT" = 1 ] && echo SWITCHROOT_PENDING
+		) > /run/evidence/rootfs.txt 2>&1
+	fi
+	if [ -n "$ROOTFS_URL" ] && [ "$SWITCHROOT" = 1 ] &&
+		grep -q "overlay /newroot" /proc/mounts; then
+		# Hand PID1 to systemd. The initramfs watchdog is disarmed here;
+		# an equivalent session-expiry timer is installed into the
+		# overlay so the tablet still returns to Android unattended.
+		# The initramfs daemons must die BEFORE the switch: their deleted
+		# binaries keep serving sockets that would otherwise collide with
+		# the debug services starting inside the desktop rootfs.
+		expiry=$((SESSION_SECONDS - 120)); [ "$expiry" -lt 60 ] && expiry=60
+		# Expose the overlay upper inside the new root: after switch_root the
+		# initramfs /run is covered by systemd's fresh tmpfs and the upperdir
+		# otherwise has no reachable path, making delta captures impossible.
+		# /mnt survives (systemd does not mask it).
+		mkdir -p /newroot/mnt/erhai-upper
+		mount --bind /run/rootfs.rw /newroot/mnt/erhai-upper
+		mkdir -p /newroot/etc/systemd/system/timers.target.wants \
+			/newroot/etc/systemd/system/multi-user.target.wants
+		cat > /newroot/etc/systemd/system/erhai-session-expiry.service <<EOF
+[Unit]
+Description=Reboot back to Android at the end of the RAM session
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c 'echo expired > /run/erhai-test-session.expired; echo ERHAI_TEST_SESSION_EXPIRED > /dev/kmsg; timeout -k 1 5 sync; /sbin/reboot -f -n bootloader'
+EOF
+		cat > /newroot/etc/systemd/system/erhai-session-expiry.timer <<EOF
+[Unit]
+Description=RAM session expiry
+[Timer]
+OnBootSec=${expiry}s
+[Install]
+WantedBy=timers.target
+EOF
+		ln -sf ../erhai-session-expiry.timer \
+			/newroot/etc/systemd/system/timers.target.wants/erhai-session-expiry.timer
+		# Early boot observability without a console: an alive marker as
+		# soon as local-fs is up, then a live journal stream to the host.
+		cat > /newroot/etc/systemd/system/erhai-alive.service <<'EOF'
+[Unit]
+Description=erhai systemd alive marker
+After=local-fs.target
+DefaultDependencies=no
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -c 'echo started > /run/erhai-test-session.started; echo SYSTEMD-ALIVE-$(cat /proc/uptime) > /dev/tcp/192.168.77.10/9998 || true'
+[Install]
+WantedBy=multi-user.target
+EOF
+		ln -sf ../erhai-alive.service \
+			/newroot/etc/systemd/system/multi-user.target.wants/erhai-alive.service
+		cat > /newroot/etc/systemd/system/erhai-journal.service <<'EOF'
+[Unit]
+Description=stream the journal to the NCM host
+After=systemd-journald.service
+[Service]
+Type=simple
+ExecStart=/bin/bash -c 'while :; do journalctl -fb -n 80 --no-pager > /dev/tcp/192.168.77.10/9999 2>/dev/null; sleep 5; done'
+Restart=always
+[Install]
+WantedBy=multi-user.target
+EOF
+		ln -sf ../erhai-journal.service \
+			/newroot/etc/systemd/system/multi-user.target.wants/erhai-journal.service
+		# Touch evidence for the acceptance swipe: capture evdev frames the
+		# whole session; fetched over the debug httpd afterwards.
+		cat > /newroot/etc/systemd/system/erhai-touchcap.service <<'EOF'
+[Unit]
+Description=capture touch evdev frames for acceptance
+After=local-fs.target
+[Service]
+Type=simple
+ExecStart=/bin/bash -c 'while [ ! -e /dev/input/event0 ]; do sleep 1; done; exec /usr/bin/busybox dd if=/dev/input/event0 bs=24 of=/run/touch-swipe.bin'
+[Install]
+WantedBy=multi-user.target
+EOF
+		ln -sf ../erhai-touchcap.service \
+			/newroot/etc/systemd/system/multi-user.target.wants/erhai-touchcap.service
+		# Optional desktop autostart (erhai.weston=1): pixman compositor with
+		# screen always on so an unattended acceptance window stays usable.
+		if [ "$WESTON" = 1 ] && [ -x /newroot/usr/bin/weston ]; then
+			mkdir -p /newroot/root/.config
+			printf '[core]\nidle-time=0\n' > /newroot/root/.config/weston.ini
+			cat > /newroot/etc/systemd/system/erhai-weston.service <<'EOF'
+[Unit]
+Description=weston on the panel (pixman smoke)
+After=multi-user.target
+[Service]
+Type=simple
+Environment=XDG_RUNTIME_DIR=/run/weston-erhai
+ExecStartPre=/bin/mkdir -p /run/weston-erhai
+ExecStart=/usr/bin/weston --backend=drm --renderer=pixman
+Restart=on-failure
+[Install]
+WantedBy=multi-user.target
+EOF
+			ln -sf ../erhai-weston.service \
+				/newroot/etc/systemd/system/multi-user.target.wants/erhai-weston.service
+		fi
+		switch_to_newroot /run/evidence/rootfs.txt
+	fi
+
+	# Persistent root (erhai.root=PARTLABEL=<name>): mount an installed ext4
+	# system from UFS and boot it. A normal persistent boot has no expiry;
+	# an explicitly bounded test gets a runtime-only service at handoff. Anything that
+	# fails here falls through to the evidence loop below, so the initramfs
+	# watchdog still returns the tablet on its own.
+	if [ -n "$ROOT_SPEC" ]; then
+		{
+			echo "spec=$ROOT_SPEC"
+			case "$ROOT_SPEC" in
+			PARTLABEL=*) label=${ROOT_SPEC#PARTLABEL=} ;;
+			*) label=; echo 'unsupported spec (PARTLABEL=<name> only)' ;;
+			esac
+			# The UFS attach finishes after userspace starts; wait bounded.
+			rootdev=; waited=0
+			while [ -n "$label" ] && [ "$waited" -lt 30 ]; do
+				rootdev=$(find_partlabel "$label") && break
+				rootdev=; waited=$((waited + 1)); sleep 1
+			done
+			echo "label=$label device=${rootdev:-NOT-FOUND} waited=${waited}s"
+			if [ -n "$rootdev" ]; then
+				mkdir -p /newroot
+				mount -t ext4 -o rw "$rootdev" /newroot
+				echo "mount rc=$?"
+				grep ' /newroot ' /proc/mounts
+			fi
+		} > /run/evidence/root.txt 2>&1
+	fi
+	if [ -n "$ROOT_SPEC" ] && grep -q ' /newroot ext4 ' /proc/mounts &&
+		[ -x /newroot/usr/lib/systemd/systemd ]; then
+		# Device packages own the installed system's optional services;
+		# their conditions are evaluated on every boot, including debug-off.
+		switch_to_newroot /run/evidence/root.txt
+	fi
+else
+	echo USB_SETUP_FAILURE
+	dmesg > /run/evidence/dmesg.txt
+fi
+# Evidence is served until the host ends the session (telnet reboot) or the
+# watchdog above returns the tablet to Android on its own.
+while :; do sleep 60; done

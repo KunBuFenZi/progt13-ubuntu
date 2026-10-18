@@ -1,0 +1,1 @@
+SUBSYSTEM=="block", KERNELS=="1d84000.ufs", ENV{UDISKS_IGNORE}="1"

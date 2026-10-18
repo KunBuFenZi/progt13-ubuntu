@@ -1,0 +1,358 @@
+{
+  "repo": "h0cheung/tb322fc-linux-kernel",
+  "commit": "bf96c3d4048973298ede78487177c6f1b4f6bc0f",
+  "files": [
+    {
+      "path": "drivers/media/platform/qcom/camss/Kconfig",
+      "git_blob": "4eda48cb1adf049a7fb6cb59b9da3c0870fe57f4",
+      "sha256": "791a5ba476d8f423bcba4e9bfb3dcb3d41c13a04dd734cd9435b28694921d9d6",
+      "bytes": 282,
+      "method": "Identical local blob verified against pinned upstream tree"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-csid-340.c",
+      "git_blob": "eca3f07b8a8a232014350e9e06d3d9772cb96b97",
+      "sha256": "75c352a85330a813fb02271e0f52208b380b8e6b002fcdfd7a291ac191848658",
+      "bytes": 5980,
+      "method": "Identical local blob verified against pinned upstream tree"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-csid-4-1.c",
+      "git_blob": "6998e1c52895c0e65ef1a983cef6f8962104fa5a",
+      "sha256": "12e2907fbc8aa5e09670e2169ac93cd103795d07dfad9be3c00598ad91420f64",
+      "bytes": 5618,
+      "method": "Identical local blob verified against pinned upstream tree"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-csid-4-7.c",
+      "git_blob": "66054d4872e699e9b5d6257726177c1447fa4e8a",
+      "sha256": "de87454462a015d7a01a2d29f63da4793f5953d62c2038f446b66e7149c31973",
+      "bytes": 6380,
+      "method": "Identical local blob verified against pinned upstream tree"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-csid-680.c",
+      "git_blob": "345a67c8fb947d012938b6d598954755a3d0e04c",
+      "sha256": "7e5c8bbd6fe7ff9bfcb6bfbf6cba9ae07445f9f340a2477b3558de2001e540db",
+      "bytes": 14056,
+      "method": "Identical local blob verified against pinned upstream tree"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-csid-gen1.h",
+      "git_blob": "80a2bc6efff67b35a16bf1710082f5fa8c03c5c5",
+      "sha256": "973bb1c556229fa190dcdb9e77cdc98fae3b964df3bb97af650fc0c0c4392d7f",
+      "bytes": 908,
+      "method": "Identical local blob verified against pinned upstream tree"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-csid-gen2.c",
+      "git_blob": "eadcb2f7e3aaa1e8c6bf5e939339769aa55e7018",
+      "sha256": "b12324980ee9759e34f6591f3dc6669c1dd70ec16859e50d177929953e60b3c0",
+      "bytes": 13613,
+      "method": "Identical local blob verified against pinned upstream tree"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-csid-gen2.h",
+      "git_blob": "3a8ad001b3e8f6f915f231f2506678d77c0588da",
+      "sha256": "aa06ec13ac34c76ee71f646dea5b3e7fc98d6d3fc6e19b137eacb1ee37ad6a49",
+      "bytes": 1375,
+      "method": "Identical local blob verified against pinned upstream tree"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-csid-gen3.c",
+      "git_blob": "0fdbf75fb27db35fec508996ab3adc1080742c3b",
+      "sha256": "bf9d0a39dacf71733e724435af94fcab01386f54ad873e0225b952072d369fa9",
+      "bytes": 10270,
+      "method": "Identical local blob verified against pinned upstream tree"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-csid-gen3.h",
+      "git_blob": "6ee62da770c172c2e37982d7d48dd2f1199e62fb",
+      "sha256": "059c9bdf11de22f39f3abeff2bf780eb66eb0d553fb7f9dc6f2ca55a74ee5e57",
+      "bytes": 896,
+      "method": "Identical local blob verified against pinned upstream tree"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-csiphy-2ph-1-0.c",
+      "git_blob": "9d67e7fa6366a0e45f7e997d0cfecf1f60e5c12e",
+      "sha256": "370181d484c6284820e867089b72ec4e2e7d21becce512cbf0902db9f1e8080f",
+      "bytes": 5208,
+      "method": "Identical local blob verified against pinned upstream tree"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-csiphy.c",
+      "git_blob": "539ac4888b608b3cc789728365e7e8a39fc54e78",
+      "sha256": "9694bc604c745f17ebe7962752af510b3657030560b3597aabdde2c970da6eab",
+      "bytes": 21412,
+      "method": "Identical local blob verified against pinned upstream tree"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-csiphy.h",
+      "git_blob": "9d9657b82f748d02bf6be6139480cfbd0c5001c9",
+      "sha256": "b07b8ac6e5911c4d8a7f35e5a4937e4735d1845aca22622898cbab910cdbe51a",
+      "bytes": 3321,
+      "method": "Identical local blob verified against pinned upstream tree"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-format.c",
+      "git_blob": "52cb01306ee0b2109e4dc8ce9e4123e43211c5c9",
+      "sha256": "6241fd017d136af2d2a8483c7811d1338e8a5ede65b499a953efc0885c43f53d",
+      "bytes": 2543,
+      "method": "Identical local blob verified against pinned upstream tree"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-format.h",
+      "git_blob": "4f87ac8c497511b951ff8ca6769bb6da6a7031f8",
+      "sha256": "6c777565a3cf5e90a6380dc2ab11753759c509ac2fb2a2b8c6e3a4de679d2b36",
+      "bytes": 2065,
+      "method": "Identical local blob verified against pinned upstream tree"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-ispif.c",
+      "git_blob": "aaf3caa42d33dcb641651e7f5bc0c2a564d85bfa",
+      "sha256": "e24b81817abbca48a81e12285867e585a76b5e116de175edf2fc4b725b744baa",
+      "bytes": 39517,
+      "method": "Identical local blob verified against pinned upstream tree"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-ispif.h",
+      "git_blob": "dff6d5b35c72ed7e7c94b485d50acab2d614feb7",
+      "sha256": "36045eece5c4b3e98a35a68fcfed569d588b52a0b80bd80439245ba6e1906842",
+      "bytes": 1718,
+      "method": "Identical local blob verified against pinned upstream tree"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-tpg-gen1.c",
+      "git_blob": "d29de5f93c18ee3c1778dc0626e8c198f354eb1f",
+      "sha256": "7def09f8c4f44720b72a19fa98ee92b611dc66f0e0dab365d4b95a5e3cf8faef",
+      "bytes": 7641,
+      "method": "Identical local blob verified against pinned upstream tree"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-tpg.c",
+      "git_blob": "c5b75132add44b1392806e65a1985a1e28da3b0b",
+      "sha256": "f17719e34631e91a780aafcc288526dd1682372d70d4aa991f75ccafc498aaaa",
+      "bytes": 11258,
+      "method": "Identical local blob verified against pinned upstream tree"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-tpg.h",
+      "git_blob": "7fb35a97dd068f8992a02d8d81cccfda8e556daf",
+      "sha256": "4a9b6e4e2b859661134d462a02556c9573c756e1c9bc88ef9656e528950671ab",
+      "bytes": 2896,
+      "method": "Identical local blob verified against pinned upstream tree"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-vfe-17x.c",
+      "git_blob": "e5ee7e717b3bcb88916249cb710d90e840082a4a",
+      "sha256": "e9a8f613f6dffc849af29c262adb6a7ee59e289f3896d4c11d89b453acc44dbd",
+      "bytes": 16780,
+      "method": "Identical local blob verified against pinned upstream tree"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-vfe-340.c",
+      "git_blob": "2526d568686db06a233f0aabe4bc176e4c440ea5",
+      "sha256": "e2668fe9d8e590cc5922d92a01cb1001ac79477c9f31330c4580639350150170",
+      "bytes": 11821,
+      "method": "Identical local blob verified against pinned upstream tree"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-vfe-4-1.c",
+      "git_blob": "9cf1ccdb2fe7ca9bf89b746af836e1035b457a8f",
+      "sha256": "b2aa4150cddedd87c6be180a70d44d9a86eba75a8022f36533537c0d0aa47be7",
+      "bytes": 31298,
+      "method": "Identical local blob verified against pinned upstream tree"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-vfe-4-7.c",
+      "git_blob": "76729607db02dab835251b8df27e92dff20f8116",
+      "sha256": "50f4f0eecbab9b9b1359bd35bcf574ce5ece9b0e5d01103d924681cfaa7b3e58",
+      "bytes": 36279,
+      "method": "Identical local blob verified against pinned upstream tree"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-vfe-4-8.c",
+      "git_blob": "b2f7d855d8dd0f3abe1259bfdce775bfa095c978",
+      "sha256": "d95684c0f18b53ec0d7385fd0a62d5757db1d02cd7bcddcf9ee7e9b8ef7b1eb1",
+      "bytes": 36175,
+      "method": "Identical local blob verified against pinned upstream tree"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-vfe-480.c",
+      "git_blob": "d73f733fde04599ffa5550d037967a4e7d193ef8",
+      "sha256": "923f8e6bf779e62555ce24f46ae40b35417dc86b147dcc7d3b326528e6111a4d",
+      "bytes": 9485,
+      "method": "Identical local blob verified against pinned upstream tree"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-vfe-680.c",
+      "git_blob": "99036e7c1e763a07c077e4ce024f3da2575a95e2",
+      "sha256": "c5e1b8b57c0aca5cf2d0d92bbd47cf9513f4aac70bb3385f4c7c2e7d8c414375",
+      "bytes": 7846,
+      "method": "Identical local blob verified against pinned upstream tree"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-vfe-gen1.c",
+      "git_blob": "d84a375e331878acec839966513553eb534b08ce",
+      "sha256": "4ea6d35ea13ef50cc25b5bdc00ecb92361bc8b69da5828186989368d442f22ba",
+      "bytes": 18692,
+      "method": "Identical local blob verified against pinned upstream tree"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-vfe-gen1.h",
+      "git_blob": "6d5f9656562c861948b75495865307dd80f36b7a",
+      "sha256": "ca014d421ab7d93ceb01005d415953c65bc483f9991937d9a5681a92cc3cb8a8",
+      "bytes": 3927,
+      "method": "Identical local blob verified against pinned upstream tree"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-vfe-gen3.c",
+      "git_blob": "22579617def78457d057e5ba413ae481843a18ad",
+      "sha256": "8944ab518964bba7d705f8fe057c3e4a04cd75bf832ed3b7926d3f6343e76255",
+      "bytes": 5960,
+      "method": "Identical local blob verified against pinned upstream tree"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-vfe-vbif.c",
+      "git_blob": "911f8da02f1fbb500ab9564978e2b0dddf93e84e",
+      "sha256": "f11e75cb2e52d9afa6ee374d6dda30d50857a0daea68aab3926943318d7aada8",
+      "bytes": 650,
+      "method": "Identical local blob verified against pinned upstream tree"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-vfe-vbif.h",
+      "git_blob": "502db629e961f67723b14a7c8c9ca973fe4c267c",
+      "sha256": "69642214067893253c6da1e32c7ad11f83f66b3d48158bbc34fa86d96d969cb6",
+      "bytes": 445,
+      "method": "Identical local blob verified against pinned upstream tree"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/Makefile",
+      "git_blob": "1ac787164bcf47281b82c762e412c0c2dae43c37",
+      "sha256": "59a210c4b90fb6fb18c68d6be5eef01f57b987c3b2436449247ba563ab556b91",
+      "bytes": 728,
+      "url": "https://api.github.com/repos/h0cheung/tb322fc-linux-kernel/git/blobs/1ac787164bcf47281b82c762e412c0c2dae43c37",
+      "method": "GitHub blob API"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-csid-980.c",
+      "git_blob": "8acc1efea2adfcf1b3e1d9d6789432739fb482d6",
+      "sha256": "5015cd9f2fe0a10803a515ccc232ef851d069c2eef2be1fa6de28542fd59cd08",
+      "bytes": 14043,
+      "url": "https://api.github.com/repos/h0cheung/tb322fc-linux-kernel/git/blobs/8acc1efea2adfcf1b3e1d9d6789432739fb482d6",
+      "method": "GitHub blob API"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-csid.c",
+      "git_blob": "592c1dfc977757e4f2327608ec192fcbec576e57",
+      "sha256": "64abba53e758982a3f0072c367337d7f6237d391d3549f80c239c7c69c9dbba4",
+      "bytes": 32187,
+      "url": "https://api.github.com/repos/h0cheung/tb322fc-linux-kernel/git/blobs/592c1dfc977757e4f2327608ec192fcbec576e57",
+      "method": "GitHub blob API"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-csid.h",
+      "git_blob": "2015da56c961327cf283609f77dad2173309c577",
+      "sha256": "637bc07f63ea78bd20c5f87331de97f3d15275389b16bd81a5f087e5c50768f1",
+      "bytes": 7112,
+      "url": "https://api.github.com/repos/h0cheung/tb322fc-linux-kernel/git/blobs/2015da56c961327cf283609f77dad2173309c577",
+      "method": "GitHub blob API"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c",
+      "git_blob": "11d9b94898216ee64e6643bab076b0f1130abd1f",
+      "sha256": "571529bc4ea491c23b54322ffe0ade30714c464f5ec718889bafd559a16f6232",
+      "bytes": 54803,
+      "url": "https://api.github.com/repos/h0cheung/tb322fc-linux-kernel/git/blobs/11d9b94898216ee64e6643bab076b0f1130abd1f",
+      "method": "GitHub blob API"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-vfe-gen4.c",
+      "git_blob": "2ee82898f37dcbf5e2486934e10bc6bcb0c95d3a",
+      "sha256": "29c970836132ceee021dfaf90faab43b18066d3b27d782c73b5757299b03648d",
+      "bytes": 5920,
+      "url": "https://api.github.com/repos/h0cheung/tb322fc-linux-kernel/git/blobs/2ee82898f37dcbf5e2486934e10bc6bcb0c95d3a",
+      "method": "GitHub blob API"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-vfe.c",
+      "git_blob": "f42fc56e7dfc9025429cc51e676268c503bcc483",
+      "sha256": "83de5d90a1443733abf4d7e0f8a937e51c3ac8ed7665d45572e3ac355c15226c",
+      "bytes": 57304,
+      "url": "https://api.github.com/repos/h0cheung/tb322fc-linux-kernel/git/blobs/f42fc56e7dfc9025429cc51e676268c503bcc483",
+      "method": "GitHub blob API"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-vfe.h",
+      "git_blob": "621eee07d1054b648f6405b8efb501349da724d2",
+      "sha256": "0dcd8814074db29438c75a1c9b66259557ac5a67de6df7abffb2610edfb95d3c",
+      "bytes": 8665,
+      "url": "https://api.github.com/repos/h0cheung/tb322fc-linux-kernel/git/blobs/621eee07d1054b648f6405b8efb501349da724d2",
+      "method": "GitHub blob API"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-video.c",
+      "git_blob": "ee9ffd0432cd289ddd0ccb459cd18a8c25032f9e",
+      "sha256": "b4550ee896ae2d14ef16c2fe05a40476419cd2f2e3311c822a664dc67fbeaccf",
+      "bytes": 20702,
+      "url": "https://api.github.com/repos/h0cheung/tb322fc-linux-kernel/git/blobs/ee9ffd0432cd289ddd0ccb459cd18a8c25032f9e",
+      "method": "GitHub blob API"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss-video.h",
+      "git_blob": "af046ecb7f43537f31d904eb08d18f6259bfe83b",
+      "sha256": "d481a30032ece7751d280bb89d782567f388fb9e901c59efc7fb4e865feb0240",
+      "bytes": 1516,
+      "url": "https://api.github.com/repos/h0cheung/tb322fc-linux-kernel/git/blobs/af046ecb7f43537f31d904eb08d18f6259bfe83b",
+      "method": "GitHub blob API"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss.c",
+      "git_blob": "b6914fb2481fed0711da073df3f27c3f6c59205f",
+      "sha256": "62f3bbc5c393a26ef6488e8c0b2eed19bdcb61db1dd7ac61982b21260554704f",
+      "bytes": 147035,
+      "url": "https://api.github.com/repos/h0cheung/tb322fc-linux-kernel/git/blobs/b6914fb2481fed0711da073df3f27c3f6c59205f",
+      "method": "GitHub blob API"
+    },
+    {
+      "path": "drivers/media/platform/qcom/camss/camss.h",
+      "git_blob": "6a17ec027d47fd7096ec710903b53a9d998814e3",
+      "sha256": "d06b62be6874a9d27f009a853b268a96403f7339fd5c489d960f707581f533c4",
+      "bytes": 4633,
+      "url": "https://api.github.com/repos/h0cheung/tb322fc-linux-kernel/git/blobs/6a17ec027d47fd7096ec710903b53a9d998814e3",
+      "method": "GitHub blob API"
+    },
+    {
+      "path": "arch/arm64/boot/dts/qcom/sm8750.dtsi",
+      "git_blob": "67d0cd419e589107bf607ba2f623bea812c55b42",
+      "sha256": "cbf8bad5006ec6d2c3d654aeec94bb0f08be235e03804164a2252e5b65a4e175",
+      "bytes": 191275,
+      "url": "https://api.github.com/repos/h0cheung/tb322fc-linux-kernel/contents/arch/arm64/boot/dts/qcom/sm8750.dtsi?ref=bf96c3d4048973298ede78487177c6f1b4f6bc0f",
+      "method": "GitHub blob API"
+    },
+    {
+      "path": "arch/arm64/boot/dts/qcom/sm8750-lenovo-elden.dts",
+      "git_blob": "deabcb6506ae0718fb6c4853cae11bce6eb7e5bb",
+      "sha256": "0a4361f3f2225befd954dd5420216f357bfa8a68294c28c895ec2478ebea3ba3",
+      "bytes": 54331,
+      "url": "https://api.github.com/repos/h0cheung/tb322fc-linux-kernel/contents/arch/arm64/boot/dts/qcom/sm8750-lenovo-elden.dts?ref=bf96c3d4048973298ede78487177c6f1b4f6bc0f",
+      "method": "GitHub blob API"
+    },
+    {
+      "path": "drivers/clk/qcom/cambistmclkcc-sm8750.c",
+      "git_blob": "69abb756c04f2afba45db2dd371ee12f7b4366e4",
+      "sha256": "b9368cf617af714f47273b24f674677213a2b6189cf51ff02b61b9e7b7568dfa",
+      "bytes": 13296,
+      "url": "https://api.github.com/repos/h0cheung/tb322fc-linux-kernel/contents/drivers/clk/qcom/cambistmclkcc-sm8750.c?ref=bf96c3d4048973298ede78487177c6f1b4f6bc0f",
+      "method": "GitHub blob API"
+    },
+    {
+      "path": "drivers/clk/qcom/camcc-sm8750.c",
+      "git_blob": "4dac298f06b188e78a61121bc9452f7246e59c56",
+      "sha256": "191c1754ca0f1408cdd9e2e1c9caaa290b5f707633f7bb84e443dfde08f29b93",
+      "bytes": 73195,
+      "url": "https://api.github.com/repos/h0cheung/tb322fc-linux-kernel/contents/drivers/clk/qcom/camcc-sm8750.c?ref=bf96c3d4048973298ede78487177c6f1b4f6bc0f",
+      "method": "GitHub blob API"
+    }
+  ]
+}

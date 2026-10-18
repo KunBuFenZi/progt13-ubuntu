@@ -1,0 +1,10 @@
+[Unit]
+Description=Bounded RAM-only compressed swap for the disposable desktop
+After=local-fs.target
+Before=display-manager.service
+[Service]
+Type=oneshot
+ExecStart=/bin/sh /usr/local/libexec/tb378fc-zram
+RemainAfterExit=yes
+[Install]
+WantedBy=multi-user.target

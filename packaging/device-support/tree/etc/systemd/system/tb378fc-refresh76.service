@@ -1,0 +1,13 @@
+[Unit]
+Description=TB378FC checked continuous refresh modes and desktop media discovery
+Requires=tb378fc-camera74.service
+After=tb378fc-camera74.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /usr/local/libexec/tb378fc-refresh76.py
+RemainAfterExit=yes
+TimeoutStartSec=70s
+
+[Install]
+WantedBy=graphical.target

@@ -1,0 +1,220 @@
+// SPDX-License-Identifier: BSD-3-Clause
+/*
+ * Lenovo TB378FC, stage 1: RAM userspace and USB2 peripheral diagnostics.
+ * USB rail assignments and constraints are from this unit's running DT.
+ * The SM8750 common DTS and PMIC descriptions provide the platform blocks.
+ */
+/dts-v1/;
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+#include "sm8750.dtsi"
+#include "pm8550.dtsi"
+#define PMK8550VE_SID 8
+#include "pm8550ve.dtsi"
+#include "pmih0108.dtsi"
+#include "pmk8550.dtsi"
+#include "sm8750-pmics.dtsi"
+
+/ {
+	model = "Lenovo Xiaoxin Pad Pro GT 13 (TB378FC, RAM diagnostics)";
+	compatible = "lenovo,tb378fc", "qcom,sm8750";
+	chassis-type = "tablet";
+
+	/* Lenovo ABL updates this existing node before entering the kernel. */
+	chosen {
+	};
+
+	reserved-memory {
+		/* Preserve the UEFI scanout for the temporary screen console. */
+		splash_region {
+			label = "cont_splash_region";
+			reg = <0x0 0xfc800000 0x0 0x2b00000>;
+			no-map;
+		};
+
+		/* Match this unit's downstream 4 MiB RAM console allocation. */
+		ramoops@c2000000 {
+			compatible = "ramoops";
+			reg = <0x0 0xc2000000 0x0 0x400000>;
+			console-size = <0x200000>;
+			pmsg-size = <0x200000>;
+			record-size = <0>;
+			no-map;
+		};
+	};
+
+	clocks {
+		xo_board: xo-board {
+			compatible = "fixed-clock";
+			clock-frequency = <76800000>;
+			#clock-cells = <0>;
+		};
+
+		sleep_clk: sleep-clk {
+			compatible = "fixed-clock";
+			clock-frequency = <32000>;
+			#clock-cells = <0>;
+		};
+
+		bi_tcxo_div2: bi-tcxo-div2-clk {
+			compatible = "fixed-factor-clock";
+			#clock-cells = <0>;
+			clocks = <&rpmhcc RPMH_CXO_CLK>;
+			clock-mult = <1>;
+			clock-div = <2>;
+		};
+
+		bi_tcxo_ao_div2: bi-tcxo-ao-div2-clk {
+			compatible = "fixed-factor-clock";
+			#clock-cells = <0>;
+			clocks = <&rpmhcc RPMH_CXO_CLK_A>;
+			clock-mult = <1>;
+			clock-div = <2>;
+		};
+	};
+
+	vph_pwr: vph-pwr-regulator {
+		compatible = "regulator-fixed";
+		regulator-name = "vph_pwr";
+		regulator-min-microvolt = <3700000>;
+		regulator-max-microvolt = <3700000>;
+		regulator-always-on;
+		regulator-boot-on;
+	};
+};
+
+/* The unit reserves the full first 18 MiB for the hypervisor. */
+&gunyah_hyp_mem {
+	reg = <0x0 0x80000000 0x0 0x1200000>;
+};
+/delete-node/ &cpusys_vm_mem;
+
+/* Preserve UEFI scanout until the native DSI/panel chain is ready.
+ * The DISPCC probe reprograms PLL0/1/2 even when DRM is disabled.
+ */
+&dispcc {
+	status = "disabled";
+};
+
+&tlmm {
+	/* Live DT qcom,gpios-reserved: 36, 37, 38, 39, 74.
+	 * Exclude these from GPIO registration's get_direction() scan.
+	 */
+	gpio-reserved-ranges = <36 4>, <74 1>;
+};
+
+&apps_rsc {
+	regulators-b {
+		compatible = "qcom,pm8550-rpmh-regulators";
+		qcom,pmic-id = "b";
+		vdd-bob1-supply = <&vph_pwr>;
+		vdd-l5-l16-supply = <&vreg_bob1>;
+		vdd-l15-supply = <&vreg_s3g>;
+
+		vreg_bob1: bob1 {
+			regulator-name = "vreg_bob1";
+			regulator-min-microvolt = <3008000>;
+			regulator-max-microvolt = <4000000>;
+		};
+		vreg_l5b: ldo5 {
+			regulator-name = "vreg_l5b_usb_repeater";
+			regulator-min-microvolt = <3100000>;
+			regulator-max-microvolt = <3148000>;
+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+		};
+		vreg_l15b: ldo15 {
+			regulator-name = "vreg_l15b_usb_repeater";
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <1800000>;
+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+		};
+	};
+
+	regulators-d {
+		compatible = "qcom,pm8550ve-rpmh-regulators";
+		qcom,pmic-id = "d";
+		vdd-s1-supply = <&vph_pwr>;
+		vdd-l2-supply = <&vreg_s1d>;
+
+		vreg_s1d: smps1 {
+			regulator-name = "vreg_s1d";
+			regulator-min-microvolt = <880000>;
+			regulator-max-microvolt = <1100000>;
+		};
+		vreg_l2d: ldo2 {
+			regulator-name = "vreg_l2d_usb_hsphy";
+			regulator-min-microvolt = <880000>;
+			regulator-max-microvolt = <912000>;
+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+		};
+	};
+
+	regulators-g {
+		compatible = "qcom,pm8550ve-rpmh-regulators";
+		qcom,pmic-id = "g";
+		vdd-s3-supply = <&vph_pwr>;
+		/* PM8550VE L3 input follows the SM8750 reference supply topology. */
+		vdd-l3-supply = <&vreg_s7i>;
+
+		vreg_s3g: smps3 {
+			regulator-name = "vreg_s3g";
+			regulator-min-microvolt = <1856000>;
+			regulator-max-microvolt = <2000000>;
+		};
+		vreg_l3g: ldo3 {
+			regulator-name = "vreg_l3g_usb_hsphy";
+			regulator-min-microvolt = <1200000>;
+			regulator-max-microvolt = <1256000>;
+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+		};
+	};
+
+	regulators-i {
+		compatible = "qcom,pm8550ve-rpmh-regulators";
+		qcom,pmic-id = "i";
+		vdd-s7-supply = <&vph_pwr>;
+
+		vreg_s7i: smps7 {
+			regulator-name = "vreg_s7i_usb_supply";
+			regulator-min-microvolt = <1224000>;
+			regulator-max-microvolt = <1340000>;
+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+		};
+	};
+};
+
+&pmih0108_eusb2_repeater {
+	vdd18-supply = <&vreg_l15b>;
+	vdd3-supply = <&vreg_l5b>;
+	status = "okay";
+};
+
+&usb_hsphy {
+	vdd-supply = <&vreg_l2d>;
+	vdda12-supply = <&vreg_l3g>;
+	phys = <&pmih0108_eusb2_repeater>;
+	status = "okay";
+};
+
+/* Fixed USB2 peripheral mode avoids depending on ADSP/UCSI for first boot. */
+&usb {
+	/delete-property/ usb-role-switch;
+	dr_mode = "peripheral";
+	maximum-speed = "high-speed";
+	phys = <&usb_hsphy>;
+	phy-names = "usb2-phy";
+	status = "okay";
+};
+
+&usb_dwc3_ss {
+	/delete-property/ remote-endpoint;
+};
+
+&usb_dp_qmpphy_usb_ss_in {
+	/delete-property/ remote-endpoint;
+};
+
+&pon_pwrkey {
+	status = "okay";
+};

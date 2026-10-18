@@ -1,0 +1,12 @@
+[Unit]
+Description=TB378FC native torch with automatic off
+
+[Service]
+ExecStartPre=/usr/local/libexec/tb378fc-load-flash70
+ExecStart=/usr/bin/python3 /usr/local/libexec/tb378fc-torch-service.py
+ExecStopPost=/bin/sh -c 'echo 0 > /sys/class/leds/white:flash:tb378fc/brightness; echo 0 > /sys/class/leds/white:flash:tb378fc/flash_strobe'
+TimeoutStopSec=2
+NoNewPrivileges=yes
+ProtectHome=yes
+PrivateTmp=yes
+RestrictAddressFamilies=AF_UNIX

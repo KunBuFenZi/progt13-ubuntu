@@ -1,0 +1,74 @@
+#!/bin/sh
+set -e
+mount -t configfs configfs /sys/kernel/config
+g=/sys/kernel/config/usb_gadget/tb378fc-stage1
+mkdir -p "$g"
+echo 0x1d6b >"$g/idVendor"
+echo 0x0104 >"$g/idProduct"
+mode=ncm
+case " $(cat /proc/cmdline) " in
+    *" tb378fc.usb=rndis "*)
+        mode=rndis
+        echo 0x0106 >"$g/idProduct"
+        ;;
+esac
+echo 0x0200 >"$g/bcdUSB"
+echo 0xef >"$g/bDeviceClass"
+echo 0x02 >"$g/bDeviceSubClass"
+echo 0x01 >"$g/bDeviceProtocol"
+mkdir -p "$g/strings/0x409" "$g/configs/c.1/strings/0x409"
+echo TB378FC-stage1 >"$g/strings/0x409/serialnumber"
+echo 'Lenovo Linux development' >"$g/strings/0x409/manufacturer"
+echo 'TB378FC RAM diagnostic console' >"$g/strings/0x409/product"
+echo "ACM and $mode diagnostics" >"$g/configs/c.1/strings/0x409/configuration"
+# Composite core caps this request to 500 mA at USB2 and 900 mA at USB3.
+# Leave the actual charger/VBUS policy to the negotiated firmware state.
+echo 900 >"$g/configs/c.1/MaxPower"
+mkdir -p "$g/functions/acm.GS0" "$g/functions/$mode.usb0"
+echo 02:54:42:37:8f:02 >"$g/functions/$mode.usb0/dev_addr"
+echo 02:54:42:37:8f:10 >"$g/functions/$mode.usb0/host_addr"
+if [ "$mode" = rndis ]; then
+    echo 1 >"$g/os_desc/use"
+    echo 0xcd >"$g/os_desc/b_vendor_code"
+    echo MSFT100 >"$g/os_desc/qw_sign"
+    echo RNDIS >"$g/functions/rndis.usb0/os_desc/interface.rndis/compatible_id"
+    echo 5162001 >"$g/functions/rndis.usb0/os_desc/interface.rndis/sub_compatible_id"
+    ln -s "$g/configs/c.1" "$g/os_desc/c.1"
+fi
+if [ "$mode" = rndis ]; then
+    ln -s "$g/functions/$mode.usb0" "$g/configs/c.1/$mode.usb0"
+    ln -s "$g/functions/acm.GS0" "$g/configs/c.1/acm.GS0"
+else
+    ln -s "$g/functions/acm.GS0" "$g/configs/c.1/acm.GS0"
+    ln -s "$g/functions/$mode.usb0" "$g/configs/c.1/$mode.usb0"
+fi
+udc=
+for count in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15; do
+    for device in /sys/class/udc/*; do
+        [ -e "$device" ] || continue
+        udc=${device##*/}
+        break
+    done
+    [ -z "$udc" ] || break
+    sleep 1
+done
+[ -n "$udc" ] || { echo 'NO_USB_DEVICE_CONTROLLER'; exit 1; }
+echo "$udc" >"$g/UDC"
+echo 'USB_UDC_BOUND' >/dev/kmsg
+interface=$(cat "$g/functions/$mode.usb0/ifname")
+ip link set "$interface" up
+ip address add 192.168.77.2/24 dev "$interface"
+ip address add 169.254.77.2/16 dev "$interface"
+echo 'USB_NETWORK_ADDRESSES_READY' >/dev/kmsg
+cat >/run/udhcpd.conf <<EOF
+start 192.168.77.10
+end 192.168.77.20
+interface $interface
+option subnet 255.255.255.0
+option lease 600
+lease_file /run/udhcpd.leases
+pidfile /run/udhcpd.pid
+EOF
+touch /run/udhcpd.leases
+udhcpd -f /run/udhcpd.conf &
+echo "USB_READY mode=$mode udc=$udc interface=$interface address=192.168.77.2"

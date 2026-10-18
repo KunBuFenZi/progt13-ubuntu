@@ -1,0 +1,228 @@
+{
+  "purpose": [
+    "Pinned inputs of the erhai-sensors candidate: the Qualcomm Sensor Core",
+    "user space (hexagonrpcd file server, libssc, iio-sensor-proxy with SSC",
+    "support) built for Ubuntu 26.04 arm64 in a disposable chroot. No build",
+    "reads a previous build output. Status: offline candidate, not validated",
+    "on hardware."
+  ],
+  "build_root": {
+    "archive": "ubuntu-base-26.04-base-arm64.tar.gz",
+    "url": "https://cdimage.ubuntu.com/ubuntu-base/releases/26.04/release/ubuntu-base-26.04-base-arm64.tar.gz",
+    "sha256": "b2b46a37324ea1954e93f293fe6d7c2241daf2fc298c4022e6e4caceeed74cab"
+  },
+  "apt": {
+    "snapshot": "20260924T000000Z",
+    "uri": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/",
+    "suites": [
+      "resolute",
+      "resolute-updates",
+      "resolute-security"
+    ],
+    "components": [
+      "main",
+      "universe"
+    ],
+    "note": "Archive signatures are checked with the keyring shipped in build_root; the pinned snapshot fixes the build-dependency versions.",
+    "packages": [
+      "dpkg-dev",
+      "gcc",
+      "libc6-dev",
+      "libglib2.0-dev",
+      "libgudev-1.0-dev",
+      "libpolkit-gobject-1-dev",
+      "libprotobuf-c-dev",
+      "libqmi-glib-dev",
+      "meson",
+      "ninja-build",
+      "patch",
+      "pkgconf",
+      "protobuf-c-compiler",
+      "protobuf-compiler",
+      "python3-dev"
+    ]
+  },
+  "sources": [
+    {
+      "name": "hexagonrpc",
+      "version": "0.5.0-g598b591",
+      "url": "https://github.com/linux-msm/hexagonrpc/archive/598b591ae9da6a6cfe2ca5ea78998019ca6395ea.tar.gz",
+      "archive": "hexagonrpc-598b591ae9da6a6cfe2ca5ea78998019ca6395ea.tar.gz",
+      "directory": "hexagonrpc-598b591ae9da6a6cfe2ca5ea78998019ca6395ea",
+      "sha256": "05181d130f1e3a3f4c368be606a627562f7abd972c5efff92a21d66d35a2fe51",
+      "upstream_commit": "598b591ae9da6a6cfe2ca5ea78998019ca6395ea",
+      "license": "GPL-3.0-or-later",
+      "patches": [
+        {
+          "file": "patches/hexagonrpc/0001-hexagonrpcd-expose-the-SSC-registry-version-sibling.patch",
+          "sha256": "856b046e572209b5f13c54ef100e685463aba23eefb850d0f3389c4c7ac6fa90",
+          "origin": "xiaomipad-6pro-mainline (Xiaomi Pad 6 Pro port), unmodified",
+          "origin_url": "https://github.com/yzddmr6/xiaomipad-6pro-mainline/blob/e08c1488ef03b2d737c16f01d0d22f7258fd3289/device/sensors/patches/0001-hexagonrpcd-expose-the-SSC-registry-version-sibling.patch",
+          "upstream_status": "not upstream"
+        },
+        {
+          "file": "patches/hexagonrpc/0002-hexagonrpcd-add-a-narrow-sns_registry-property-shim.patch",
+          "sha256": "7826943d36a93bbddf1746e96b831bbc2efd5e7c7ff1f0d8460fe2f2acf7a1a5",
+          "origin": "xiaomipad-6pro-mainline (Xiaomi Pad 6 Pro port), unmodified",
+          "origin_url": "https://github.com/yzddmr6/xiaomipad-6pro-mainline/blob/e08c1488ef03b2d737c16f01d0d22f7258fd3289/device/sensors/patches/0002-hexagonrpcd-add-a-narrow-sns_registry-property-shim.patch",
+          "upstream_status": "not upstream"
+        },
+        {
+          "file": "patches/hexagonrpc/0003-hexagonrpcd-serve-the-ODM-sensor-configuration-directory.patch",
+          "sha256": "8b43791c97bf750cbbee1caf51ced2ef007e73206d317c7e21c8ba4e9f727698",
+          "origin": "this project",
+          "upstream_status": "not submitted",
+          "note": "The ADSP sensor image names both /vendor/etc/sensors/config (json.lst) and /odm/etc/sensor/config (json_list); the stock sns_reg_config points its config directory at the ODM path."
+        },
+        {
+          "file": "patches/hexagonrpc/0004-hexagonrpcd-answer-apps_std-fopen_with_env_fd-lookups.patch",
+          "sha256": "fe73ca530d87612078def87cffbc07994e6e21043f7ab29ea671074c8f25bcd8",
+          "origin": "this project",
+          "upstream_status": "not submitted",
+          "note": "apps_std method 36 is fopen_with_env_fd in Qualcomm's apps_std IDL (quic/fastrpc src/apps_std_skel.c at d247519650fe5cb16de6c78edaa95bcc4be25073); the stock libadsprpc.so dispatcher accepts it only as sc 0x1f050100. Absent files answer ENOENT like the reference; serving a present file as a DSP-mapped buffer is not implemented and is refused with AEE_EUNSUPPORTED.",
+          "evidence": [
+            {
+              "url": "https://raw.githubusercontent.com/quic/fastrpc/d247519650fe5cb16de6c78edaa95bcc4be25073/src/apps_std_skel.c",
+              "sha256": "0e3ff421cf2b7b6f3649fd2c17f0327daad8a5628157159dcebff12f688cdc91",
+              "shows": "generated apps_std skel: extended method 36 -> apps_std_fopen_with_env_fd, 5 in / 1 out, 20-byte primary input, 8-byte primary output; unknown methods return AEE_EUNSUPPORTED"
+            },
+            {
+              "url": "https://raw.githubusercontent.com/quic/fastrpc/d247519650fe5cb16de6c78edaa95bcc4be25073/inc/apps_std.h",
+              "sha256": "170f337fefbaccc505e6560823e9aa2c35c9b9b150ba467fcf9fb54f776fcf08",
+              "shows": "fopen_with_env_fd(envvarname, delim, name, mode, int *fd, int *len)"
+            },
+            {
+              "url": "https://raw.githubusercontent.com/quic/fastrpc/d247519650fe5cb16de6c78edaa95bcc4be25073/src/apps_std_imp.c",
+              "sha256": "2bb7d12565c495399259f5d1a16333bb14cf79245475ff9e41090563906188f3",
+              "shows": "reference semantics: search the path, read into rpcmem, fastrpc_mmap(FASTRPC_MAP_FD), return fd/len; ENOENT when absent"
+            },
+            {
+              "rom_file": "vendor.img:/lib64/libadsprpc.so",
+              "sha256": "9f29121254586caa205f2471f5bead26e61487c8d298ea54d903bd636fde6f38",
+              "shows": "stock dispatcher: extended ID 0x24 accepted only for scalars 0x050100, primary input >= 20 and output >= 8 bytes; handler logs apps_std_fopen_with_env_fd"
+            }
+          ]
+        },
+        {
+          "file": "patches/hexagonrpc/0005-hexagonrpcd-keep-listening-after-refusing-a-request.patch",
+          "sha256": "aae6e7b1ce97018ffc58a63d60155f78222dccbe70c68906eb85bdb589c63cc2",
+          "origin": "this project",
+          "upstream_status": "not submitted",
+          "note": "Upstream hexagonrpcd exits on any refused request; the reference listener (quic/fastrpc src/listener_android.c) replies with the error and empty output buffers and keeps serving. Refusals stay logged.",
+          "evidence": [
+            {
+              "url": "https://raw.githubusercontent.com/quic/fastrpc/d247519650fe5cb16de6c78edaa95bcc4be25073/src/listener_android.c",
+              "sha256": "d2659622e9b192b61d7ff5cbbf38dd348597290521c217155abc51f45ea0a7ab",
+              "shows": "a non-zero result is sent back with outBufsLen = 0 and the loop continues"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "libssc",
+      "version": "0.4.4",
+      "url": "https://codeberg.org/DylanVanAssche/libssc/archive/0cf77b93b55752da34dca2dcecc06fca8665184b.tar.gz",
+      "mirror_url": "http://deb.debian.org/debian/pool/main/libs/libssc/libssc_0.4.4.orig.tar.gz",
+      "archive": "libssc_0.4.4.orig.tar.gz",
+      "directory": "libssc",
+      "sha256": "716d6bd6b34d2d753060c6b54c9a87e34fae75b724c763bf9ef487efa3621587",
+      "checksum_source": "Debian libssc_0.4.4-2.dsc (Checksums-Sha256); identical bytes to the upstream archive of the same commit",
+      "upstream_commit": "0cf77b93b55752da34dca2dcecc06fca8665184b",
+      "license": "GPL-3.0-or-later",
+      "patches": [
+        {
+          "file": "patches/libssc/0001-libssc-select-the-delivery-and-batching-of-streams-at-run-time.patch",
+          "sha256": "20a41d2ded187804904ec4b8676d1a2de669c3b07aeb9b1d98945d2ae4a35ec5",
+          "origin": "this project",
+          "upstream_status": "not submitted",
+          "note": "Stream requests take their delivery type and optional batching from SSC_SUSPEND_MODE, SSC_BATCH_PERIOD_US and SSC_FLUSH_PERIOD_US, read once per process; without them the requests are unchanged. Made the single-variable wake-up A/B of the ADSP SMP2P interrupts possible; 0002 turns the unset case into a per-sensor-type default.",
+          "evidence": [
+            {
+              "rom_file": "vendor.img:/lib64/libsnsapi-full.so",
+              "sha256": "0ccf31f2189b7d1c109730de6611222b3da7de81d175ad630ddde7d0192fecec",
+              "shows": "embedded descriptors: sns_client_request_msg.susp_config (3) = {client_proc_type 1, delivery_type 2 (SNS_CLIENT_DELIVERY_WAKEUP 0, NO_WAKEUP 1), nowakeup_msg_ids 3}; sns_std_request.batching (1) = batch_spec {batch_period 1, flush_period 2, flush_only 3, max_batch 4}, payload 2, is_passive 3"
+            },
+            {
+              "rom_file": "vendor.img:/lib64/sensors.qsh.so",
+              "sha256": "60964b6b4a3d812f4e819071e13c99301aed266b09ac37702617c3c50feeaacb",
+              "shows": "stock sensor HAL log formats: 'asked batch_period_us', 'convert sample_period=%lu to batch_period=%u', 'bp=%u, fp=%u' and per-sensor _wakeup_type"
+            }
+          ]
+        },
+        {
+          "file": "patches/libssc/0002-libssc-choose-the-stream-delivery-by-sensor-type.patch",
+          "sha256": "ca6ea62fd23b6c036cad00298376255f359d3b54bed35fabd24760cca94ec324",
+          "origin": "this project",
+          "upstream_status": "not submitted",
+          "note": "Without SSC_SUSPEND_MODE the stream request of a sensor takes the delivery of its data type: accel, gyro, mag and rotv non-wakeup (delivery_type 1), every other type wake-up as in 0.4.4; streams stay unbatched unless SSC_BATCH_PERIOD_US is set. SSC_SUSPEND_MODE=wakeup|nowakeup still forces one delivery for every stream of the process (A/B and fallback). On this tablet non-wakeup delivery of the 5 Hz accelerometer stream removed the per-sample ADSP SMP2P interrupts (4.9/s to 0) with the sample rate unchanged; behaviour while the processor is suspended is not measured.",
+          "evidence": [
+            {
+              "url": "https://source.android.com/docs/core/interaction/sensors/suspend-mode",
+              "shows": "non-wake-up sensors neither keep the SoC awake nor wake it to report; while it is suspended their events wait in the FIFO and are delivered when it wakes, oldest dropped when full; by type, only proximity and significant motion were wake-up sensors before per-sensor flags"
+            },
+            {
+              "rom_file": "vendor.img:/lib64/sensors.qsh.so",
+              "sha256": "60964b6b4a3d812f4e819071e13c99301aed266b09ac37702617c3c50feeaacb",
+              "shows": "stock sensor HAL requests the delivery type per sensor (_wakeup_type)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "iio-sensor-proxy",
+      "version": "3.9",
+      "url": "http://deb.debian.org/debian/pool/main/i/iio-sensor-proxy/iio-sensor-proxy_3.9.orig.tar.bz2",
+      "mirror_url": "http://archive.ubuntu.com/ubuntu/pool/main/i/iio-sensor-proxy/iio-sensor-proxy_3.9.orig.tar.bz2",
+      "archive": "iio-sensor-proxy_3.9.orig.tar.bz2",
+      "directory": "iio-sensor-proxy-3.9",
+      "sha256": "19a4ae99b1b8af603fc789841025f9747bf445418d69ec7389e75adb6c8186bf",
+      "checksum_source": "Debian iio-sensor-proxy_3.9-1.dsc (Checksums-Sha256); upstream release tarball",
+      "upstream_commit": "0085ddf8ecb173a1c5fcf2344aa40e561125354f",
+      "license": "GPL-3.0-or-later",
+      "patches": [
+        {
+          "file": "patches/iio-sensor-proxy/0001-iio-sensor-proxy-start-preclaimed-coldplug-sensor.patch",
+          "sha256": "84bd7c4986d5e1ad68a6edfe241147e41262db3c95f69b054e464a95846ac808",
+          "origin": "xiaomipad-6pro-mainline (Xiaomi Pad 6 Pro port), unmodified",
+          "origin_url": "https://github.com/yzddmr6/xiaomipad-6pro-mainline/blob/e08c1488ef03b2d737c16f01d0d22f7258fd3289/device/sensors/patches/0003-iio-sensor-proxy-start-preclaimed-coldplug-sensor.patch",
+          "upstream_status": "not upstream"
+        },
+        {
+          "file": "patches/iio-sensor-proxy/0002-iio-sensor-proxy-serialize-ssc-accel-polling.patch",
+          "sha256": "978b9d168584890e576ac6cee4b27fb75260d0117da4b0d68813a25fe15fa738",
+          "origin": "xiaomipad-6pro-mainline (Xiaomi Pad 6 Pro port), unmodified",
+          "origin_url": "https://github.com/yzddmr6/xiaomipad-6pro-mainline/blob/e08c1488ef03b2d737c16f01d0d22f7258fd3289/device/sensors/patches/0004-iio-sensor-proxy-serialize-ssc-accel-polling.patch",
+          "upstream_status": "not upstream"
+        },
+        {
+          "file": "patches/iio-sensor-proxy/0003-iio-sensor-proxy-cancel-released-pending-claims.patch",
+          "sha256": "c46633a0ff858cd4d28fcdc14226f473a874c7fc6073970a215bc77b1be11aaf",
+          "origin": "xiaomipad-6pro-mainline (Xiaomi Pad 6 Pro port), unmodified",
+          "origin_url": "https://github.com/yzddmr6/xiaomipad-6pro-mainline/blob/e08c1488ef03b2d737c16f01d0d22f7258fd3289/device/sensors/patches/0005-iio-sensor-proxy-cancel-released-pending-claims.patch",
+          "upstream_status": "not upstream"
+        },
+        {
+          "file": "patches/iio-sensor-proxy/0004-iio-sensor-proxy-broadcast-sensor-availability.patch",
+          "sha256": "c260ff38fc9f08e0ac9e84e0c661a3c692166f8969e2402f9ad50108cd6dc35c",
+          "origin": "xiaomipad-6pro-mainline (Xiaomi Pad 6 Pro port), unmodified",
+          "origin_url": "https://github.com/yzddmr6/xiaomipad-6pro-mainline/blob/e08c1488ef03b2d737c16f01d0d22f7258fd3289/device/sensors/patches/0006-iio-sensor-proxy-broadcast-sensor-availability.patch",
+          "upstream_status": "not upstream"
+        },
+        {
+          "file": "patches/iio-sensor-proxy/0005-iio-sensor-proxy-serialize-ssc-light-polling.patch",
+          "sha256": "0df2077947affd5d2e197d72b680f7e635f7b8a87c4764c41cbd105d1e358b47",
+          "origin": "Project adaptation of the existing SSC accelerometer polling serialization to the upstream light driver",
+          "upstream_status": "not submitted; offline candidate"
+        },
+        {
+          "file": "patches/iio-sensor-proxy/0006-iio-sensor-proxy-expose-the-SSC-gyroscope.patch",
+          "sha256": "409a54b66b5c3822658db4addf7319e2ac5ad8c2c96f8b3229eaff18c22c97f0",
+          "origin": "Local erhai bring-up: expose the Qualcomm Sensor Core gyroscope over D-Bus (HasGyroscope, AngularVelocityX/Y/Z, ClaimGyroscope/ReleaseGyroscope) using a new SSC gyroscope driver",
+          "upstream_status": "not submitted; offline candidate"
+        }
+      ]
+    }
+  ]
+}

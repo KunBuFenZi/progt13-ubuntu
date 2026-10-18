@@ -1,0 +1,19 @@
+{
+  "version": "26.2.3",
+  "archive": "mesa-26.2.3.tar.xz",
+  "source_url": "https://archive.mesa3d.org/mesa-26.2.3.tar.xz",
+  "mirror_url": "https://archive.ubuntu.com/ubuntu/pool/main/m/mesa/mesa_26.2.3.orig.tar.xz",
+  "sha256": "1628058a8d2c0615975de5a15ab7bbb9638c50000b5bed9456ff423ea034a81f",
+  "checksum_source": "https://docs.mesa3d.org/relnotes/26.2.3.html",
+  "patches": [
+    {
+      "file": "patches/0001-freedreno-a830v1.patch",
+      "sha256": "64f82d5e34f078758ecda47c4ee00a62bf04215616891716175f71ea0543ccc9",
+      "equivalent_sha256": ["57c5e5f0c40e55e8b4cc50bf0122c8ee67ff81a1dc63065d9c742b6f70d8a7d1"],
+      "equivalence_note": "Previous patch envelope included one extra unchanged blank context line. Both apply with fuzz=0 to byte-identical source trees.",
+      "upstream_commit": "2061a5ee6184e465eafb87cf465aed92c04f1a41",
+      "note": "Unmodified upstream one-line device-table addition; not a fake GPU override."
+    }
+  ],
+  "purpose": "Isolated Freedreno build; no claim of verified hardware rendering until the real probe passes."
+}

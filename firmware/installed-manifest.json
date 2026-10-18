@@ -1,0 +1,856 @@
+{
+  "files": [
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b02",
+      "bytes": 11569,
+      "sha256": "119d519b5b1006a06f1d3bd72a7623c93cddac80e0e8fac65fd4b6db2eacbd27",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b04",
+      "bytes": 11673,
+      "sha256": "19c1bbc22d2c9924fe3b3f154e39817734d81a4631d12f5d52b3991dbe1ada93",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtfw20.mbn",
+      "bytes": 267024,
+      "sha256": "06be2416cc09d4d097dd14bf53ee7d315fdc1fa9fe248a99f348104a894e1320",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b1e",
+      "bytes": 11569,
+      "sha256": "119d519b5b1006a06f1d3bd72a7623c93cddac80e0e8fac65fd4b6db2eacbd27",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b08",
+      "bytes": 11673,
+      "sha256": "19c1bbc22d2c9924fe3b3f154e39817734d81a4631d12f5d52b3991dbe1ada93",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b0b",
+      "bytes": 11673,
+      "sha256": "19c1bbc22d2c9924fe3b3f154e39817734d81a4631d12f5d52b3991dbe1ada93",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b18",
+      "bytes": 11673,
+      "sha256": "19c1bbc22d2c9924fe3b3f154e39817734d81a4631d12f5d52b3991dbe1ada93",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhperifw20.ver",
+      "bytes": 45,
+      "sha256": "432abbe07850dd50c7f47eae05eac1a449a18c47ba2c310a3cbb097008207897",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b1b",
+      "bytes": 11673,
+      "sha256": "19c1bbc22d2c9924fe3b3f154e39817734d81a4631d12f5d52b3991dbe1ada93",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b23",
+      "bytes": 11673,
+      "sha256": "19c1bbc22d2c9924fe3b3f154e39817734d81a4631d12f5d52b3991dbe1ada93",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv20.bin",
+      "bytes": 14139,
+      "sha256": "db53b821cef51857b86b6748f4f8e510d1746aeba9e6e02eead5288fd2ac4287",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv20.b35",
+      "bytes": 14139,
+      "sha256": "3cb4a5bf782893de31684b75d09bff767209b8f33b8219b473dd40e1fcc06cb4",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhperinv10.bin",
+      "bytes": 508,
+      "sha256": "657d4005bafa246319571b69b6925e0b65f3f87dae2dc20505a3bc7bedbdded0",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b0a",
+      "bytes": 11673,
+      "sha256": "19c1bbc22d2c9924fe3b3f154e39817734d81a4631d12f5d52b3991dbe1ada93",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv20.b37",
+      "bytes": 14139,
+      "sha256": "3cb4a5bf782893de31684b75d09bff767209b8f33b8219b473dd40e1fcc06cb4",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b13",
+      "bytes": 11673,
+      "sha256": "19c1bbc22d2c9924fe3b3f154e39817734d81a4631d12f5d52b3991dbe1ada93",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b19",
+      "bytes": 11673,
+      "sha256": "19c1bbc22d2c9924fe3b3f154e39817734d81a4631d12f5d52b3991dbe1ada93",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b1a",
+      "bytes": 11673,
+      "sha256": "b98a40a17f710fdca75f9c470fbc9bf2f85602c344b85e884a2cede2a558bdbc",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtfw10.ver",
+      "bytes": 35,
+      "sha256": "ca77ca1d52b44c282947362552bddde8e933b9bc722a6064c83e8010c176543e",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b0d",
+      "bytes": 11673,
+      "sha256": "19c1bbc22d2c9924fe3b3f154e39817734d81a4631d12f5d52b3991dbe1ada93",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b1c",
+      "bytes": 11673,
+      "sha256": "19c1bbc22d2c9924fe3b3f154e39817734d81a4631d12f5d52b3991dbe1ada93",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b03",
+      "bytes": 11569,
+      "sha256": "119d519b5b1006a06f1d3bd72a7623c93cddac80e0e8fac65fd4b6db2eacbd27",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b1d",
+      "bytes": 11569,
+      "sha256": "119d519b5b1006a06f1d3bd72a7623c93cddac80e0e8fac65fd4b6db2eacbd27",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b0e",
+      "bytes": 11673,
+      "sha256": "19c1bbc22d2c9924fe3b3f154e39817734d81a4631d12f5d52b3991dbe1ada93",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv20.b44",
+      "bytes": 14139,
+      "sha256": "3cb4a5bf782893de31684b75d09bff767209b8f33b8219b473dd40e1fcc06cb4",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b07",
+      "bytes": 11673,
+      "sha256": "19c1bbc22d2c9924fe3b3f154e39817734d81a4631d12f5d52b3991dbe1ada93",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b16",
+      "bytes": 11673,
+      "sha256": "19c1bbc22d2c9924fe3b3f154e39817734d81a4631d12f5d52b3991dbe1ada93",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhperinv20.bin",
+      "bytes": 741,
+      "sha256": "ff58cad83b9521bda5f2bdfcf2bf7d547b15979cc413fbe91ade388484f3aabe",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b15",
+      "bytes": 11569,
+      "sha256": "119d519b5b1006a06f1d3bd72a7623c93cddac80e0e8fac65fd4b6db2eacbd27",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b12",
+      "bytes": 11569,
+      "sha256": "119d519b5b1006a06f1d3bd72a7623c93cddac80e0e8fac65fd4b6db2eacbd27",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b0f",
+      "bytes": 11673,
+      "sha256": "19c1bbc22d2c9924fe3b3f154e39817734d81a4631d12f5d52b3991dbe1ada93",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b17",
+      "bytes": 11673,
+      "sha256": "19c1bbc22d2c9924fe3b3f154e39817734d81a4631d12f5d52b3991dbe1ada93",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b25",
+      "bytes": 11673,
+      "sha256": "19c1bbc22d2c9924fe3b3f154e39817734d81a4631d12f5d52b3991dbe1ada93",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b0c",
+      "bytes": 11569,
+      "sha256": "119d519b5b1006a06f1d3bd72a7623c93cddac80e0e8fac65fd4b6db2eacbd27",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv20.b34",
+      "bytes": 14139,
+      "sha256": "3cb4a5bf782893de31684b75d09bff767209b8f33b8219b473dd40e1fcc06cb4",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b06",
+      "bytes": 11673,
+      "sha256": "19c1bbc22d2c9924fe3b3f154e39817734d81a4631d12f5d52b3991dbe1ada93",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b14",
+      "bytes": 11673,
+      "sha256": "19c1bbc22d2c9924fe3b3f154e39817734d81a4631d12f5d52b3991dbe1ada93",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhperifw20.tlv",
+      "bytes": 20724,
+      "sha256": "a2ad76a47af285a742479095d138b1bcc79d5bba507a084e2346b8c8f8c8008d",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv20.b41",
+      "bytes": 14139,
+      "sha256": "3cb4a5bf782893de31684b75d09bff767209b8f33b8219b473dd40e1fcc06cb4",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv20.b36",
+      "bytes": 14139,
+      "sha256": "3cb4a5bf782893de31684b75d09bff767209b8f33b8219b473dd40e1fcc06cb4",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv20.b38",
+      "bytes": 14139,
+      "sha256": "3cb4a5bf782893de31684b75d09bff767209b8f33b8219b473dd40e1fcc06cb4",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhperinv20.b43",
+      "bytes": 741,
+      "sha256": "5a4fc032655b3934875636fbe366f479a0aa4bdf8f06f97c80cd91f1eaff6051",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv20.b3e",
+      "bytes": 14031,
+      "sha256": "36864d22cd641f1ca3d8ad1ae8efae8f9426231bbc6fc93c991bbf6d5666c220",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhperifw10.mbn",
+      "bytes": 39142,
+      "sha256": "b576cfb4dc6c09ce70022ef3cf4297e49dcc59d93f74d76d451b305967dce5f8",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhperifw10.ver",
+      "bytes": 35,
+      "sha256": "ca77ca1d52b44c282947362552bddde8e933b9bc722a6064c83e8010c176543e",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv20.b47",
+      "bytes": 14139,
+      "sha256": "3cb4a5bf782893de31684b75d09bff767209b8f33b8219b473dd40e1fcc06cb4",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv20.b39",
+      "bytes": 14139,
+      "sha256": "3cb4a5bf782893de31684b75d09bff767209b8f33b8219b473dd40e1fcc06cb4",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhperifw10.tlv",
+      "bytes": 31294,
+      "sha256": "431d52d67c1f45b30dda1fbc295fb6220c8bca8e06e809f15b6202e224b51ff5",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b24",
+      "bytes": 11673,
+      "sha256": "19c1bbc22d2c9924fe3b3f154e39817734d81a4631d12f5d52b3991dbe1ada93",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtfw20.tlv",
+      "bytes": 253884,
+      "sha256": "13cb33cc0a31f12756d000ef678500849a124a98810dd616823c679309b3acfb",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhperinv20.b45",
+      "bytes": 741,
+      "sha256": "5a4fc032655b3934875636fbe366f479a0aa4bdf8f06f97c80cd91f1eaff6051",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b09",
+      "bytes": 11673,
+      "sha256": "19c1bbc22d2c9924fe3b3f154e39817734d81a4631d12f5d52b3991dbe1ada93",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv20.b46",
+      "bytes": 14139,
+      "sha256": "3cb4a5bf782893de31684b75d09bff767209b8f33b8219b473dd40e1fcc06cb4",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhperifw20.mbn",
+      "bytes": 26904,
+      "sha256": "ae498af0f74905144fcafa189ad52fae4361fa9d846842aaa98aec0118001943",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b1f",
+      "bytes": 11673,
+      "sha256": "19c1bbc22d2c9924fe3b3f154e39817734d81a4631d12f5d52b3991dbe1ada93",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b21",
+      "bytes": 11673,
+      "sha256": "19c1bbc22d2c9924fe3b3f154e39817734d81a4631d12f5d52b3991dbe1ada93",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtfw10.tlv",
+      "bytes": 225100,
+      "sha256": "f423aab030914674f329d43a7046f6c9df5f0572ed0e6ef0f5b03a5a2308e3cb",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b20",
+      "bytes": 11673,
+      "sha256": "19c1bbc22d2c9924fe3b3f154e39817734d81a4631d12f5d52b3991dbe1ada93",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.bin",
+      "bytes": 11569,
+      "sha256": "119d519b5b1006a06f1d3bd72a7623c93cddac80e0e8fac65fd4b6db2eacbd27",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b11",
+      "bytes": 11673,
+      "sha256": "19c1bbc22d2c9924fe3b3f154e39817734d81a4631d12f5d52b3991dbe1ada93",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b10",
+      "bytes": 11673,
+      "sha256": "19c1bbc22d2c9924fe3b3f154e39817734d81a4631d12f5d52b3991dbe1ada93",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b05",
+      "bytes": 11569,
+      "sha256": "119d519b5b1006a06f1d3bd72a7623c93cddac80e0e8fac65fd4b6db2eacbd27",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv20.b2e",
+      "bytes": 14031,
+      "sha256": "ed74f13067b229b666eb96c99f3d4afd8d57155dc43e100d289d0dff43b9be5a",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtnv10.b22",
+      "bytes": 11673,
+      "sha256": "19c1bbc22d2c9924fe3b3f154e39817734d81a4631d12f5d52b3991dbe1ada93",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qca/tb378fc/brhbtfw20.ver",
+      "bytes": 45,
+      "sha256": "432abbe07850dd50c7f47eae05eac1a449a18c47ba2c310a3cbb097008207897",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/tb378fc-flash70.dtbo",
+      "bytes": 483,
+      "sha256": "dd3de8a026dcda77cc6e49e0e85ce3dfbd84dd2c831b7c97e86699c672c96d74",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/ath12k/WCN7860/hw2.0/regdb.bin",
+      "bytes": 24278,
+      "sha256": "3e6136068496e6ea03bb1fec4cf84c418fd72687104aeda2f5930d5407e815be",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/ath12k/WCN7860/hw2.0/qdss.cfg",
+      "bytes": 6237,
+      "sha256": "94251904525f36f69092db8abde1f5198bd32c8c5fa482448e7076e0e3bc0eab",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/ath12k/WCN7860/hw2.0/board.bin",
+      "bytes": 125264,
+      "sha256": "5cbfe14329b1db894cb621fb3d65b161014f5d51594b44690b9466fe406ef953",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/ath12k/WCN7860/hw2.0/m3.bin",
+      "bytes": 290816,
+      "sha256": "9ce44f8aca32e357d89cff23e8124e78fc34389574e8e788b2d36d9ffea6bdf7",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/ath12k/WCN7860/hw2.0/amss.bin",
+      "bytes": 6967360,
+      "sha256": "fec2c8d5354d4b3686ac5a6f06f96e29ec2f645bbc374d7bf3dce55e3ef8e476",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/ath12k/WCN7860/hw2.0/aux_ucode.bin",
+      "bytes": 61440,
+      "sha256": "657eb8f5eaa37571c5926860e88555a4a28d2fbf9b88bb674bf1c65d2f8876d2",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/awinic/tb378fc/aw88480-native-music.acf",
+      "bytes": 2288,
+      "sha256": "f409e48f10a23a4f060b83071278625a67d55bca87cd386d6af1e01b59951765",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/novatek/tb378fc.bin",
+      "bytes": 253952,
+      "sha256": "cf56ed4a449e34e31415f3f739685cbc4b072022f142910bfd22b4a132a2ef02",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b10",
+      "bytes": 264116,
+      "sha256": "057e074c89c8e42cb7db3fd9bb1c1dd59aca59d10d6d6df0b9b34f389f5c05ff",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b07",
+      "bytes": 368,
+      "sha256": "d92c3cd3cda9b7119938b3da15a68ca32128c63cb04cb26a1f6820bb253e0b04",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b19",
+      "bytes": 272,
+      "sha256": "9cff5d340cf027523443afb1560f328f142d50efab0fb6500ddd859394239ec9",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.mdt",
+      "bytes": 8524,
+      "sha256": "f62f0b26c56616403bae965b70e16ecd28de3609f9daaa5c60df18ccfa99b90b",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b36",
+      "bytes": 154364,
+      "sha256": "e5b44932e6bd094ee1395cc9319ec9a7e9eda7a4271fea44e16088c68d9fbb73",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b41",
+      "bytes": 55544,
+      "sha256": "c5d3838edb71e70428536a4e08e7302f783eb68fe7b69baa0d68a4902f29f2ac",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp_dtb.b01",
+      "bytes": 160524,
+      "sha256": "12339b672570772118552d5c610cb3cece9373fafb857ddde83a32cd3f4a5f3a",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b45",
+      "bytes": 262152,
+      "sha256": "c55a35d7a327df6890c874aa901a2095c35fb08ad5821983e9c8dfeca6a1d6e8",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b50",
+      "bytes": 469860,
+      "sha256": "94dbba0dbc39e7ed730182f46b50b31cb74b4b7ed7dde17bfb07b84828bc188a",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b15",
+      "bytes": 160896,
+      "sha256": "069d9bc499e4cb55927b23515897083b28f4830c5ac235b262720ebc4521d760",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b25",
+      "bytes": 20,
+      "sha256": "271c5783def587733c57edd67523fd9890a97b12fd2ee0ad4237226454bb6b85",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b48",
+      "bytes": 26312,
+      "sha256": "ce5631b5336f754b1467a293af3b09655af1d0db3e40c5c031fcf01a3bd232ca",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b40",
+      "bytes": 15564,
+      "sha256": "5fcc67e95425b8feb3dca0b5f3ca463d79728f1ddf847410430650e3090c5879",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b05",
+      "bytes": 84180,
+      "sha256": "deac10251716aa4bca24237a1d047a5f62d22f588eefb9313e6a172bc4bf8c13",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b14",
+      "bytes": 251176,
+      "sha256": "5ec5a712f39e5cac74a02fd9f6d6147a41a2fe2d09997678c6666b718dad3fb0",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/vpu35_4v.mbn",
+      "bytes": 2409160,
+      "sha256": "523468f5bc86d740a22bccdcabf7365747b8f4ddce3fdc642a41e1ca9263debc",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b55",
+      "bytes": 247032,
+      "sha256": "b0b1132d904b07b2f4f11cb8e73b98c88c5e8b5e67043473e36e155bf62a15ef",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b53",
+      "bytes": 102400,
+      "sha256": "a931cba18ddc8a42bcb2aa061ad286c171aa3c04513eeaa52a0588fc04a1026f",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b33",
+      "bytes": 36312,
+      "sha256": "59f9098644c4fd23eeb20e03cbae74e836595ae05c4b44af77a24ef1e4ba36c8",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b43",
+      "bytes": 647168,
+      "sha256": "ec02db30cee0654ed60d5758acddab8c56bbcbdafc82afa55eb8e1cf8dd7c119",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b29",
+      "bytes": 475140,
+      "sha256": "1ae28acbaa3243bb4219ed3a3fe859f813c0d8e7b4a382b752b8015ec60fc4a5",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b46",
+      "bytes": 20,
+      "sha256": "271c5783def587733c57edd67523fd9890a97b12fd2ee0ad4237226454bb6b85",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b08",
+      "bytes": 9236,
+      "sha256": "ff7489e939ba2ffe55a53697ae212b3d4f72b47320b5c42ba0c0eea28f2ecebe",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b06",
+      "bytes": 196608,
+      "sha256": "842447a5ea69653bb537b7290eeebdcb4c800f5ce9955bf181a8dd96fae81c24",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b04",
+      "bytes": 32756,
+      "sha256": "75fb5b59d51113770ea95d01659589e7826df48cb2dea0dd46d55b3a3a5f90a0",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b34",
+      "bytes": 379236,
+      "sha256": "8bfb532827e84bb8f7c9725fc211aa445ea8bf4b97a6e3e7af3d4ecd0f6a8203",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b52",
+      "bytes": 73888,
+      "sha256": "b92582c203677a2ddce70562c3b357f2283290528c8e802de48a58c008d847c8",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b39",
+      "bytes": 8992,
+      "sha256": "42b6f7bb9e45adc4a7172f6f0f2af5e088920426db6702e3f7ab5c9b3a098a66",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/gen80000_zap.mbn",
+      "bytes": 12088,
+      "sha256": "5555a2410ef5ed34faa91795f0d06c5116b84db3f46aca41c53983d9523ca24c",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b24",
+      "bytes": 30049,
+      "sha256": "8564bb65311a6d69eb4f7a12e2a3aa7d5616a8ebedf9793d55a54365b6435caf",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b21",
+      "bytes": 82,
+      "sha256": "6904958a2105c856d5ec911f85736266dd958057baaa6beb89cc447491b2ca39",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b56",
+      "bytes": 53248,
+      "sha256": "8c7c9150afeb9b4c6c9a09374b79a0272a0dd26adb33f0e63ba8950c1c84eb82",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b01",
+      "bytes": 20896,
+      "sha256": "ee7924d4e54c1e76dff49fe658f0a4b8badb07894bdba2e715ac362ff2dc8f6f",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b20",
+      "bytes": 383637,
+      "sha256": "100afe4906677cc6135c1ae2996590601a7bec9f322411be06378d3fc867e3cd",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b18",
+      "bytes": 42576,
+      "sha256": "3cc3c2661ffbf6b9cd54a120a0f303374faddcdf44e3eacb43862179b5b16571",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b42",
+      "bytes": 297876,
+      "sha256": "45df11feda8d690b789842d85d440ddab4d597eb03a220d852bf01739c686f63",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b38",
+      "bytes": 16796,
+      "sha256": "7ec1111a94b03b4f2b6f82901ddd4c87eeea7fc71e7edef3b92703deb6caac03",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b35",
+      "bytes": 173661,
+      "sha256": "ab8b61f01495448f166de0cb4154cd1a874891b3d8045ecda66daae22086156d",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b28",
+      "bytes": 2584440,
+      "sha256": "14bdb14a030936c489f0a2f92091fd63f43e94bf9010c266190f48042394be71",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b49",
+      "bytes": 30328,
+      "sha256": "5faeee0dd9958b8e85137a31248cf8577fd5dcf04180646d67edb55a4990c8f8",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b37",
+      "bytes": 165992,
+      "sha256": "6f3719f6354d170ad6fd68003482abbd14752eadbdf5f2178049aab5041493d7",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b26",
+      "bytes": 36133,
+      "sha256": "4b330a510b950320d4c5afb78d2c131e29411d4fc8a0ceaefa9cfda162fe9d7e",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp_dtb.b02",
+      "bytes": 3896,
+      "sha256": "677a0c061b43b07c0b7a4422a630b7bcdda7cfadb61ccd9573dd3e8fef8e24d0",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b58",
+      "bytes": 6584,
+      "sha256": "cdb92040360cacc339a20d7e1bea82d8dc3892a7e536394a1df061021c67ea11",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b22",
+      "bytes": 32768,
+      "sha256": "33ac0b567c9ed569ef41f4103e0a80faf86a54e1004ef8efaf8542ffcc7a517b",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b54",
+      "bytes": 84719,
+      "sha256": "8a2c34ee8067bd562ed2b4b4f6af8efee7a9356af3c353685a1787bb4da61d81",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b17",
+      "bytes": 2717956,
+      "sha256": "c9c28d191395400d5e4741ec58d7b136f5c8c46da860bebed34cde7bcb42e691",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b16",
+      "bytes": 475136,
+      "sha256": "b8eece41fe228d9e9cb84183db172cf43c8e4727047ab119f3651b123e098646",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b47",
+      "bytes": 25904,
+      "sha256": "4511aa7635a5736e69f7a9a4e138563ab5a101e2668eedcac3f3f229aa4e01d8",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b00",
+      "bytes": 1940,
+      "sha256": "04d8b6caceda06a0bd2ad58d7e8b173b06ba1a8075b2f3554d4a932ac53fbff2",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b27",
+      "bytes": 135168,
+      "sha256": "53e125d5b405a06163a6e6aa4d9c7b3507c87a5509b8089be52da535f14fd323",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b12",
+      "bytes": 64436,
+      "sha256": "6673780499c900556054142059dc440cd69ce50a9f88f9ef204b70e41fd0aadf",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b51",
+      "bytes": 10052,
+      "sha256": "93df04cc75d439735a85ba7e4305381492e620646f8ddb58cfabe49f85b0ca0a",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b02",
+      "bytes": 38924,
+      "sha256": "047d94a660acb89cf84d51a32904ad0c6e1d0d7d67141d776ad23042f70067dd",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp_dtb.mdt",
+      "bytes": 4044,
+      "sha256": "d3693fd68f4960042ca23bc5aecaf06afcf3d957ad14f9dc0dcbbd5e9615a15c",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b44",
+      "bytes": 6648384,
+      "sha256": "8bf6b9e065644b5032ea29d39212764c15bedbca46f54376458ce916afa3ff79",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp_dtb.b00",
+      "bytes": 148,
+      "sha256": "000236f3849693fd3301214c13a9541c4c3a909de6d307470e7398521e4b0a25",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b31",
+      "bytes": 592,
+      "sha256": "436cdafe2ba672d46d7661c1376a7cffc99b0e85c69ed2e7ad857c1ab3a7d283",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b13",
+      "bytes": 7112,
+      "sha256": "1fb37eb8f3cd0a2c381c45ca98012d8450cce0a80425ff60e1dab68993334d4d",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b23",
+      "bytes": 1354268,
+      "sha256": "98fcbd51269801571f2a32c72ea73692f40ceda3cab27e544bd8dd808ea92aa1",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b32",
+      "bytes": 13656,
+      "sha256": "f501dc9ed731e9b3bf853866b8973888705a95cd1134e49f1eb0bbb382c80c2e",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b11",
+      "bytes": 2584,
+      "sha256": "048cb22769ae424fee74b87367433363a589c96514eca2f6f9c97602302c6b22",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b03",
+      "bytes": 110723,
+      "sha256": "e9ef2b3f4863e5076db285e32983f9e39d8d4cf1de05c1ccf47cfb92624a81cc",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/tb378fc/adsp.b09",
+      "bytes": 3104884,
+      "sha256": "7febf34a7d1ff2660000ed50cc0e13913b559cd06a0d758c543f472ef28a39af",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/sm8750/Lenovo-TB378FC-tplg.bin",
+      "bytes": 11536,
+      "sha256": "89cd8420057a11e9f507210afe53682914555f30b53dda2ad379ca7d029d0c42",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/gen80000_sqe.fw",
+      "bytes": 111892,
+      "sha256": "9c8f009bea112d7c06dd2ccb67e889999459e53b92f0f4859f5ea0db067ad6b5",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/gen80000_aqe.fw",
+      "bytes": 25340,
+      "sha256": "f04cb97e1e629b9003a26c5670b8f7e5b7bfeca95d35b2abd581fd8672efed20",
+      "source": "same-device ColorOS extraction; not redistributed"
+    },
+    {
+      "path": "usr/lib/firmware/qcom/gen80000_gmu.bin",
+      "bytes": 88896,
+      "sha256": "1ad8175e6cd01ea76c64d20b83600038c52dd29844b48d57b11b769b038863a5",
+      "source": "same-device ColorOS extraction; not redistributed"
+    }
+  ]
+}

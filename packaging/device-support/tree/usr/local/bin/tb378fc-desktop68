@@ -1,0 +1,14 @@
+#!/bin/sh
+# Run once inside the actual pad desktop; preserve the established idle policy.
+set -eu
+gsettings set org.gnome.desktop.session idle-delay 'uint32 0'
+gsettings set org.gnome.desktop.screensaver lock-enabled false
+gsettings set org.gnome.settings-daemon.peripherals.touchscreen orientation-lock false
+systemctl --user start pipewire.service pipewire-pulse.service wireplumber.service
+for attempt in $(seq 1 100); do
+    if systemctl is-active --quiet tb378fc-runtime68.service && \
+       wpctl status | grep -q 'Lenovo\|Speakers'; then break;fi
+    sleep 1
+done
+wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.40
+wpctl set-mute @DEFAULT_AUDIO_SINK@ 0

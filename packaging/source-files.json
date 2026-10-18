@@ -1,0 +1,1952 @@
+{
+  "port/apm-inspect75.c": {
+    "origin": "development recipe port/apm-inspect75.c",
+    "sha256": "683a015d7e3eeeaa739ffc4484245d5078896465d816d94c9596aa05d0c7725c",
+    "mode": 420
+  },
+  "port/audio/HiFi-listen66.conf": {
+    "origin": "development recipe port/audio/HiFi-listen66.conf",
+    "sha256": "24fa4e7ae346306e3842ab89b999ec1c4fdd239b0c5f778d93c58f15f1fb5ca1",
+    "mode": 420
+  },
+  "port/audio/HiFi.conf": {
+    "origin": "development recipe port/audio/HiFi.conf",
+    "sha256": "f2e8513531f25be0278541e75e4527d1782fb97a42d7cbe3d873d1938d6de320",
+    "mode": 420
+  },
+  "port/audio/HiFi75.conf": {
+    "origin": "development recipe port/audio/HiFi75.conf",
+    "sha256": "99c20b3b3d3956728903357147f894de62e0b3d15c477d7cc80e0329513fefcb",
+    "mode": 420
+  },
+  "port/audio/Lenovo-TB378FC.conf": {
+    "origin": "development recipe port/audio/Lenovo-TB378FC.conf",
+    "sha256": "876bfcbc84e920aea374d65161925ed5ecf1b188911073a111605d1db2f466a7",
+    "mode": 420
+  },
+  "port/audio/Mic73.conf": {
+    "origin": "development recipe port/audio/Mic73.conf",
+    "sha256": "110af801a04baa91a66f223f0e9ed9a8cdfff57072f02779958284e66d7c7498",
+    "mode": 420
+  },
+  "port/audio/Mic75.conf": {
+    "origin": "development recipe port/audio/Mic75.conf",
+    "sha256": "64a75cecfd16a7fb6f27a8176555e54f4e67249cb40ce45901f6a347c35b3c52",
+    "mode": 420
+  },
+  "port/audio-display-late-init": {
+    "origin": "development recipe port/audio-display-late-init",
+    "sha256": "397fbfb36547604e158002039d3c0deb964b28d809538642c79b29c580f54341",
+    "mode": 493
+  },
+  "port/audio-held-bus-init": {
+    "origin": "development recipe port/audio-held-bus-init",
+    "sha256": "24e15e06a5fae5c4382405eedda8be4b5b8bf2bcd1601555dbf0ac6a5abd64fd",
+    "mode": 493
+  },
+  "port/audio-late-id-init": {
+    "origin": "development recipe port/audio-late-id-init",
+    "sha256": "5b2739a2658d3c778c399a81f47908bb8c0b3be0e8d57458c65efcdcd2f2d02e",
+    "mode": 493
+  },
+  "port/audio-probe": {
+    "origin": "development recipe port/audio-probe",
+    "sha256": "54a765a636470065f57946fd1f4966dc48c4113baa717ce73d55a3d70bd20746",
+    "mode": 493
+  },
+  "port/audio-test-init": {
+    "origin": "development recipe port/audio-test-init",
+    "sha256": "8e2a521f003fd461c8cc2d102642470c9fc8cf8ca5516c22ad3e98550539630d",
+    "mode": 493
+  },
+  "port/aw88480.c": {
+    "origin": "development recipe port/aw88480.c",
+    "sha256": "9ca20ef87c1e6e301df6ff5ec0d8733a893eae7425dc3cbd1c19ea2bfa31bf37",
+    "mode": 420
+  },
+  "port/build-adsp.sh": {
+    "origin": "development recipe port/build-adsp.sh",
+    "sha256": "5d434d1c4462b4acc5b6e1274ff98713925ea75587acf0303c9a494bd4df51bc",
+    "mode": 493
+  },
+  "port/build-audio-foundation.sh": {
+    "origin": "development recipe port/build-audio-foundation.sh",
+    "sha256": "938da700f1af0daa9f30c80bfb427b7485a3fabe5018de273213760864d789b5",
+    "mode": 493
+  },
+  "port/build-audio-gated.sh": {
+    "origin": "development recipe port/build-audio-gated.sh",
+    "sha256": "9388c2201f6dc7c1d3feb533449d8e6144b301f7aeb9bc8dc2f38b43579d0bd0",
+    "mode": 493
+  },
+  "port/build-audio-gpio-only.sh": {
+    "origin": "development recipe port/build-audio-gpio-only.sh",
+    "sha256": "4717728d066187d9d87b28c9e5b2305e180fb02b4af04c909f4e382eb751efad",
+    "mode": 493
+  },
+  "port/build-audio-held-bus.sh": {
+    "origin": "development recipe port/build-audio-held-bus.sh",
+    "sha256": "7409b2b53492de0e12d5cbdd0d67c6586602dd2511e6c6ad5bc72185edf1dccb",
+    "mode": 493
+  },
+  "port/build-audio-late-id.sh": {
+    "origin": "development recipe port/build-audio-late-id.sh",
+    "sha256": "cccc7c5e57e2c03ebaac18c905d0bf02fa2ed83046b9c2bfe76e9523998d50a3",
+    "mode": 493
+  },
+  "port/build-audio-late-identity.sh": {
+    "origin": "development recipe port/build-audio-late-identity.sh",
+    "sha256": "fbd484728ba10b5f352622819e0a2a9dd8784829f73592bf19f2fae9cb386322",
+    "mode": 493
+  },
+  "port/build-audio-ready.sh": {
+    "origin": "development recipe port/build-audio-ready.sh",
+    "sha256": "f4bcd40c70ffedd6db5fd781281019fe7bea0ca6b8546c98beac2f8dd42c8a37",
+    "mode": 493
+  },
+  "port/build-audio-spf.sh": {
+    "origin": "development recipe port/build-audio-spf.sh",
+    "sha256": "fc3fe71ba5a89d833d079ed771e7d9250e42ef6e10bc371e1349648912101075",
+    "mode": 493
+  },
+  "port/build-audio-trace.sh": {
+    "origin": "development recipe port/build-audio-trace.sh",
+    "sha256": "fad3ae717b2b2363ec9562b1d1e97d5a3727bd736594b69852099fc5abe48dba",
+    "mode": 493
+  },
+  "port/build-audio.sh": {
+    "origin": "development recipe port/build-audio.sh",
+    "sha256": "a74f72e9d7a708e9159490e26a0d0f0e586aac79f98822e7713bf99701f96368",
+    "mode": 493
+  },
+  "port/build-aw88480.sh": {
+    "origin": "development recipe port/build-aw88480.sh",
+    "sha256": "739f9350f1597489cb8753e0f89a1af50f1a231b511d168e5558d006cb554245",
+    "mode": 493
+  },
+  "port/build-battery-probe.py": {
+    "origin": "development recipe port/build-battery-probe.py",
+    "sha256": "2766c8ecd9f43a6172e3d82e1e30fa9bf8d7b1d3430fa23ad7479fa342b6603b",
+    "mode": 493
+  },
+  "port/build-battery.sh": {
+    "origin": "development recipe port/build-battery.sh",
+    "sha256": "10adc2227e5ee184d0e0bee2a01a1a0f7e92b817864c55dbbbf4d9fe50bcdadf",
+    "mode": 493
+  },
+  "port/build-bt-uart-live68.py": {
+    "origin": "development recipe port/build-bt-uart-live68.py",
+    "sha256": "9bdd637167114e41960778de68d9b0dcf87c3f64d1b8d98dbccc4e21bda0adb4",
+    "mode": 493
+  },
+  "port/build-camera-app75.py": {
+    "origin": "development recipe port/build-camera-app75.py",
+    "sha256": "764bc1bb092275f224ed5809c246758ae287eb461269e9821147ee728c3ea43f",
+    "mode": 493
+  },
+  "port/build-camera74.py": {
+    "origin": "development recipe port/build-camera74.py",
+    "sha256": "cddaa25b9df99fe7723fe1eebb6179a04a761d8f5b646e8ffd7189e259909404",
+    "mode": 493
+  },
+  "port/build-cpu-audio-ready.sh": {
+    "origin": "development recipe port/build-cpu-audio-ready.sh",
+    "sha256": "690a0b7c88dff29e0470a040a003727f95eb2f6657c91bf0c27b98465ccf22b8",
+    "mode": 493
+  },
+  "port/build-cpufreq.sh": {
+    "origin": "development recipe port/build-cpufreq.sh",
+    "sha256": "64b3f90d83c1b4e75446af78031ebab8d234c36dab00a81ecc2674e0ac960c4e",
+    "mode": 493
+  },
+  "port/build-desktop.sh": {
+    "origin": "development recipe port/build-desktop.sh",
+    "sha256": "e13b9d3ce0a5bea48be9427a063a342df44ae16d0fcb79491ba4b466d9ab2b6e",
+    "mode": 493
+  },
+  "port/build-display-reference-lifecycle.sh": {
+    "origin": "development recipe port/build-display-reference-lifecycle.sh",
+    "sha256": "50679a1ee8e8a92e1d70e3ca4411e4a08fec7f9b26b1b5eacab08e3c827b65fb",
+    "mode": 493
+  },
+  "port/build-display.sh": {
+    "origin": "development recipe port/build-display.sh",
+    "sha256": "58392016c20dcf2e09a036e6f12a9407b67d034896f89779e5c119cd022d84af",
+    "mode": 493
+  },
+  "port/build-earlyfb.sh": {
+    "origin": "development recipe port/build-earlyfb.sh",
+    "sha256": "afa7eea0d257eed8aca55ac8e4db58823ec64f63bd43ccf663ceddf25548c7f3",
+    "mode": 493
+  },
+  "port/build-earlyram.sh": {
+    "origin": "development recipe port/build-earlyram.sh",
+    "sha256": "014c64b25708d5a84e644d8f68fbfd11780cfb90b6319ac78d269288c7dcd994",
+    "mode": 493
+  },
+  "port/build-ext4-78.py": {
+    "origin": "development recipe port/build-ext4-78.py",
+    "sha256": "0ac7cd26ad705b79735a288781fdf41137180c9528458126f31c92c4b2371bc0",
+    "mode": 493
+  },
+  "port/build-initramfs.py": {
+    "origin": "development recipe port/build-initramfs.py",
+    "sha256": "e00348e499df90a11dca927fac7a0b1663657047549da25cd323bf892cf7feef",
+    "mode": 493
+  },
+  "port/build-keys.py": {
+    "origin": "development recipe port/build-keys.py",
+    "sha256": "ae57e64bdbcb136b11ae80ea712cd2f315c525482d8bef46b4cbb23f038accdb",
+    "mode": 493
+  },
+  "port/build-kms-test.sh": {
+    "origin": "development recipe port/build-kms-test.sh",
+    "sha256": "fcdd27828585850d419171ccc895b942e28b5bba3b7538b69dc12dea9631b1d5",
+    "mode": 493
+  },
+  "port/build-live-amp-gain66.sh": {
+    "origin": "development recipe port/build-live-amp-gain66.sh",
+    "sha256": "8b1206a0b7c870d7fa7103f9dd2e3f7f001e9a08e57c62988de01a879c39935e",
+    "mode": 493
+  },
+  "port/build-live-amp-listen66.sh": {
+    "origin": "development recipe port/build-live-amp-listen66.sh",
+    "sha256": "bf0c465074fadf99cc4c71c99682d9895011b231a89a50548c0b69e6c346946c",
+    "mode": 493
+  },
+  "port/build-live-amp-range66.sh": {
+    "origin": "development recipe port/build-live-amp-range66.sh",
+    "sha256": "76bc103ceafc80990091423e61f1541901d7e00560b34f9fb89c07250b42d2e0",
+    "mode": 493
+  },
+  "port/build-live-audio-kernel66.sh": {
+    "origin": "development recipe port/build-live-audio-kernel66.sh",
+    "sha256": "cec096bb599413a325e2a24e9e8509400e52d7661a0b5df396f17d095838e66f",
+    "mode": 493
+  },
+  "port/build-live-audio-modules65.sh": {
+    "origin": "development recipe port/build-live-audio-modules65.sh",
+    "sha256": "5b3b3f0662fc6a4d6a063d7794269b7172e768afe4ee54dca180455b15152ff7",
+    "mode": 493
+  },
+  "port/build-live-audio-modules66.sh": {
+    "origin": "development recipe port/build-live-audio-modules66.sh",
+    "sha256": "f9c5f18f62b4b10b392eea0d8149c0cc87f9ffd2eddc0953d5b964428573cd1b",
+    "mode": 493
+  },
+  "port/build-live-flash70.py": {
+    "origin": "development recipe port/build-live-flash70.py",
+    "sha256": "94deb81775964153fd2ba6d732e825b8738a61bff067b80e3dd4b2e274122cff",
+    "mode": 493
+  },
+  "port/build-live-microphone71.py": {
+    "origin": "development recipe port/build-live-microphone71.py",
+    "sha256": "ac6db80c01868bd622d560ce1756a5d524f86aa9fea9bee16bace57b81e296fc",
+    "mode": 493
+  },
+  "port/build-media-closure68.py": {
+    "origin": "development recipe port/build-media-closure68.py",
+    "sha256": "d544b441a59a68dbc26c0cbfebc2b888c3f0498dd71a56fcd6c5ae1b171bc5f5",
+    "mode": 493
+  },
+  "port/build-media-modules68.sh": {
+    "origin": "development recipe port/build-media-modules68.sh",
+    "sha256": "c6f645b7e0f62e74d9f4e65fb26a2fd90e5ceec78501b77f6d1794ded547473b",
+    "mode": 493
+  },
+  "port/build-memory.sh": {
+    "origin": "development recipe port/build-memory.sh",
+    "sha256": "78245b021e4d5c33397298048c6dda1863c8c4f20470097fab64189ea35e8248",
+    "mode": 493
+  },
+  "port/build-mesa-cross.py": {
+    "origin": "development recipe port/build-mesa-cross.py",
+    "sha256": "cb486da1f80ad315f503f40e0cbfa6989790c478029f1f1f7b510e93ab02089b",
+    "mode": 493
+  },
+  "port/build-microphone72.py": {
+    "origin": "development recipe port/build-microphone72.py",
+    "sha256": "54c2c32d8c32a603415a7def7d2daa629880911b5ef7c2ecc9b6cffe7004076f",
+    "mode": 493
+  },
+  "port/build-microphone73.py": {
+    "origin": "development recipe port/build-microphone73.py",
+    "sha256": "7ecb2127ab14575181b391a81e84e1903477da34aa1d81ee6463a48ac00661df",
+    "mode": 493
+  },
+  "port/build-native-flash70.py": {
+    "origin": "development recipe port/build-native-flash70.py",
+    "sha256": "b16161d78f55dee862ce75c8f1f011bd4271c6d70ecd6086cfd5ed75b4d3fe20",
+    "mode": 493
+  },
+  "port/build-native-refresh69.py": {
+    "origin": "development recipe port/build-native-refresh69.py",
+    "sha256": "15f9fdc833c857100d6cd75df9e1679ca3383b6f8cf4fa2365308e593c1eab58",
+    "mode": 493
+  },
+  "port/build-peripherals68.py": {
+    "origin": "development recipe port/build-peripherals68.py",
+    "sha256": "15ef161471dd32d2e4d543f910db5d12a25a6fb66e36724f5823d7004b7f67e3",
+    "mode": 493
+  },
+  "port/build-persistent-root79.py": {
+    "origin": "development recipe port/build-persistent-root79.py",
+    "sha256": "2ec8cfc7257de65b11dd481c29614a31deaad8c7cd96bcecc2f878a8913fd6b6",
+    "mode": 493
+  },
+  "port/build-probe-trace.sh": {
+    "origin": "development recipe port/build-probe-trace.sh",
+    "sha256": "a1815a4152bac89040b81f3a1bf9067fc9dde0b0caad2f54ec1f15d5ce2e4756",
+    "mode": 493
+  },
+  "port/build-refresh-live69.py": {
+    "origin": "development recipe port/build-refresh-live69.py",
+    "sha256": "0672f68cb1494f3f243ab8e294ada3f950b18751182601726d0f4fac2200c6ed",
+    "mode": 493
+  },
+  "port/build-refresh-live76.py": {
+    "origin": "development recipe port/build-refresh-live76.py",
+    "sha256": "e0ed15adc0edafca8156d6098f20ef880d376cc623085c4507263b9894e53857",
+    "mode": 493
+  },
+  "port/build-stage1.sh": {
+    "origin": "development recipe port/build-stage1.sh",
+    "sha256": "991167ddb0b323a4c81bd7ac5d19654befc7124c7fd2c8548314c186bc5044d8",
+    "mode": 493
+  },
+  "port/build-support-modules68.sh": {
+    "origin": "development recipe port/build-support-modules68.sh",
+    "sha256": "29cdbdbbb91f15364221fa831d85ff7d2a2798e6655a970a6c0b32922d48f174",
+    "mode": 493
+  },
+  "port/build-touch.sh": {
+    "origin": "development recipe port/build-touch.sh",
+    "sha256": "46a9a0ab52fdc710f135b4a7ea37d549e48988d3579a34c35e60d4d8487818d7",
+    "mode": 493
+  },
+  "port/build-ufs-overlay77.py": {
+    "origin": "development recipe port/build-ufs-overlay77.py",
+    "sha256": "c5ba55ccc433e91358dbdb5027fb2e8093c2eb0bf28dd453bfc0b0119b4f5b5d",
+    "mode": 493
+  },
+  "port/build-ufs-write79.py": {
+    "origin": "development recipe port/build-ufs-write79.py",
+    "sha256": "323d2377550c553ea6a37176ec7d0736f59a39f565c4a4eae1dd84f4911b6969",
+    "mode": 493
+  },
+  "port/build-ufs77.py": {
+    "origin": "development recipe port/build-ufs77.py",
+    "sha256": "ec51894bd3a0cd42fbfd78484186f3d8865303d51d23900798f8fa6c9ab120bc",
+    "mode": 493
+  },
+  "port/build-usb-power70.py": {
+    "origin": "development recipe port/build-usb-power70.py",
+    "sha256": "29163b7ff8b027a7474057920372e194fde4a3c1b9a13fd7636b89a427686c23",
+    "mode": 493
+  },
+  "port/build-usbc70.py": {
+    "origin": "development recipe port/build-usbc70.py",
+    "sha256": "b4258b7c79237806b9c798b73c8ebe1dc93e7dd5ca0d372d901f2c610f9e445f",
+    "mode": 493
+  },
+  "port/build-videocc68.py": {
+    "origin": "development recipe port/build-videocc68.py",
+    "sha256": "ce35e07cd4388db0d28c67624320c73521e0fce79f0921cab01d58ec1f209a87",
+    "mode": 493
+  },
+  "port/build-vulkan-cross67.py": {
+    "origin": "development recipe port/build-vulkan-cross67.py",
+    "sha256": "23c876b21e938e56197bccef2054c179e870cc525507f46a2c977484b8750d9c",
+    "mode": 493
+  },
+  "port/build-wifi.sh": {
+    "origin": "development recipe port/build-wifi.sh",
+    "sha256": "906e72d0b6d44be0873f4731cbb5f662391b3826fdf704c60dddb5112ec7514d",
+    "mode": 493
+  },
+  "port/camera75-media.conf": {
+    "origin": "development recipe port/camera75-media.conf",
+    "sha256": "40a0daefce890a27a0f783679f5ef78ef8b0a7f2f4dea650efd803cc079b66fe",
+    "mode": 420
+  },
+  "port/capture-battery-probe.sh": {
+    "origin": "development recipe port/capture-battery-probe.sh",
+    "sha256": "67b95b5d7ed4e2493bf92ed9b82c3d94cf3805092dc900dd2b37a2511b1ec247",
+    "mode": 493
+  },
+  "port/capture-buttons.py": {
+    "origin": "development recipe port/capture-buttons.py",
+    "sha256": "3508ccf89aa96b51e0838bf0b45ca33aa9b95dd7274fb3fa3dc6ecd65b6353c2",
+    "mode": 493
+  },
+  "port/check-earlyram.py": {
+    "origin": "development recipe port/check-earlyram.py",
+    "sha256": "5188cb19dba1bac65a216c6c699287a816dd018a328acf53258fbc6576c403e6",
+    "mode": 493
+  },
+  "port/check-ram-services.py": {
+    "origin": "development recipe port/check-ram-services.py",
+    "sha256": "f275c98635492e3080dfaf18d53910fc3ed4d60f351041a632f0abbd18676e6f",
+    "mode": 493
+  },
+  "port/check-stock-overlays.py": {
+    "origin": "development recipe port/check-stock-overlays.py",
+    "sha256": "bc100bd5bdf1f61f51d649a3f93edb5d42040d898ee74df1033135c3bcd08516",
+    "mode": 493
+  },
+  "port/continue-cpu-audio.sh": {
+    "origin": "development recipe port/continue-cpu-audio.sh",
+    "sha256": "a16cd4e610fe7be728ac169dc11ba49b80cec63f6fe3019ca1e30d902cb8f347",
+    "mode": 493
+  },
+  "port/continue-memory.sh": {
+    "origin": "development recipe port/continue-memory.sh",
+    "sha256": "ff05f9800fd8d40d3ced3258e1173c5830dc9eca8ff0439810b5accfe01c17a6",
+    "mode": 493
+  },
+  "port/cpu-audio-probe-init": {
+    "origin": "development recipe port/cpu-audio-probe-init",
+    "sha256": "3c5b42d1c2a2404795ba9f74b1da34df8001ff5b45d5b7fbe019037127c68d72",
+    "mode": 493
+  },
+  "port/cpu-display-probe-init": {
+    "origin": "development recipe port/cpu-display-probe-init",
+    "sha256": "5ac5ca8df31a7420aaf20690b56d0a9d23da28604fc6b2b87a06ae7b0b0e47a4",
+    "mode": 493
+  },
+  "port/cpu-probe-init": {
+    "origin": "development recipe port/cpu-probe-init",
+    "sha256": "1fc2444e65a2a5388a81d499a7fe8c78dbc9fb2093fc2459e229ea572fa619de",
+    "mode": 493
+  },
+  "port/desktop-init": {
+    "origin": "development recipe port/desktop-init",
+    "sha256": "c30ad7ea94651985997a48af4dafaad831881c519eaaef8df67f4594ae920a80",
+    "mode": 493
+  },
+  "port/display-power/80-tb378fc-backlight.conf": {
+    "origin": "development recipe port/display-power/80-tb378fc-backlight.conf",
+    "sha256": "3b16cfc166809eef579ab4c6e698f92941af03e02996ba67d5f211b32988ca46",
+    "mode": 420
+  },
+  "port/display-power/81-tb378fc-display-power.rules": {
+    "origin": "development recipe port/display-power/81-tb378fc-display-power.rules",
+    "sha256": "d8f3972d07eba69c2416ae6c6b3cc943945626477fd134f8736f061a4666d9cb",
+    "mode": 420
+  },
+  "port/display-power/gsd-backlight-compat.c": {
+    "origin": "development recipe port/display-power/gsd-backlight-compat.c",
+    "sha256": "37ac37945e882029603cdfef7341d84098835c9d794b8add149fd6594e519662",
+    "mode": 420
+  },
+  "port/display-power/tb378fc-display-power": {
+    "origin": "development recipe port/display-power/tb378fc-display-power",
+    "sha256": "eeb8a1cbb1e83cdf54f30e662710b34a81ef610eb0a1704f039d287f67e1bf47",
+    "mode": 493
+  },
+  "port/display-power/tb378fc-display-power.service": {
+    "origin": "development recipe port/display-power/tb378fc-display-power.service",
+    "sha256": "9a72ce6376139bd8e71ac064a89a02c64e19d3ef5017d775a1fc25842e860c65",
+    "mode": 420
+  },
+  "port/display-power/tb378fc-display-power.socket": {
+    "origin": "development recipe port/display-power/tb378fc-display-power.socket",
+    "sha256": "4faf965dbfa5806373348164a859bac4ea1705aa8a47305e2343fb1afcb5d633",
+    "mode": 420
+  },
+  "port/early-fb-console.inc": {
+    "origin": "development recipe port/early-fb-console.inc",
+    "sha256": "d01ed7001843d6c05bdc62cc0bafbc02b945195299fd276ce73f91c2adbfedfc",
+    "mode": 420
+  },
+  "port/early-ram-console.c": {
+    "origin": "development recipe port/early-ram-console.c",
+    "sha256": "a1f6cd9a8bc475bceda0cb3aaf17dc8e940a92048e8a6ba9be478822ee58f48c",
+    "mode": 420
+  },
+  "port/earlyram.config": {
+    "origin": "development recipe port/earlyram.config",
+    "sha256": "667ed9764e25cd1183b8f7ef83cdb437914065c7734f5f350447aa0debdd64f8",
+    "mode": 420
+  },
+  "port/enable-display-splash.py": {
+    "origin": "development recipe port/enable-display-splash.py",
+    "sha256": "cd636b4f7a05a57dc3285c20e191b706b5d8071602dd7a22e91c78dd7aff4a08",
+    "mode": 493
+  },
+  "port/enable-dsi-diagnostics.py": {
+    "origin": "development recipe port/enable-dsi-diagnostics.py",
+    "sha256": "50ceb567ab8cf2bf75bd453d1ecc6646c1a568958793e8085dc4ba9f253a3edd",
+    "mode": 493
+  },
+  "port/enable-dsi-lifecycle.py": {
+    "origin": "development recipe port/enable-dsi-lifecycle.py",
+    "sha256": "a6f09cd69e63437ebbc47e9fb4f769bad6d0350affb8084a6d04b0cb7985a190",
+    "mode": 493
+  },
+  "port/enable-dsi-vbif.py": {
+    "origin": "development recipe port/enable-dsi-vbif.py",
+    "sha256": "a2a6d62633dafad97a9d76ac0b332415fe72ba41e223fda01e3f55d6f3999a21",
+    "mode": 493
+  },
+  "port/enable-probe-trace.py": {
+    "origin": "development recipe port/enable-probe-trace.py",
+    "sha256": "2b98a7f696a7a8f103634c7c20d29171e606a7a2d7522b76585e25663d531862",
+    "mode": 493
+  },
+  "port/enable-tb378fc-touch.py": {
+    "origin": "development recipe port/enable-tb378fc-touch.py",
+    "sha256": "55363326ee9d224647877393baf6b183fe0b2fd9e59c7a53c9762880151f6a2b",
+    "mode": 493
+  },
+  "port/fb-read.c": {
+    "origin": "development recipe port/fb-read.c",
+    "sha256": "e1506e41b15df17b768dbe8f2ca321076d1f06d41b10c91b0cbffd921ca6a924",
+    "mode": 420
+  },
+  "port/fetch-camera74.sh": {
+    "origin": "development recipe port/fetch-camera74.sh",
+    "sha256": "9495972a3b5a891d19fe12d2791c129bca52fbfe0817a6dcaa65f74a2c7f2ff8",
+    "mode": 493
+  },
+  "port/fetch-desktop-base.py": {
+    "origin": "development recipe port/fetch-desktop-base.py",
+    "sha256": "d82fe51888ce516857c520d808df9829f5c515fcc4c99d421997d7216a22d01a",
+    "mode": 493
+  },
+  "port/finalize-boot80.py": {
+    "origin": "development recipe port/finalize-boot80.py",
+    "sha256": "c9d6658b0302884acd15b8a743fc51afa43b12f21e52a1c7e6758c7f03fcc33b",
+    "mode": 493
+  },
+  "port/finalize-memory.py": {
+    "origin": "development recipe port/finalize-memory.py",
+    "sha256": "7f765c9800f9ef214f106d667dc3985a415df94df00370c2293db9bfe29f3877",
+    "mode": 493
+  },
+  "port/finish-live-audio66.sh": {
+    "origin": "development recipe port/finish-live-audio66.sh",
+    "sha256": "b1bbbe1ec405e9641b3a025c0431f092400f58dee0ba60e7f9ca9970e8bd9b8f",
+    "mode": 493
+  },
+  "port/finish-stage1.sh": {
+    "origin": "development recipe port/finish-stage1.sh",
+    "sha256": "55312cbd2efe2827543e18a8fe68646f80204bf641cdbaa625f034ab3cdb3000",
+    "mode": 493
+  },
+  "port/fix-audio-pdr-ack.py": {
+    "origin": "development recipe port/fix-audio-pdr-ack.py",
+    "sha256": "171ebda2da42b5709957df528e9129c2b135fa3503403305c82d0ce9aba5e6ad",
+    "mode": 493
+  },
+  "port/fix-audioreach-spf-response.py": {
+    "origin": "development recipe port/fix-audioreach-spf-response.py",
+    "sha256": "b9fc6bd4135af5280baad9cdc44a04dabd93bd63e9ff65fb31c773079e54a9d6",
+    "mode": 493
+  },
+  "port/fix-audioreach-startup.py": {
+    "origin": "development recipe port/fix-audioreach-startup.py",
+    "sha256": "e9f165b4f1802cd4ca567b1d3dd7a7ab2f468091a6d84f52cc4f40b87c3c38d8",
+    "mode": 493
+  },
+  "port/fix-display-iova.py": {
+    "origin": "development recipe port/fix-display-iova.py",
+    "sha256": "55e2e44308489f0371308a99135124d5c88b2603acdb649e152a3ed6d6314ea6",
+    "mode": 493
+  },
+  "port/fix-glink-live-unload.py": {
+    "origin": "development recipe port/fix-glink-live-unload.py",
+    "sha256": "854cf42fb416bd1d47d139b4dc0c96bb881fdcc7a79255cef1d2668bd5325986",
+    "mode": 493
+  },
+  "port/fix-lenovo-battery.py": {
+    "origin": "development recipe port/fix-lenovo-battery.py",
+    "sha256": "79574d6cdd21773c9db8ee46a798d4c4fc5f1fcdf222431daa4d211e43c9d1fe",
+    "mode": 493
+  },
+  "port/freeze-battery-checkpoint.py": {
+    "origin": "development recipe port/freeze-battery-checkpoint.py",
+    "sha256": "467a9a2fd1899cfcdaf9ef9f9584a89ae100aee806484abe7ef172c1ceb43670",
+    "mode": 493
+  },
+  "port/gate-audioreach-platform.py": {
+    "origin": "development recipe port/gate-audioreach-platform.py",
+    "sha256": "8814dc9b82136f1bccaa1d6bd4aaba4ba096393959a4866b946a33b7e804be46",
+    "mode": 493
+  },
+  "port/gate-audioreach-ready.py": {
+    "origin": "development recipe port/gate-audioreach-ready.py",
+    "sha256": "6410325bd70361a62a5d732ffc7debe15eca1a3526d535fd9cc9df25441597c6",
+    "mode": 493
+  },
+  "port/generate-nt36526.py": {
+    "origin": "development recipe port/generate-nt36526.py",
+    "sha256": "90e76b73c449e9a2940c09f9bf42c00f03cf163342dcd737f86020e33217613c",
+    "mode": 493
+  },
+  "port/gnome/90-tb378fc-touchguard.conf": {
+    "origin": "development recipe port/gnome/90-tb378fc-touchguard.conf",
+    "sha256": "47a706695e684584104bc0a27976539e936dce1784ff9393e85ab6cd839b3354",
+    "mode": 420
+  },
+  "port/gnome/91-tb378fc-gallium-thread-diagnostic.conf": {
+    "origin": "development recipe port/gnome/91-tb378fc-gallium-thread-diagnostic.conf",
+    "sha256": "bca2c5094d98db5dfa85b6aefdced33e16931fea0c007a5c436f3ebaecdfc033",
+    "mode": 420
+  },
+  "port/gnome/keyboard.js": {
+    "origin": "development recipe port/gnome/keyboard.js",
+    "sha256": "16ed4e4b1b263e7d79048ebd1f8c074843493efa4185abc91949fa1e39cf6860",
+    "mode": 420
+  },
+  "port/gnome/prepare-touch-dispatch.py": {
+    "origin": "development recipe port/gnome/prepare-touch-dispatch.py",
+    "sha256": "7e342516c1e4c21c1b15014fa592122830f4ccee848de841e08356caa3bffbdc",
+    "mode": 493
+  },
+  "port/gnome/touch-dispatch-compat.js": {
+    "origin": "development recipe port/gnome/touch-dispatch-compat.js",
+    "sha256": "f39bec5f7fec654030a17ce36bc5e527782159875a35b9a8d8ddb0f2ec568316",
+    "mode": 420
+  },
+  "port/gnome/touch-live-diagnostics.js": {
+    "origin": "development recipe port/gnome/touch-live-diagnostics.js",
+    "sha256": "c0ebbda0a03a9af9aaad47e13df6d7e5317b1c3f0daf896327cb25632d72e61d",
+    "mode": 420
+  },
+  "port/gnome/touchguard-source.json": {
+    "origin": "development recipe port/gnome/touchguard-source.json",
+    "sha256": "c03650ff6283e91e0ef2fc82fa534076bcd50bb37221192eb9451c95b396e078",
+    "mode": 420
+  },
+  "port/gpu-info.c": {
+    "origin": "development recipe port/gpu-info.c",
+    "sha256": "98c8ecac85df419933ad3484f102b89d0c45caa78b85027c871ecb106feb3e42",
+    "mode": 420
+  },
+  "port/gpu-telemetry67.c": {
+    "origin": "development recipe port/gpu-telemetry67.c",
+    "sha256": "9c8e0400da89e3040c69e861bb37a7d4b464a6228f9cc6d289a4c5ad6853c965",
+    "mode": 420
+  },
+  "port/install-display-drivers.py": {
+    "origin": "development recipe port/install-display-drivers.py",
+    "sha256": "d45fa862d2073da82994dd21db88957f862d6844e67ecc01459ea100f7d50d01",
+    "mode": 493
+  },
+  "port/kms-test.c": {
+    "origin": "development recipe port/kms-test.c",
+    "sha256": "f2afa2a717a52214d889480ef5a3c05ead6a0f7d2a820a1d0d174b6a72f250d2",
+    "mode": 420
+  },
+  "port/Lenovo-TB378FC.m4": {
+    "origin": "development recipe port/Lenovo-TB378FC.m4",
+    "sha256": "d885d4c0b1e708b028aeef48661367fe41a9542822abd94d8ac1432ddb0dd661",
+    "mode": 420
+  },
+  "port/live-amp-id.c": {
+    "origin": "development recipe port/live-amp-id.c",
+    "sha256": "0139de1f010e70358c18f81591cda4de0b1d4d532d90d9d4355ae4013a4b36b2",
+    "mode": 420
+  },
+  "port/live-audio-overlay65.c": {
+    "origin": "development recipe port/live-audio-overlay65.c",
+    "sha256": "d6a08df58e687c8fc98e0964412d2aea72afec9e7bece7c1ccc6a0b473223af0",
+    "mode": 420
+  },
+  "port/live-audio65.dtso": {
+    "origin": "development recipe port/live-audio65.dtso",
+    "sha256": "81579a8a4a68ca3eaf4796d105b5cbd2a2517548af0ca2fc3f8d07960f8ba232",
+    "mode": 420
+  },
+  "port/live-flash-overlay70.c": {
+    "origin": "development recipe port/live-flash-overlay70.c",
+    "sha256": "845d75ee0882047cbc650e982fa38e40acbac2e7adce48dfbde0c5946f6f1927",
+    "mode": 420
+  },
+  "port/live-microphone-capture71.c": {
+    "origin": "development recipe port/live-microphone-capture71.c",
+    "sha256": "500d983b5182a03647273513acb98128d23a004c5bac094973a4ddf87722635d",
+    "mode": 420
+  },
+  "port/live-microphone-overlay71.c": {
+    "origin": "development recipe port/live-microphone-overlay71.c",
+    "sha256": "bc5978ab2c9f32f0c7924876dd0f47773e70658ff3ada289315471a0a9203203",
+    "mode": 420
+  },
+  "port/live-ufs-bob77.c": {
+    "origin": "development recipe port/live-ufs-bob77.c",
+    "sha256": "36ab5c79af5a97d5fce4023a74eb8af3b315e9c6ae31153a19aeda9dc9d17900",
+    "mode": 420
+  },
+  "port/live-ufs-overlay77.c": {
+    "origin": "development recipe port/live-ufs-overlay77.c",
+    "sha256": "ef3c107620ac709fa7b94a5d24a8c809b114e915c55bc52a689d53bed3a0ad61",
+    "mode": 420
+  },
+  "port/mesa-hardware-probe.sh": {
+    "origin": "development recipe port/mesa-hardware-probe.sh",
+    "sha256": "8ef2c1f1c907cc00dc2f7cde12c54366eb0b14e488892250893bcb9595e7b057",
+    "mode": 493
+  },
+  "port/ninja-sdk": {
+    "origin": "development recipe port/ninja-sdk",
+    "sha256": "0110a859fd25e47a35f5415415b4b31e024880fa794432c0d39eab86bc12d7de",
+    "mode": 493
+  },
+  "port/package-accepted-usbc70.py": {
+    "origin": "development recipe port/package-accepted-usbc70.py",
+    "sha256": "adbb94b48cc761dbf11f465720c896bfc7e01130fee9a70a83e79091ea8eae88",
+    "mode": 493
+  },
+  "port/package-adsp-probe.py": {
+    "origin": "development recipe port/package-adsp-probe.py",
+    "sha256": "60b80e2341fe8e3fbcadefdf04bcd38277c4c701c57a39584d4cb0d3be609438",
+    "mode": 493
+  },
+  "port/package-audio-desktop-v10.py": {
+    "origin": "development recipe port/package-audio-desktop-v10.py",
+    "sha256": "c73f1ef6e785ca066b5bd7f7939704e5cabac2a1b17b33daa9499dc52bdce7be",
+    "mode": 493
+  },
+  "port/package-audio-desktop-v11.py": {
+    "origin": "development recipe port/package-audio-desktop-v11.py",
+    "sha256": "a9d88d1a8c44c6c7eee1cd264aad354bd0b65fa273b43e5d4a2b73ba114b44ab",
+    "mode": 493
+  },
+  "port/package-audio-desktop-v2.py": {
+    "origin": "development recipe port/package-audio-desktop-v2.py",
+    "sha256": "e52f17f6b711398f0aa22e394f17a7adfb4001e1386324bf4eadafd5527edece",
+    "mode": 493
+  },
+  "port/package-audio-desktop-v3.py": {
+    "origin": "development recipe port/package-audio-desktop-v3.py",
+    "sha256": "e5f4a5cd964ae7a0fefde9d28ce4f0d90b1690a939f8c947460636e87208bff4",
+    "mode": 493
+  },
+  "port/package-audio-desktop-v4.py": {
+    "origin": "development recipe port/package-audio-desktop-v4.py",
+    "sha256": "f3902b396c3e587ac9b248d55e6095b83a5a895a0258ed7fc29674cbecda0c2e",
+    "mode": 493
+  },
+  "port/package-audio-desktop-v5.py": {
+    "origin": "development recipe port/package-audio-desktop-v5.py",
+    "sha256": "754bf0884028ebb68fa4dbe935d2559f73e9c1880d794aef921823af3ca0881c",
+    "mode": 493
+  },
+  "port/package-audio-desktop-v6.py": {
+    "origin": "development recipe port/package-audio-desktop-v6.py",
+    "sha256": "a66c087fb75fceaa99d32bf4be6c95934a070dea26236379fac13c408585bbce",
+    "mode": 493
+  },
+  "port/package-audio-desktop-v7.py": {
+    "origin": "development recipe port/package-audio-desktop-v7.py",
+    "sha256": "cee10fc045ef7a4ddabbdc11d612223003882d69a6248ce78d9263ff40013f72",
+    "mode": 493
+  },
+  "port/package-audio-desktop-v8.py": {
+    "origin": "development recipe port/package-audio-desktop-v8.py",
+    "sha256": "d5c127ef56ec887b5fb20056bff2b5b46a791bcb17df4f8f55196f4a8214cc6d",
+    "mode": 493
+  },
+  "port/package-audio-desktop-v9.py": {
+    "origin": "development recipe port/package-audio-desktop-v9.py",
+    "sha256": "f76dc235db8469a459f6e9af54152d0020e79fe19cf2676e5aa67817ae08d4c9",
+    "mode": 493
+  },
+  "port/package-audio-desktop.py": {
+    "origin": "development recipe port/package-audio-desktop.py",
+    "sha256": "da0ff2ca84ef2d7ecbb5e57eb2b5ed1283bedcb0e5eee08dc0f7ad02162a7b5f",
+    "mode": 493
+  },
+  "port/package-audio-display-late.py": {
+    "origin": "development recipe port/package-audio-display-late.py",
+    "sha256": "95d5e9e6ca74af0ccbc7c640076c97ffff85d75ec87c8961178f14f8368d892e",
+    "mode": 493
+  },
+  "port/package-audio-foundation.py": {
+    "origin": "development recipe port/package-audio-foundation.py",
+    "sha256": "7329769e1ec7f3655af922dfae6c9712f0c3cfd7c8f083adddbd515d277f19c6",
+    "mode": 493
+  },
+  "port/package-audio-gpio-only.py": {
+    "origin": "development recipe port/package-audio-gpio-only.py",
+    "sha256": "0061fe2f5f849164c3f662e745c7f7d3d37add573a78f9804da84a182a0ae625",
+    "mode": 493
+  },
+  "port/package-audio-held-bus.py": {
+    "origin": "development recipe port/package-audio-held-bus.py",
+    "sha256": "5a3fc3da673489be4f75e8066fc9479b694900e58074af9ec76ee1c3faae73fa",
+    "mode": 493
+  },
+  "port/package-audio-late-id-v2.py": {
+    "origin": "development recipe port/package-audio-late-id-v2.py",
+    "sha256": "b9ae95ce58d8c17579364fd7ea90d53dad50949a4bd2d675709679e2223141f7",
+    "mode": 493
+  },
+  "port/package-audio-late-id.py": {
+    "origin": "development recipe port/package-audio-late-id.py",
+    "sha256": "b34f92bcc1023be2138c99d1c57a7783ce348f9d88cfd7359160325389f80fe5",
+    "mode": 493
+  },
+  "port/package-audio-ready.py": {
+    "origin": "development recipe port/package-audio-ready.py",
+    "sha256": "95d764b58b25ba93b86a6fa7094e80faf1eb1989fa934f58a0cd666e95ba8a87",
+    "mode": 493
+  },
+  "port/package-audio-spf.py": {
+    "origin": "development recipe port/package-audio-spf.py",
+    "sha256": "04a95dfdaee11f2253f63cab2829bfe8d0b22aea5875d6d0cec115edf956efe5",
+    "mode": 493
+  },
+  "port/package-audio-trace.py": {
+    "origin": "development recipe port/package-audio-trace.py",
+    "sha256": "dd46c253cb4341d9941b605d259db4576cab730f2169771f8be5649fed4bf030",
+    "mode": 493
+  },
+  "port/package-audio.py": {
+    "origin": "development recipe port/package-audio.py",
+    "sha256": "387789d8338ca5f2f3eaedca06e71c32ddb7e8250ab2d2eb23d28f67f14b72a5",
+    "mode": 493
+  },
+  "port/package-aw88480-probe.py": {
+    "origin": "development recipe port/package-aw88480-probe.py",
+    "sha256": "27f636d3934e47006ea8998a777ce9e6549cd81f49e2863c610f2058c047e3bb",
+    "mode": 493
+  },
+  "port/package-battery-desktop.py": {
+    "origin": "development recipe port/package-battery-desktop.py",
+    "sha256": "39848d87b7264fd9a8c08a59e8f127ad36f5fb3729ca134a820a7364e09ddead",
+    "mode": 493
+  },
+  "port/package-camera-app75-lib.py": {
+    "origin": "development recipe port/package-camera-app75-lib.py",
+    "sha256": "666187866d02be02e139dd44752fef904515731f97255da50170d571cb5c5158",
+    "mode": 493
+  },
+  "port/package-camera74.py": {
+    "origin": "development recipe port/package-camera74.py",
+    "sha256": "0119abfcca44040b3970bf61a647dc9c99333c3da465c9be43647bc33cff5898",
+    "mode": 493
+  },
+  "port/package-cpu-audio-ready.py": {
+    "origin": "development recipe port/package-cpu-audio-ready.py",
+    "sha256": "9f1f9eeb0d45b2625e7f7ebed4f392d6bfc6496f0c3485c404ace4e6c036f407",
+    "mode": 493
+  },
+  "port/package-cpu-display-probe.py": {
+    "origin": "development recipe port/package-cpu-display-probe.py",
+    "sha256": "3f7c33678677d0815dbc715c806d9d1d1c7cd4344888ada443d5ba88b3657050",
+    "mode": 493
+  },
+  "port/package-cpufreq-probe.py": {
+    "origin": "development recipe port/package-cpufreq-probe.py",
+    "sha256": "f6e777a91d6733fdc3df0e31f4208bbfe75a87deec21b730bd5b3d1f120d9ff7",
+    "mode": 493
+  },
+  "port/package-display-isolation.py": {
+    "origin": "development recipe port/package-display-isolation.py",
+    "sha256": "29c53015f040e4f5b4e58ccf3d60e1ac3d3a8d6822f4a797ff17a226ccc06cf7",
+    "mode": 493
+  },
+  "port/package-flash-runtime70.py": {
+    "origin": "development recipe port/package-flash-runtime70.py",
+    "sha256": "ce1ea4adc138c8324abc3e0b2ccb0618db3b53ac960ca1fd9128323b9ae47b35",
+    "mode": 493
+  },
+  "port/package-gki78.py": {
+    "origin": "development recipe port/package-gki78.py",
+    "sha256": "46356a2b006194594a3555d1e01ca64581ab08e2fe63b12239263916ee9ea0b4",
+    "mode": 493
+  },
+  "port/package-live-audio66.py": {
+    "origin": "development recipe port/package-live-audio66.py",
+    "sha256": "b9cfd37d7af4f1427d6574a3a3328a5c3f73c3f87be61a2c05a695bd6f3b9bd6",
+    "mode": 493
+  },
+  "port/package-live-microphone71.py": {
+    "origin": "development recipe port/package-live-microphone71.py",
+    "sha256": "5329a559a34eca9f71032cfdfbba470110c7a287a812f5d6bdfb523e6411e26d",
+    "mode": 493
+  },
+  "port/package-media-tools68.py": {
+    "origin": "development recipe port/package-media-tools68.py",
+    "sha256": "72081a299901ad9077c760f92ceb49eefc03e0c4dcce57c1b2be2936c87edbd6",
+    "mode": 493
+  },
+  "port/package-microphone-capture71.py": {
+    "origin": "development recipe port/package-microphone-capture71.py",
+    "sha256": "14313224714f5837fbbdc8a139d0ac3080d5cdf24faf945263b6bd3e1ca9def9",
+    "mode": 493
+  },
+  "port/package-microphone72.py": {
+    "origin": "development recipe port/package-microphone72.py",
+    "sha256": "273cea8715da978331c960dbe1a8a31cd10a3b1c82d50296ca582b341d59e0f2",
+    "mode": 493
+  },
+  "port/package-microphone73.py": {
+    "origin": "development recipe port/package-microphone73.py",
+    "sha256": "87ff8cd27f4c1547ea1fb1df4189086f98c9e7ec2384e813ee75955cf98fe1e4",
+    "mode": 493
+  },
+  "port/package-native-touch67.py": {
+    "origin": "development recipe port/package-native-touch67.py",
+    "sha256": "2f8712b41e2549b5ad8641b9ecf9a37031ef0814e875f02e26b1c1853a2ce3ea",
+    "mode": 493
+  },
+  "port/package-network-refinement.py": {
+    "origin": "development recipe port/package-network-refinement.py",
+    "sha256": "2d7e9f29930607c4f0285bea73e984f924645deb1f865424a6406b443ff6c950",
+    "mode": 493
+  },
+  "port/package-peripherals68.py": {
+    "origin": "development recipe port/package-peripherals68.py",
+    "sha256": "e824e3377ad6486ec2d09d342d60b99236d7fe2872b20a513d39e444b8e41cc8",
+    "mode": 493
+  },
+  "port/package-peripherals68e.py": {
+    "origin": "development recipe port/package-peripherals68e.py",
+    "sha256": "3ddf4063c4b8a0ea6d51ffb15b5601514b9803472b0ceaaa80369d8b2dbbe4a9",
+    "mode": 493
+  },
+  "port/package-persistent79.py": {
+    "origin": "development recipe port/package-persistent79.py",
+    "sha256": "ebecd643819bb2a187e811479f238aa79916ada0908dd55327d953478ef71f4a",
+    "mode": 493
+  },
+  "port/package-private-runtime68.py": {
+    "origin": "development recipe port/package-private-runtime68.py",
+    "sha256": "48a879ed59a2935feabe57a5c86bae4ee4e2d7fcd4eee845e9c2471932241374",
+    "mode": 493
+  },
+  "port/package-recovery75.py": {
+    "origin": "development recipe port/package-recovery75.py",
+    "sha256": "ea088556e60b4d23835592b2fcb08ce2e8c952764fc6077e660d9dde7dd12974",
+    "mode": 493
+  },
+  "port/package-refresh76.py": {
+    "origin": "development recipe port/package-refresh76.py",
+    "sha256": "ef94c3c32fbfbbcca34e44e746b05cfee431a81356216652e4c7995f7520b9fa",
+    "mode": 493
+  },
+  "port/package-sensor-deps67.py": {
+    "origin": "development recipe port/package-sensor-deps67.py",
+    "sha256": "2018dcfbffc2780a99c74bcb0bfc7d723569e083d76d696731c0895655e973b5",
+    "mode": 493
+  },
+  "port/package-stage1.py": {
+    "origin": "development recipe port/package-stage1.py",
+    "sha256": "915fe13dfe89093ea6a2989b923a6dadf404b5e4322422b5520da6e09f2508ba",
+    "mode": 493
+  },
+  "port/package-ufs77.py": {
+    "origin": "development recipe port/package-ufs77.py",
+    "sha256": "0c460ab23fcbf906af236ef5762430b780c9b4ff0fc02f004a07048ede5605ed",
+    "mode": 493
+  },
+  "port/package-unattended.sh": {
+    "origin": "development recipe port/package-unattended.sh",
+    "sha256": "f15f4ddeb8abf3520332bbf531c2057bd538c1a1c214a715161cd9d35aa9a218",
+    "mode": 493
+  },
+  "port/package-usbc70.py": {
+    "origin": "development recipe port/package-usbc70.py",
+    "sha256": "9d036677fcffa63e6677bca512ff60252fc9e6a95eab4498fdb6a246ef52bcdb",
+    "mode": 493
+  },
+  "port/package-wifi.py": {
+    "origin": "development recipe port/package-wifi.py",
+    "sha256": "8f2a8e651c088f3eb5fff8f2d1cf396960f3b4798c702bc816a8afd5a80f4a39",
+    "mode": 493
+  },
+  "port/package-wireless-desktop.py": {
+    "origin": "development recipe port/package-wireless-desktop.py",
+    "sha256": "d3fc86e219b48b213e551b0b877aa1038e297c03b7fb9b3e19c2ba6685d50e0c",
+    "mode": 493
+  },
+  "port/panel-novatek-nt36526.c": {
+    "origin": "development recipe port/panel-novatek-nt36526.c",
+    "sha256": "e4da831d9cb486d8dd06e92c04693038e9c6dfea4173056d2ea1879edc1052a6",
+    "mode": 420
+  },
+  "port/persistent-init79": {
+    "origin": "development recipe port/persistent-init79",
+    "sha256": "b847aa581feddbe0c1fa1671e623bcb76ced62000e78f0b338bfb1698dece2bd",
+    "mode": 493
+  },
+  "port/persistent-shutdown80": {
+    "origin": "development recipe port/persistent-shutdown80",
+    "sha256": "aaaac2e99075120030d77f4edd4e2e8b6e8b5b53730e8f944c11525e23ac9700",
+    "mode": 493
+  },
+  "port/power/90-tb378fc-s2idle.conf": {
+    "origin": "development recipe port/power/90-tb378fc-s2idle.conf",
+    "sha256": "01e4dba8977835b9bb7ac0f6d506691094957ecbe0fc3bf0053d00811f0dea5a",
+    "mode": 420
+  },
+  "port/power/tb378fc-power-key.py": {
+    "origin": "development recipe port/power/tb378fc-power-key.py",
+    "sha256": "0c67abb1bf58025be1d13bb4538dd87e3e840b54042899d48e9fa19fbea300c8",
+    "mode": 493
+  },
+  "port/power/tb378fc-power-key.service": {
+    "origin": "development recipe port/power/tb378fc-power-key.service",
+    "sha256": "f3d56c465bca40aed8db887e4b9c2022ce9fa46087d2280498e7a1971df99260",
+    "mode": 420
+  },
+  "port/power/tb378fc-suspend-cycle": {
+    "origin": "development recipe port/power/tb378fc-suspend-cycle",
+    "sha256": "7c9cd5914b5bd70778fbca3dfdf17d41a9aa9e0f2d9458f0ee19bf983b89df09",
+    "mode": 493
+  },
+  "port/prepare-adsp.py": {
+    "origin": "development recipe port/prepare-adsp.py",
+    "sha256": "0bfb32bd7a16393d7722c58c70731b81192117ccc1dbf2e72616e3062eb4590e",
+    "mode": 493
+  },
+  "port/prepare-audio-desktop.py": {
+    "origin": "development recipe port/prepare-audio-desktop.py",
+    "sha256": "b29d115848a805c982bf3d65f69deba1e45ca3ab4609840570fa7a474ae0c658",
+    "mode": 493
+  },
+  "port/prepare-audio-foundation.py": {
+    "origin": "development recipe port/prepare-audio-foundation.py",
+    "sha256": "af85265af6e95e9fd8adba2e2e9644acba7abf14ac940b88dd5d90b43aaa6b43",
+    "mode": 493
+  },
+  "port/prepare-audio-runtime.py": {
+    "origin": "development recipe port/prepare-audio-runtime.py",
+    "sha256": "fd0cdbad0cbb165bd5ef1f645f12073cc14d3192052815d312e9b2291173ba6d",
+    "mode": 493
+  },
+  "port/prepare-aw88480.py": {
+    "origin": "development recipe port/prepare-aw88480.py",
+    "sha256": "edf727e646317a45ab514fb5326294b266db1d2c6421594bcf4539a559ff09ff",
+    "mode": 493
+  },
+  "port/prepare-camera74.py": {
+    "origin": "development recipe port/prepare-camera74.py",
+    "sha256": "5cd066304a73fc797708f6490cad64b047b3f7a34952e20c36f984b022e6b347",
+    "mode": 493
+  },
+  "port/prepare-desktop-settings.py": {
+    "origin": "development recipe port/prepare-desktop-settings.py",
+    "sha256": "679a115fba030c0e6fa9a5224f85c8504bd8bf312b986803f273fa3df05f4f13",
+    "mode": 493
+  },
+  "port/prepare-keys.py": {
+    "origin": "development recipe port/prepare-keys.py",
+    "sha256": "be6be35506bbce0605c1d3f920df8cc05dcfdafd9493c1ad1399c5cdbd575e83",
+    "mode": 493
+  },
+  "port/prepare-live-apr65.py": {
+    "origin": "development recipe port/prepare-live-apr65.py",
+    "sha256": "fd4b734f3405d357a7cf6040d1ebfd0afe3b9485174814228d7f050acdf627fa",
+    "mode": 493
+  },
+  "port/prepare-live-audio-tree66.py": {
+    "origin": "development recipe port/prepare-live-audio-tree66.py",
+    "sha256": "8955a49fe97bb4ca0909d78ad9c9c3e434ea8672fe28bd36120a19222bde41ea",
+    "mode": 493
+  },
+  "port/prepare-live-microphone71.py": {
+    "origin": "development recipe port/prepare-live-microphone71.py",
+    "sha256": "4ed5a3fb011bd6d7402e5d361d408f44ffe859a76ce9c151e8e8ce9c64936506",
+    "mode": 493
+  },
+  "port/prepare-live-touch-diagnostics.py": {
+    "origin": "development recipe port/prepare-live-touch-diagnostics.py",
+    "sha256": "d8b144ddc922bb056ae7dba7026b41024f76f0a663e04f872102d339a72d6ee0",
+    "mode": 493
+  },
+  "port/prepare-media-tools68.py": {
+    "origin": "development recipe port/prepare-media-tools68.py",
+    "sha256": "d38151c330b3ea75598121a5c6eb4a159493ba7eac7cd17441ddf674faf02e77",
+    "mode": 493
+  },
+  "port/prepare-mesa-sdk.py": {
+    "origin": "development recipe port/prepare-mesa-sdk.py",
+    "sha256": "31b91bb387417acd531d488291640081f186ac6653d718ab39bf74fe5cdfce1d",
+    "mode": 493
+  },
+  "port/prepare-microphone-capture71.py": {
+    "origin": "development recipe port/prepare-microphone-capture71.py",
+    "sha256": "dcafcca0f583c91f61dddc4e5e17edb36bc1a9046680dd7b4bc23e025fbb8c81",
+    "mode": 493
+  },
+  "port/prepare-native-audio.py": {
+    "origin": "development recipe port/prepare-native-audio.py",
+    "sha256": "735a29e8b1706329b6375e704c739fb4e09654c86c5e6ba814d531c42b6d07e6",
+    "mode": 493
+  },
+  "port/prepare-native-pps71.py": {
+    "origin": "development recipe port/prepare-native-pps71.py",
+    "sha256": "57685f499c6ebbd3a274b5cca17119533870d9ccffcce5de9967219af6e1e4a7",
+    "mode": 493
+  },
+  "port/prepare-native-refresh69.py": {
+    "origin": "development recipe port/prepare-native-refresh69.py",
+    "sha256": "6b46bca08a0ee63171e4e32235a0402438982f1fed9b3a4d942d5d0412e6086c",
+    "mode": 493
+  },
+  "port/prepare-native-usb-power70.py": {
+    "origin": "development recipe port/prepare-native-usb-power70.py",
+    "sha256": "0fc92eb3c2e82b2e033eb982f0a560f1d496abfe932ec161d06c466152af2c80",
+    "mode": 493
+  },
+  "port/prepare-native-wifi.py": {
+    "origin": "development recipe port/prepare-native-wifi.py",
+    "sha256": "a250b75bb698aa7eee18fc94f698bbbfd27197f9acf72389263cf8ffa10ab54c",
+    "mode": 493
+  },
+  "port/prepare-network-test.sh": {
+    "origin": "development recipe port/prepare-network-test.sh",
+    "sha256": "f1986e500b6471db4c4a11166b6ded8c6dd6c9381a059ffeb11b0f8dad995b6a",
+    "mode": 493
+  },
+  "port/prepare-peripherals-tree68.py": {
+    "origin": "development recipe port/prepare-peripherals-tree68.py",
+    "sha256": "1c932448e3cb1ca8fe7eeb58cea963890c3aaf227dcd2bc3fbef5e77a90f1e3d",
+    "mode": 493
+  },
+  "port/prepare-reference-display-power.py": {
+    "origin": "development recipe port/prepare-reference-display-power.py",
+    "sha256": "3d7abded33525f86aa8cc40a4bb0d3b5e6f66e18e5f55903a34845d808d5e108",
+    "mode": 493
+  },
+  "port/prepare-sensor-build.py": {
+    "origin": "development recipe port/prepare-sensor-build.py",
+    "sha256": "b0cd8b0f4beb550be2b44a4a91c324ed4cba6aeca3c155fb680e016d0ab5f04b",
+    "mode": 493
+  },
+  "port/prepare-switch79.py": {
+    "origin": "development recipe port/prepare-switch79.py",
+    "sha256": "6d53150195df36f5958985541cfc92ef6dda5218f3644c927c2bd5725e43eda0",
+    "mode": 493
+  },
+  "port/prepare-ufs77.py": {
+    "origin": "development recipe port/prepare-ufs77.py",
+    "sha256": "3cc47f894e75c5ba42a0c9273a886f0116a2b6af264bb137f334aa7910dfdb9b",
+    "mode": 493
+  },
+  "port/prepare-usbc-tree70.py": {
+    "origin": "development recipe port/prepare-usbc-tree70.py",
+    "sha256": "01991b3dcd1c5bf3edce511946a5277c306e790214ef9bc1621e9dd354955939",
+    "mode": 493
+  },
+  "port/prepare-wireless.py": {
+    "origin": "development recipe port/prepare-wireless.py",
+    "sha256": "712ed2dc958efc61936d3a5bfe0368ec0d28e2d9964eeb8abc00b7e9ca12c60c",
+    "mode": 493
+  },
+  "port/probe-irq-domain72.c": {
+    "origin": "development recipe port/probe-irq-domain72.c",
+    "sha256": "466ab3beb850a731fe21588183b6a292306c9cc8800e1fd0fcd0b4ddc38e44e2",
+    "mode": 420
+  },
+  "port/ram-init": {
+    "origin": "development recipe port/ram-init",
+    "sha256": "6fb9fe38c0ddc390e35ff974b2323a57fe29054718cfc6c229496591033dc9a7",
+    "mode": 493
+  },
+  "port/reboot-bootloader79.c": {
+    "origin": "development recipe port/reboot-bootloader79.c",
+    "sha256": "32126e3c6e6591e4c09e27864708c006c0f49a9af16d90c0f310ff26c50a915e",
+    "mode": 420
+  },
+  "port/recover-speaker71.c": {
+    "origin": "development recipe port/recover-speaker71.c",
+    "sha256": "2cbfba450878206854dc9c848532c5337d2f91754b6f5b4ba13248def0b36319",
+    "mode": 420
+  },
+  "port/refine-video-clock-tree68.py": {
+    "origin": "development recipe port/refine-video-clock-tree68.py",
+    "sha256": "803b87c2ffec45d808cfa1a7cb22754a9eaabddee5b4a0b4cb5da5d1e491e1ce",
+    "mode": 493
+  },
+  "port/refresh-hooks75.h": {
+    "origin": "development recipe port/refresh-hooks75.h",
+    "sha256": "bcb321f77c34953bcfa80d455b71178368b8f086453dde6aefdcdbe81a096154",
+    "mode": 420
+  },
+  "port/refresh-live75.c": {
+    "origin": "development recipe port/refresh-live75.c",
+    "sha256": "aefc134dfa7c01918e7eb67ce98b0b9a69ec51119dc13f6d4bb256cf9f43e759",
+    "mode": 420
+  },
+  "port/refresh-live76.c": {
+    "origin": "development recipe port/refresh-live76.c",
+    "sha256": "1b8cf9383ab81aa864cc1b1409bc3c1caacf88cdd477f0205087c5f209b45791",
+    "mode": 420
+  },
+  "port/refresh-modes-live69.c": {
+    "origin": "development recipe port/refresh-modes-live69.c",
+    "sha256": "ce9045b2fcce424fc81fdf694667fca111de0cb65f81ca2988e8ba9f69c8dd3c",
+    "mode": 420
+  },
+  "port/refresh-seamless76.h": {
+    "origin": "development recipe port/refresh-seamless76.h",
+    "sha256": "8fd36c530c04f4209c628c0c33fd38f3226822c6b833984db3cc5ecfaff517c7",
+    "mode": 420
+  },
+  "port/render-probe.py": {
+    "origin": "development recipe port/render-probe.py",
+    "sha256": "1b48bb0d3e7689535f186801a5217c0448000ef04fe5574ba05cb00fe1724b2b",
+    "mode": 493
+  },
+  "port/sensor-sources.json": {
+    "origin": "development recipe port/sensor-sources.json",
+    "sha256": "91a22379007a39d394f52c536c5e4dcc9089cac265763b362910ab6802a29c3a",
+    "mode": 420
+  },
+  "port/sensors/81-tb378fc-sensors-accel-gyro.rules": {
+    "origin": "development recipe port/sensors/81-tb378fc-sensors-accel-gyro.rules",
+    "sha256": "df1138725cd1db91d21b050b516b8be64d80dad8b933a7c5a9fe0b9b699d525d",
+    "mode": 420
+  },
+  "port/sensors/81-tb378fc-sensors-staging.rules": {
+    "origin": "development recipe port/sensors/81-tb378fc-sensors-staging.rules",
+    "sha256": "1545d0906ba26ceb2e19d7f4939533b4a6459226d99a96775b55c3ac4715f288",
+    "mode": 420
+  },
+  "port/sensors/90-tb378fc-ssc.conf": {
+    "origin": "development recipe port/sensors/90-tb378fc-ssc.conf",
+    "sha256": "0b4ad983f45538a56068b2cfd93e2d466aff7a9be75941e62ffabed9626b7351",
+    "mode": 420
+  },
+  "port/sensors/tb378fc-sensors-rpcd.service": {
+    "origin": "development recipe port/sensors/tb378fc-sensors-rpcd.service",
+    "sha256": "5ea2827d2f2b390e0786430b7b37c8d71d1a46bde32c2e353c54d313e2727508",
+    "mode": 420
+  },
+  "port/setup-usb-ssh.sh": {
+    "origin": "development recipe port/setup-usb-ssh.sh",
+    "sha256": "0096e41c10d0f5ad5cd02f2fc3a9be82b86152681cb703cd8c9dab8a98857536",
+    "mode": 493
+  },
+  "port/setup-wifi-identity.py": {
+    "origin": "development recipe port/setup-wifi-identity.py",
+    "sha256": "8d8f3fe09da200b1ebf6cbde695b9aa7ecb1b7565f625010b3aab8f1bc49db9b",
+    "mode": 493
+  },
+  "port/setup-zram.sh": {
+    "origin": "development recipe port/setup-zram.sh",
+    "sha256": "7a76194a72fadaf9208d8ad2c08a5b06cdfba8d55c907fdc04eb83eb4891f6a9",
+    "mode": 493
+  },
+  "port/sm8750-lenovo-tb378fc-adsp.dts": {
+    "origin": "development recipe port/sm8750-lenovo-tb378fc-adsp.dts",
+    "sha256": "9b028fff875e65f01c5cf639ab9591bafd65186b9e6b836c75fdf0f0c250b94a",
+    "mode": 420
+  },
+  "port/sm8750-lenovo-tb378fc-audio-gpio.dts": {
+    "origin": "development recipe port/sm8750-lenovo-tb378fc-audio-gpio.dts",
+    "sha256": "e1d7ce935dfd08a306f7009f0dee9313d582e94ec7a27c787876c99aabcbc5e6",
+    "mode": 420
+  },
+  "port/sm8750-lenovo-tb378fc-audio-probe.dts": {
+    "origin": "development recipe port/sm8750-lenovo-tb378fc-audio-probe.dts",
+    "sha256": "53ab1246db36fe0114dbe903cd64d3271facedb0c1250a0a418c77bd84a61778",
+    "mode": 420
+  },
+  "port/sm8750-lenovo-tb378fc-audio.dts": {
+    "origin": "development recipe port/sm8750-lenovo-tb378fc-audio.dts",
+    "sha256": "0f9dbf97f04e95d877779a62731f6e1c391ecd473403bc74d86067134d5f93da",
+    "mode": 420
+  },
+  "port/sm8750-lenovo-tb378fc-battery.dts": {
+    "origin": "development recipe port/sm8750-lenovo-tb378fc-battery.dts",
+    "sha256": "e3bd9e15addc56634e286a085db07f148e5e369339004393cd2af6c846db7f67",
+    "mode": 420
+  },
+  "port/sm8750-lenovo-tb378fc-display.dts": {
+    "origin": "development recipe port/sm8750-lenovo-tb378fc-display.dts",
+    "sha256": "b3dc309828729ea16ea1a5f4341a07384e2c11aeac8867ba586b58b1c7cf7fca",
+    "mode": 420
+  },
+  "port/sm8750-lenovo-tb378fc-gpu.dts": {
+    "origin": "development recipe port/sm8750-lenovo-tb378fc-gpu.dts",
+    "sha256": "a3719e4e9e348fae6ade19b9f1d402c4be20735dd34d763069d9f6739759f1be",
+    "mode": 420
+  },
+  "port/sm8750-lenovo-tb378fc-keys.dts": {
+    "origin": "development recipe port/sm8750-lenovo-tb378fc-keys.dts",
+    "sha256": "057a900abdd45d23e2447b2aef3a09262e4793b99aec1856a873030439cf016f",
+    "mode": 420
+  },
+  "port/sm8750-lenovo-tb378fc-touch.dts": {
+    "origin": "development recipe port/sm8750-lenovo-tb378fc-touch.dts",
+    "sha256": "02619cfe852a4a8a7153acb38dd86dcbe89035ab25d62e54be6e67b06ca29643",
+    "mode": 420
+  },
+  "port/sm8750-lenovo-tb378fc-wifi.dts": {
+    "origin": "development recipe port/sm8750-lenovo-tb378fc-wifi.dts",
+    "sha256": "2bf7461ed6f543081b28ff24950d5a40f04811111243276a0ee9fdd2793abb90",
+    "mode": 420
+  },
+  "port/sm8750-lenovo-tb378fc.dts": {
+    "origin": "development recipe port/sm8750-lenovo-tb378fc.dts",
+    "sha256": "17bbc86e866ddece404aec9227dcbf0902a8d7cf569db649ede53d32d8e6a4ca",
+    "mode": 420
+  },
+  "port/smoke-and-package.sh": {
+    "origin": "development recipe port/smoke-and-package.sh",
+    "sha256": "c112ed8db27b149de1d127349112591c18248c0c4f4de4371669aed4dbfb4365",
+    "mode": 493
+  },
+  "port/smoke-probe-trace.sh": {
+    "origin": "development recipe port/smoke-probe-trace.sh",
+    "sha256": "89f58219d7443121b6b0fcf2039ea758caf8a52594b679f8505ff1ecc52583f9",
+    "mode": 493
+  },
+  "port/stage-mesa-probe.py": {
+    "origin": "development recipe port/stage-mesa-probe.py",
+    "sha256": "49e5dddee3369b62a0cb144a2838fc9856faba4c6526a73478cd9053bd188806",
+    "mode": 493
+  },
+  "port/stage-native-bt-firmware68.py": {
+    "origin": "development recipe port/stage-native-bt-firmware68.py",
+    "sha256": "ccf7835d794cbea4a7b1be3c60baaba582044fde6dc5269127d2f2e2235c4d87",
+    "mode": 493
+  },
+  "port/stage-sensor-data67.py": {
+    "origin": "development recipe port/stage-sensor-data67.py",
+    "sha256": "bacbceb563302bb733441f696d28ed939d443b309d1708c37dbc540d84e17122",
+    "mode": 493
+  },
+  "port/stage-sensor-socinfo68.py": {
+    "origin": "development recipe port/stage-sensor-socinfo68.py",
+    "sha256": "cbde2328a6e2628b63832a0c11584ffc810e70cf16d53cee5dc17a2f49c59ddc",
+    "mode": 493
+  },
+  "port/stage-wifi-probe.py": {
+    "origin": "development recipe port/stage-wifi-probe.py",
+    "sha256": "224933f1f40c0c26789196bfcc7473a108f9e845b035e442dc1c6a60a7a101e8",
+    "mode": 493
+  },
+  "port/swr-timing75.c": {
+    "origin": "development recipe port/swr-timing75.c",
+    "sha256": "cd747f11e1c85a6d322a63103827727000e239e0c60b26308f620eda65121898",
+    "mode": 420
+  },
+  "port/tb378fc-adsp.config": {
+    "origin": "development recipe port/tb378fc-adsp.config",
+    "sha256": "15d77a1ea812b9ba64ed6386effed741d17e3caa48675c998eac2ef549e33b7a",
+    "mode": 420
+  },
+  "port/tb378fc-audio-foundation.config": {
+    "origin": "development recipe port/tb378fc-audio-foundation.config",
+    "sha256": "d3986c0ed3a4b923ec626a5c1f75b244774ea000da2f92a57a7d078c78d544b9",
+    "mode": 420
+  },
+  "port/tb378fc-audio.config": {
+    "origin": "development recipe port/tb378fc-audio.config",
+    "sha256": "dc97d3607e648e9b25fecb0b44c7a5e24efae7d3469bdebdad89b012c1320c73",
+    "mode": 420
+  },
+  "port/tb378fc-aw88480.config": {
+    "origin": "development recipe port/tb378fc-aw88480.config",
+    "sha256": "4e0f93d6697680c567cbac42b50b589d101d1d352219b2ec782d824b49987f03",
+    "mode": 420
+  },
+  "port/tb378fc-aw99706b.c": {
+    "origin": "development recipe port/tb378fc-aw99706b.c",
+    "sha256": "a655ca33b8bd0afa837f9d6bc0bf12e248a255d06cd5680bc0b29a60abeb5dc1",
+    "mode": 420
+  },
+  "port/tb378fc-bluetooth-address68.py": {
+    "origin": "development recipe port/tb378fc-bluetooth-address68.py",
+    "sha256": "eaa3468d7c010aadfdb08c1d6a1d7786faddf0e02aace601f8f567cff36bc335",
+    "mode": 493
+  },
+  "port/tb378fc-bluetooth68.service": {
+    "origin": "development recipe port/tb378fc-bluetooth68.service",
+    "sha256": "2a1865f42924016b1ee5a2e3e2fb6df2f522eabd43894b9d88c8baa901d9583f",
+    "mode": 420
+  },
+  "port/tb378fc-camera74.py": {
+    "origin": "development recipe port/tb378fc-camera74.py",
+    "sha256": "6f31e90a1bfefc346de117f835fed69d61be0a57838134979e575bee14ee07c6",
+    "mode": 493
+  },
+  "port/tb378fc-camera74.service": {
+    "origin": "development recipe port/tb378fc-camera74.service",
+    "sha256": "9f4741059e9bb06e79b4d4855f2742f5ad1f98fa1d9dbff34357ee900fc6ed38",
+    "mode": 420
+  },
+  "port/tb378fc-cpufreq.config": {
+    "origin": "development recipe port/tb378fc-cpufreq.config",
+    "sha256": "eeaf202fe4a1e5342d6fd86a4f743482a18e9cede74092f036be29c6ef22dcaa",
+    "mode": 420
+  },
+  "port/tb378fc-desktop.config": {
+    "origin": "development recipe port/tb378fc-desktop.config",
+    "sha256": "93b5689470c3ae1ee82e4cb17269fc66324e28956538d980528a0078667c1c9a",
+    "mode": 420
+  },
+  "port/tb378fc-desktop68": {
+    "origin": "development recipe port/tb378fc-desktop68",
+    "sha256": "76c62d7f892f01e107ce14cbb75d1526080eb6d75f538af3d67fd6f098982af1",
+    "mode": 493
+  },
+  "port/tb378fc-display.config": {
+    "origin": "development recipe port/tb378fc-display.config",
+    "sha256": "37b59edf24ff627d8ead4ec4bcb3147cc7d2665f51f612745797d6c97bdb6b84",
+    "mode": 420
+  },
+  "port/tb378fc-flash70.dtso": {
+    "origin": "development recipe port/tb378fc-flash70.dtso",
+    "sha256": "dd4e2f5595513433b90511939ad538763fc2d86804eebbf57657c85b61e22d63",
+    "mode": 420
+  },
+  "port/tb378fc-gpu-monitor": {
+    "origin": "development recipe port/tb378fc-gpu-monitor",
+    "sha256": "2cea2812227888a1510acbbfed22de3397916a2e1214fd09367720eb4a215469",
+    "mode": 493
+  },
+  "port/tb378fc-gpu-monitor.desktop": {
+    "origin": "development recipe port/tb378fc-gpu-monitor.desktop",
+    "sha256": "cb6437207730ad4b629a65ebad07aca1d4b536bfca2794661083a8a776b943cc",
+    "mode": 420
+  },
+  "port/tb378fc-gpu-monitor.py": {
+    "origin": "development recipe port/tb378fc-gpu-monitor.py",
+    "sha256": "be5e2ae8ff56d26f61fbad55ea049a06872235ee9812e867f753f2653a5521ae",
+    "mode": 493
+  },
+  "port/tb378fc-gpu.config": {
+    "origin": "development recipe port/tb378fc-gpu.config",
+    "sha256": "80c670d6f50610711424d05b689aaf83b0b617f4e6ad36a6bba4d3dbf9d23eed",
+    "mode": 420
+  },
+  "port/tb378fc-memory.config": {
+    "origin": "development recipe port/tb378fc-memory.config",
+    "sha256": "cca1f16e53f5551515ca8cb738d2f944065b40f844e5685307e862b4384c6de3",
+    "mode": 420
+  },
+  "port/tb378fc-microphone72.py": {
+    "origin": "development recipe port/tb378fc-microphone72.py",
+    "sha256": "7e7923fba89d9ae294795b7b8c1047de79477e1454167f25bbbca5a6b8a3400d",
+    "mode": 493
+  },
+  "port/tb378fc-microphone72.service": {
+    "origin": "development recipe port/tb378fc-microphone72.service",
+    "sha256": "350305fd78377cc4d279f6a76ed67d095c00a56300aedd81a840ec00da0b96cf",
+    "mode": 420
+  },
+  "port/tb378fc-microphone73.py": {
+    "origin": "development recipe port/tb378fc-microphone73.py",
+    "sha256": "4022bca6e799508c70574a6754fa2257f72eca299c83cda0480abb8e230ff439",
+    "mode": 493
+  },
+  "port/tb378fc-microphone73.service": {
+    "origin": "development recipe port/tb378fc-microphone73.service",
+    "sha256": "acbd8fc6b70c79d8edfb5b65768a856e99acbcf3e92ef21997acf8dfd6e89139",
+    "mode": 420
+  },
+  "port/tb378fc-panel-bias.c": {
+    "origin": "development recipe port/tb378fc-panel-bias.c",
+    "sha256": "94f948b8663e7ab96fc38a9b4fdebf02c381e8e387dfdc36417c1c1ec578572e",
+    "mode": 420
+  },
+  "port/tb378fc-refresh76.py": {
+    "origin": "development recipe port/tb378fc-refresh76.py",
+    "sha256": "34397de37aab73fd863ac2b9e879a725116baee29cf204f916030767ebd22043",
+    "mode": 493
+  },
+  "port/tb378fc-refresh76.service": {
+    "origin": "development recipe port/tb378fc-refresh76.service",
+    "sha256": "bae19b1ead0eac0361b468ac9c1a534352fc22bc5f3e1c7977772510ba61eba5",
+    "mode": 420
+  },
+  "port/tb378fc-runtime68": {
+    "origin": "development recipe port/tb378fc-runtime68",
+    "sha256": "534d18e5ed2923c188cc9f8ec502822a5da413fcd9614070c975b908118cd3cc",
+    "mode": 493
+  },
+  "port/tb378fc-runtime68.service": {
+    "origin": "development recipe port/tb378fc-runtime68.service",
+    "sha256": "4888b01673b0f4b7a5de9b7cb7a580d4301ae8a60f8ed3ab8a0fd7d3fc715259",
+    "mode": 420
+  },
+  "port/tb378fc-stage1.config": {
+    "origin": "development recipe port/tb378fc-stage1.config",
+    "sha256": "acfac3dea24f93e6dab72710e380a980d199daa93c4bdfb4f1e1093c2a0b1428",
+    "mode": 420
+  },
+  "port/tb378fc-touch.config": {
+    "origin": "development recipe port/tb378fc-touch.config",
+    "sha256": "77c7c539cbd28d4b3961273fc6b962b1b0ab591c7e9c818ae1fc923caeec3d80",
+    "mode": 420
+  },
+  "port/tb378fc-ufs77.py": {
+    "origin": "development recipe port/tb378fc-ufs77.py",
+    "sha256": "74707f1aaeaadb21c148124036be2ac633d5b295726f6047e890d644c1f25f11",
+    "mode": 493
+  },
+  "port/tb378fc-ufs77.service": {
+    "origin": "development recipe port/tb378fc-ufs77.service",
+    "sha256": "2cb53c7b4966f9b9754840df9dc5f95a7e57e9f0d0fc88842744236cd79ece5f",
+    "mode": 420
+  },
+  "port/tb378fc-video68.service": {
+    "origin": "development recipe port/tb378fc-video68.service",
+    "sha256": "4458e5d688768ed4be63998cd18426f8b746e9d7645fe94c87d957c2801a0d39",
+    "mode": 420
+  },
+  "port/tb378fc-vulkan": {
+    "origin": "development recipe port/tb378fc-vulkan",
+    "sha256": "8c00041c77b5862fa85b215859572c9762b3b4e6ab760d2f613df7b20227de9a",
+    "mode": 493
+  },
+  "port/tb378fc-wifi-ssh70.py": {
+    "origin": "development recipe port/tb378fc-wifi-ssh70.py",
+    "sha256": "a48fbcdd5e8908fc5253dde08ca85ecc1137e31f8a65df8bd4b82cd359660cc4",
+    "mode": 493
+  },
+  "port/tb378fc-wifi.config": {
+    "origin": "development recipe port/tb378fc-wifi.config",
+    "sha256": "dbd1370a2afda17f67924f953732adb10f9a6030a6730c878d5f50b15135e316",
+    "mode": 420
+  },
+  "port/torch70/tb378fc-load-flash70": {
+    "origin": "development recipe port/torch70/tb378fc-load-flash70",
+    "sha256": "b36b98599c264a19e98d9d21c44e67bae10fed62db1581a8a9f9172952317c46",
+    "mode": 493
+  },
+  "port/torch70/tb378fc-torch-service.py": {
+    "origin": "development recipe port/torch70/tb378fc-torch-service.py",
+    "sha256": "d33e005378592d7bfa7f1d675c9a31c1de4d7c1d0e98c75ec1ad08c1ffdc9f9d",
+    "mode": 493
+  },
+  "port/torch70/tb378fc-torch.desktop": {
+    "origin": "development recipe port/torch70/tb378fc-torch.desktop",
+    "sha256": "e0070bd2db305785816c88a808f4ed6bbca03b158fe672fcae50006dcea32682",
+    "mode": 420
+  },
+  "port/torch70/tb378fc-torch.py": {
+    "origin": "development recipe port/torch70/tb378fc-torch.py",
+    "sha256": "08447170bfa8fb9bf5cfc16e9747da50414ca540a716beea231b98bd8be86388",
+    "mode": 493
+  },
+  "port/torch70/tb378fc-torch70.service": {
+    "origin": "development recipe port/torch70/tb378fc-torch70.service",
+    "sha256": "54995870c94bbffa5698c198f83c15463452c5c7de0de41349d26a802455b526",
+    "mode": 420
+  },
+  "port/torch70/tb378fc-torch70.socket": {
+    "origin": "development recipe port/torch70/tb378fc-torch70.socket",
+    "sha256": "29920ddf76af131f1e382de9fc1cd3f43f03097418357f55e0ed92759adee445",
+    "mode": 420
+  },
+  "port/trace-audioreach-startup.py": {
+    "origin": "development recipe port/trace-audioreach-startup.py",
+    "sha256": "5fb6302fa61669ebf75630d86c4a2e9d5bdb8496e473a417a33258867d63e1ed",
+    "mode": 493
+  },
+  "port/tune-camera-app75.py": {
+    "origin": "development recipe port/tune-camera-app75.py",
+    "sha256": "043e41f49c95f0b13d4f114592616774cb7b17c4bc907c1b32fd1984ff16ae6b",
+    "mode": 493
+  },
+  "port/usb-diag": {
+    "origin": "development recipe port/usb-diag",
+    "sha256": "bd55caf4c0ab1e2d0eaca2662380e0542cc4351dd648b222bf219a68a641bb3a",
+    "mode": 493
+  },
+  "port/verify-peripherals68.sh": {
+    "origin": "development recipe port/verify-peripherals68.sh",
+    "sha256": "c66197f041f04788e01943b3237b02798f10f537c2d3af0c73eae28a0ba45cea",
+    "mode": 493
+  },
+  "port/volume-orientation.py": {
+    "origin": "development recipe port/volume-orientation.py",
+    "sha256": "c6dafa0ac535147c92a756d454b7d548d60c1c694841afa4e484cd89624815e3",
+    "mode": 493
+  },
+  "port/wifi-passive-discovery.py": {
+    "origin": "development recipe port/wifi-passive-discovery.py",
+    "sha256": "570ff606ec98c4543e50e10ee006bbfb1ef835d71fbdf2ac6632c17b6e7a1b14",
+    "mode": 493
+  },
+  "tools/validation/probe-hardware-codecs68.py": {
+    "origin": "tools/probe-hardware-codecs68.py",
+    "sha256": "334b0b269be1ccaa120b9efe8539e112f4a3791461f3b6367dd35e420f39e0aa",
+    "mode": 493
+  },
+  "tools/validation/probe-hardware-video68.py": {
+    "origin": "tools/probe-hardware-video68.py",
+    "sha256": "7d6382f51a1d21cba9878ebcaf118f1991f2ab6b235b3a4319665021d765b351",
+    "mode": 493
+  },
+  "tools/validation/inspect-camera74-raw.py": {
+    "origin": "tools/inspect-camera74-raw.py",
+    "sha256": "0896f99c1e4494576980ff14d4535f8c9914ecdef0571a4fe27ee8d24c22a6c2",
+    "mode": 493
+  },
+  "tools/validation/capture-camera75.py": {
+    "origin": "tools/capture-camera75.py",
+    "sha256": "36d4c81ff0ce18a5f21cb176f4584fe9649919d899f29a70b1628d37d7fe3030",
+    "mode": 493
+  },
+  "tools/validation/test-microphone75.py": {
+    "origin": "tools/test-microphone75.py",
+    "sha256": "cd0ed9d27ad291b94df6d1940a0d5bffdb0b6b4c2b19f70bf28f921456ff6352",
+    "mode": 493
+  },
+  "tools/validation/analyze-microphone75.py": {
+    "origin": "tools/analyze-microphone75.py",
+    "sha256": "ab652846725230d31cf3cfd52013d53f1f9641b14043bfdec2e53afca16dcfd4",
+    "mode": 493
+  },
+  "tools/validation/measure-drm-vblank69.py": {
+    "origin": "tools/measure-drm-vblank69.py",
+    "sha256": "1161a595562813725b2e2690fd11037a5a6040040922b6f70bc6b1af7194d1ec",
+    "mode": 493
+  },
+  "tools/validation/test-switch79.py": {
+    "origin": "tools/test-switch79.py",
+    "sha256": "ad51b5c401ce372f00ec9464447aa670439b181e76b40ee81b51fb25ff116a3f",
+    "mode": 493
+  },
+  "packaging/device-support/tree/etc/systemd/system.conf.d/90-tb378fc-ram.conf": {
+    "origin": "installed80GiB:etc/systemd/system.conf.d/90-tb378fc-ram.conf",
+    "sha256": "c6178f451e394a98574266d9ad060d809eef4d474d025faf4845ce9d391b7245",
+    "mode": 420
+  },
+  "packaging/device-support/tree/etc/systemd/logind.conf.d/90-tb378fc-ram.conf": {
+    "origin": "installed80GiB:etc/systemd/logind.conf.d/90-tb378fc-ram.conf",
+    "sha256": "9c7c21ba4eb07b422023d66ef6cf3afb71db54cb1a0b417764afe70597ff3571",
+    "mode": 420
+  },
+  "packaging/device-support/tree/etc/systemd/journald.conf.d/90-tb378fc-ram.conf": {
+    "origin": "installed80GiB:etc/systemd/journald.conf.d/90-tb378fc-ram.conf",
+    "sha256": "54f6ff133b64dfd056b8486ac2b2521b4c364ca38ae3af1bd97469c72f949edc",
+    "mode": 420
+  },
+  "packaging/device-support/tree/etc/systemd/system/tb378fc-wifi-identity.service": {
+    "origin": "installed80GiB:etc/systemd/system/tb378fc-wifi-identity.service",
+    "sha256": "8049e653c58446399f5eb71958406ea820b94730c2adf424611297385bcb6ecc",
+    "mode": 420
+  },
+  "packaging/device-support/tree/etc/systemd/system/NetworkManager.service.d/tb378fc-identity.conf": {
+    "origin": "installed80GiB:etc/systemd/system/NetworkManager.service.d/tb378fc-identity.conf",
+    "sha256": "59f61cff3c2fc81d8c3b799da4995110299428dd911706cff1a8fdbf491c97b4",
+    "mode": 420
+  },
+  "packaging/device-support/tree/etc/systemd/system/tb378fc-video68.service": {
+    "origin": "installed80GiB:etc/systemd/system/tb378fc-video68.service",
+    "sha256": "4458e5d688768ed4be63998cd18426f8b746e9d7645fe94c87d957c2801a0d39",
+    "mode": 420
+  },
+  "packaging/device-support/tree/etc/systemd/system/tb378fc-refresh76.service": {
+    "origin": "installed80GiB:etc/systemd/system/tb378fc-refresh76.service",
+    "sha256": "bae19b1ead0eac0361b468ac9c1a534352fc22bc5f3e1c7977772510ba61eba5",
+    "mode": 420
+  },
+  "packaging/device-support/tree/etc/systemd/system/tb378fc-sensors-rpcd.service.d/91-runtime-order.conf": {
+    "origin": "installed80GiB:etc/systemd/system/tb378fc-sensors-rpcd.service.d/91-runtime-order.conf",
+    "sha256": "b7bd2480881511c61d70bc656b41c980cbb48151b918368f5260e6d5a2289610",
+    "mode": 420
+  },
+  "packaging/device-support/tree/etc/systemd/system/tb378fc-power-key.service": {
+    "origin": "installed80GiB:etc/systemd/system/tb378fc-power-key.service",
+    "sha256": "f3d56c465bca40aed8db887e4b9c2022ce9fa46087d2280498e7a1971df99260",
+    "mode": 420
+  },
+  "packaging/device-support/tree/etc/systemd/system/tb378fc-camera74.service": {
+    "origin": "installed80GiB:etc/systemd/system/tb378fc-camera74.service",
+    "sha256": "9f4741059e9bb06e79b4d4855f2742f5ad1f98fa1d9dbff34357ee900fc6ed38",
+    "mode": 420
+  },
+  "packaging/device-support/tree/etc/systemd/system/bluetooth.service.d/92-tb378fc-native.conf": {
+    "origin": "installed80GiB:etc/systemd/system/bluetooth.service.d/92-tb378fc-native.conf",
+    "sha256": "fab6b9a5f21f49977c9b3c24e8f054df31655027d819724a705ded8f3f2d16f6",
+    "mode": 420
+  },
+  "packaging/device-support/tree/etc/systemd/system/tb378fc-torch70.socket": {
+    "origin": "installed80GiB:etc/systemd/system/tb378fc-torch70.socket",
+    "sha256": "29920ddf76af131f1e382de9fc1cd3f43f03097418357f55e0ed92759adee445",
+    "mode": 420
+  },
+  "packaging/device-support/tree/etc/systemd/system/tb378fc-microphone73.service": {
+    "origin": "installed80GiB:etc/systemd/system/tb378fc-microphone73.service",
+    "sha256": "acbd8fc6b70c79d8edfb5b65768a856e99acbcf3e92ef21997acf8dfd6e89139",
+    "mode": 420
+  },
+  "packaging/device-support/tree/etc/systemd/system/tb378fc-bluetooth68.service": {
+    "origin": "installed80GiB:etc/systemd/system/tb378fc-bluetooth68.service",
+    "sha256": "2a1865f42924016b1ee5a2e3e2fb6df2f522eabd43894b9d88c8baa901d9583f",
+    "mode": 420
+  },
+  "packaging/device-support/tree/etc/systemd/system/tb378fc-runtime68.service": {
+    "origin": "installed80GiB:etc/systemd/system/tb378fc-runtime68.service",
+    "sha256": "4888b01673b0f4b7a5de9b7cb7a580d4301ae8a60f8ed3ab8a0fd7d3fc715259",
+    "mode": 420
+  },
+  "packaging/device-support/tree/etc/systemd/system/tb378fc-torch70.service": {
+    "origin": "installed80GiB:etc/systemd/system/tb378fc-torch70.service",
+    "sha256": "54995870c94bbffa5698c198f83c15463452c5c7de0de41349d26a802455b526",
+    "mode": 420
+  },
+  "packaging/device-support/tree/etc/systemd/system/tb378fc-zram.service": {
+    "origin": "installed80GiB:etc/systemd/system/tb378fc-zram.service",
+    "sha256": "3cbc0d8fb40e3003a5d366f85fd5f12d17166da90c370d4aeb7b1ae4b8930aae",
+    "mode": 420
+  },
+  "packaging/device-support/tree/etc/systemd/system/tb378fc-sensors-rpcd.service": {
+    "origin": "installed80GiB:etc/systemd/system/tb378fc-sensors-rpcd.service",
+    "sha256": "5ea2827d2f2b390e0786430b7b37c8d71d1a46bde32c2e353c54d313e2727508",
+    "mode": 420
+  },
+  "packaging/device-support/tree/etc/systemd/system/iio-sensor-proxy.service.d/90-tb378fc-ssc.conf": {
+    "origin": "installed80GiB:etc/systemd/system/iio-sensor-proxy.service.d/90-tb378fc-ssc.conf",
+    "sha256": "0b4ad983f45538a56068b2cfd93e2d466aff7a9be75941e62ffabed9626b7351",
+    "mode": 420
+  },
+  "packaging/device-support/tree/etc/systemd/system/tb378fc-volume-orientation.service": {
+    "origin": "installed80GiB:etc/systemd/system/tb378fc-volume-orientation.service",
+    "sha256": "dfefc1149e79b60a71e84dc569a68249c73c84602d9ee977cdba40282fb2b98a",
+    "mode": 420
+  },
+  "packaging/device-support/tree/etc/systemd/user/org.gnome.Shell@.service.d/91-tb378fc-gallium-thread-diagnostic.conf": {
+    "origin": "installed80GiB:etc/systemd/user/org.gnome.Shell@.service.d/91-tb378fc-gallium-thread-diagnostic.conf",
+    "sha256": "bca2c5094d98db5dfa85b6aefdced33e16931fea0c007a5c436f3ebaecdfc033",
+    "mode": 420
+  },
+  "packaging/device-support/tree/etc/systemd/user/org.gnome.Shell@.service.d/90-tb378fc-touchguard.conf": {
+    "origin": "installed80GiB:etc/systemd/user/org.gnome.Shell@.service.d/90-tb378fc-touchguard.conf",
+    "sha256": "47a706695e684584104bc0a27976539e936dce1784ff9393e85ab6cd839b3354",
+    "mode": 420
+  },
+  "packaging/device-support/tree/etc/systemd/user/pipewire.service.d/95-camera75.conf": {
+    "origin": "installed80GiB:etc/systemd/user/pipewire.service.d/95-camera75.conf",
+    "sha256": "40a0daefce890a27a0f783679f5ef78ef8b0a7f2f4dea650efd803cc079b66fe",
+    "mode": 420
+  },
+  "packaging/device-support/tree/etc/systemd/user/wireplumber.service.d/95-camera75.conf": {
+    "origin": "installed80GiB:etc/systemd/user/wireplumber.service.d/95-camera75.conf",
+    "sha256": "40a0daefce890a27a0f783679f5ef78ef8b0a7f2f4dea650efd803cc079b66fe",
+    "mode": 420
+  },
+  "packaging/device-support/tree/etc/modprobe.d/tb378fc-staged68.conf": {
+    "origin": "installed80GiB:etc/modprobe.d/tb378fc-staged68.conf",
+    "sha256": "f3847b705b4aed03f0191e24d002294a255982520e9cb33b29dd8c064a27e185",
+    "mode": 420
+  },
+  "packaging/device-support/tree/etc/udev/rules.d/81-tb378fc-sensors-staging.rules": {
+    "origin": "installed80GiB:etc/udev/rules.d/81-tb378fc-sensors-staging.rules",
+    "sha256": "df1138725cd1db91d21b050b516b8be64d80dad8b933a7c5a9fe0b9b699d525d",
+    "mode": 420
+  },
+  "packaging/device-support/tree/etc/udev/rules.d/82-tb378fc-dmaheap75.rules": {
+    "origin": "installed80GiB:etc/udev/rules.d/82-tb378fc-dmaheap75.rules",
+    "sha256": "03356835c02b814a4d1bccba86b7e58436700e0b9273efd95bf69a82bcc7eb4e",
+    "mode": 420
+  },
+  "packaging/device-support/tree/etc/udev/rules.d/05-tb378fc-ufs77.rules": {
+    "origin": "installed80GiB:etc/udev/rules.d/05-tb378fc-ufs77.rules",
+    "sha256": "2b7bb24a4649d689a5026acc667e78a15d2ef8560a7c6b53e716f1076926b0d6",
+    "mode": 420
+  },
+  "packaging/device-support/tree/usr/share/alsa/ucm2/Qualcomm/sm8750/Lenovo-TB378FC/Mic75.conf": {
+    "origin": "installed80GiB:usr/share/alsa/ucm2/Qualcomm/sm8750/Lenovo-TB378FC/Mic75.conf",
+    "sha256": "64a75cecfd16a7fb6f27a8176555e54f4e67249cb40ce45901f6a347c35b3c52",
+    "mode": 420
+  },
+  "packaging/device-support/tree/usr/share/alsa/ucm2/Qualcomm/sm8750/Lenovo-TB378FC/HiFi.conf": {
+    "origin": "installed80GiB:usr/share/alsa/ucm2/Qualcomm/sm8750/Lenovo-TB378FC/HiFi.conf",
+    "sha256": "06c6449f7439068b3b4e2e6aacbc426de9922f106ca04ca838f3163299de8568",
+    "mode": 420
+  },
+  "packaging/device-support/tree/usr/share/alsa/ucm2/Qualcomm/sm8750/Lenovo-TB378FC/Lenovo-TB378FC.conf": {
+    "origin": "installed80GiB:usr/share/alsa/ucm2/Qualcomm/sm8750/Lenovo-TB378FC/Lenovo-TB378FC.conf",
+    "sha256": "876bfcbc84e920aea374d65161925ed5ecf1b188911073a111605d1db2f466a7",
+    "mode": 420
+  },
+  "packaging/device-support/tree/usr/lib/systemd/user-environment-generators/80-tb378fc-mesa": {
+    "origin": "installed80GiB:usr/lib/systemd/user-environment-generators/80-tb378fc-mesa",
+    "sha256": "cc3ca92f7684a32d13fd2573ef2d85a742d1e4d8f0285d72707496b59ac7818e",
+    "mode": 493
+  },
+  "packaging/device-support/tree/usr/lib/tb378fc/camera75/share/libcamera/ipa/simple/uncalibrated.yaml": {
+    "origin": "installed80GiB:usr/lib/tb378fc/camera75/share/libcamera/ipa/simple/uncalibrated.yaml",
+    "sha256": "0689579ca79036bbd31d104deafca70fb8b267c4c8f8492e07bd6f6e875ee1ac",
+    "mode": 420
+  },
+  "packaging/device-support/tree/usr/local/share/tb378fc/gnome-shell/ui/keyboard.js": {
+    "origin": "installed80GiB:usr/local/share/tb378fc/gnome-shell/ui/keyboard.js",
+    "sha256": "16ed4e4b1b263e7d79048ebd1f8c074843493efa4185abc91949fa1e39cf6860",
+    "mode": 420
+  },
+  "packaging/device-support/tree/usr/local/share/applications/tb378fc-torch.desktop": {
+    "origin": "installed80GiB:usr/local/share/applications/tb378fc-torch.desktop",
+    "sha256": "e0070bd2db305785816c88a808f4ed6bbca03b158fe672fcae50006dcea32682",
+    "mode": 420
+  },
+  "packaging/device-support/tree/usr/local/libexec/tb378fc-torch-service.py": {
+    "origin": "installed80GiB:usr/local/libexec/tb378fc-torch-service.py",
+    "sha256": "d33e005378592d7bfa7f1d675c9a31c1de4d7c1d0e98c75ec1ad08c1ffdc9f9d",
+    "mode": 493
+  },
+  "packaging/device-support/tree/usr/local/libexec/tb378fc-load-flash70": {
+    "origin": "installed80GiB:usr/local/libexec/tb378fc-load-flash70",
+    "sha256": "b36b98599c264a19e98d9d21c44e67bae10fed62db1581a8a9f9172952317c46",
+    "mode": 493
+  },
+  "packaging/device-support/tree/usr/local/libexec/tb378fc-microphone73.py": {
+    "origin": "installed80GiB:usr/local/libexec/tb378fc-microphone73.py",
+    "sha256": "4022bca6e799508c70574a6754fa2257f72eca299c83cda0480abb8e230ff439",
+    "mode": 493
+  },
+  "packaging/device-support/tree/usr/local/libexec/tb378fc-bluetooth-address68.py": {
+    "origin": "installed80GiB:usr/local/libexec/tb378fc-bluetooth-address68.py",
+    "sha256": "eaa3468d7c010aadfdb08c1d6a1d7786faddf0e02aace601f8f567cff36bc335",
+    "mode": 493
+  },
+  "packaging/device-support/tree/usr/local/libexec/tb378fc-mesa-user-env": {
+    "origin": "installed80GiB:usr/local/libexec/tb378fc-mesa-user-env",
+    "sha256": "cc3ca92f7684a32d13fd2573ef2d85a742d1e4d8f0285d72707496b59ac7818e",
+    "mode": 493
+  },
+  "packaging/device-support/tree/usr/local/libexec/tb378fc-gpu-monitor.py": {
+    "origin": "installed80GiB:usr/local/libexec/tb378fc-gpu-monitor.py",
+    "sha256": "be5e2ae8ff56d26f61fbad55ea049a06872235ee9812e867f753f2653a5521ae",
+    "mode": 420
+  },
+  "packaging/device-support/tree/usr/local/libexec/tb378fc-camera74.py": {
+    "origin": "installed80GiB:usr/local/libexec/tb378fc-camera74.py",
+    "sha256": "8bf2696625b28412f2900339b244cb22751fdac306f41df99071ab6bc037850c",
+    "mode": 493
+  },
+  "packaging/device-support/tree/usr/local/libexec/tb378fc-runtime68": {
+    "origin": "installed80GiB:usr/local/libexec/tb378fc-runtime68",
+    "sha256": "534d18e5ed2923c188cc9f8ec502822a5da413fcd9614070c975b908118cd3cc",
+    "mode": 493
+  },
+  "packaging/device-support/tree/usr/local/libexec/tb378fc-power-key.py": {
+    "origin": "installed80GiB:usr/local/libexec/tb378fc-power-key.py",
+    "sha256": "0c67abb1bf58025be1d13bb4538dd87e3e840b54042899d48e9fa19fbea300c8",
+    "mode": 493
+  },
+  "packaging/device-support/tree/usr/local/libexec/tb378fc-volume-orientation": {
+    "origin": "installed80GiB:usr/local/libexec/tb378fc-volume-orientation",
+    "sha256": "c6dafa0ac535147c92a756d454b7d548d60c1c694841afa4e484cd89624815e3",
+    "mode": 493
+  },
+  "packaging/device-support/tree/usr/local/libexec/tb378fc-mesa-hardware-probe": {
+    "origin": "installed80GiB:usr/local/libexec/tb378fc-mesa-hardware-probe",
+    "sha256": "8ef2c1f1c907cc00dc2f7cde12c54366eb0b14e488892250893bcb9595e7b057",
+    "mode": 493
+  },
+  "packaging/device-support/tree/usr/local/libexec/tb378fc-refresh76.py": {
+    "origin": "installed80GiB:usr/local/libexec/tb378fc-refresh76.py",
+    "sha256": "34397de37aab73fd863ac2b9e879a725116baee29cf204f916030767ebd22043",
+    "mode": 493
+  },
+  "packaging/device-support/tree/usr/local/libexec/tb378fc-zram": {
+    "origin": "installed80GiB:usr/local/libexec/tb378fc-zram",
+    "sha256": "7a76194a72fadaf9208d8ad2c08a5b06cdfba8d55c907fdc04eb83eb4891f6a9",
+    "mode": 493
+  },
+  "packaging/device-support/tree/usr/local/libexec/tb378fc-render-probe.py": {
+    "origin": "installed80GiB:usr/local/libexec/tb378fc-render-probe.py",
+    "sha256": "1b48bb0d3e7689535f186801a5217c0448000ef04fe5574ba05cb00fe1724b2b",
+    "mode": 493
+  },
+  "packaging/device-support/tree/usr/local/libexec/tb378fc-torch.py": {
+    "origin": "installed80GiB:usr/local/libexec/tb378fc-torch.py",
+    "sha256": "08447170bfa8fb9bf5cfc16e9747da50414ca540a716beea231b98bd8be86388",
+    "mode": 493
+  },
+  "packaging/device-support/tree/usr/local/libexec/tb378fc-wifi-identity": {
+    "origin": "installed80GiB:usr/local/libexec/tb378fc-wifi-identity",
+    "sha256": "8d8f3fe09da200b1ebf6cbde695b9aa7ecb1b7565f625010b3aab8f1bc49db9b",
+    "mode": 493
+  },
+  "packaging/device-support/tree/usr/local/bin/tb378fc-gpu-monitor": {
+    "origin": "installed80GiB:usr/local/bin/tb378fc-gpu-monitor",
+    "sha256": "2cea2812227888a1510acbbfed22de3397916a2e1214fd09367720eb4a215469",
+    "mode": 493
+  },
+  "packaging/device-support/tree/usr/local/bin/tb378fc-vulkan": {
+    "origin": "installed80GiB:usr/local/bin/tb378fc-vulkan",
+    "sha256": "8c00041c77b5862fa85b215859572c9762b3b4e6ab760d2f613df7b20227de9a",
+    "mode": 493
+  },
+  "packaging/device-support/tree/usr/local/bin/tb378fc-desktop68": {
+    "origin": "installed80GiB:usr/local/bin/tb378fc-desktop68",
+    "sha256": "76c62d7f892f01e107ce14cbb75d1526080eb6d75f538af3d67fd6f098982af1",
+    "mode": 493
+  },
+  "packaging/device-support/symlinks.json": {
+    "origin": "installed service links",
+    "sha256": "fe6bb3d702763432922108d4d7ffe81b376091119c379f628118504af2e67cb7",
+    "mode": 420
+  },
+  "third_party/oneplus/tools/build-mainline-gki.py": {
+    "origin": "reference/oneplus-coexist75/tools/build-mainline-gki.py",
+    "sha256": "75d5f82dd07820b04a317e503cd2b71a012a7f33509a3dd7abfac083a7549438",
+    "mode": 493
+  },
+  "third_party/oneplus/tools/sign-boot-triplet.py": {
+    "origin": "reference/oneplus-coexist75/tools/sign-boot-triplet.py",
+    "sha256": "3cf3d7db5d450c1823518a9cb709b93890fbecba08793668978e13e9a1df82a6",
+    "mode": 493
+  },
+  "third_party/oneplus/tools/lib/boot_profiles.py": {
+    "origin": "reference/oneplus-coexist75/tools/lib/boot_profiles.py",
+    "sha256": "28994e5117e5dfc8dcc47f1253b4559e69ff76a7eba8ff32829bdacda2686c47",
+    "mode": 493
+  },
+  "third_party/oneplus/initramfs/init-ncm": {
+    "origin": "reference/oneplus-coexist75/initramfs/init-ncm",
+    "sha256": "eac8323ebe0908bbefeafbb1831faf80f34c5abebb0091cc260c621d7d8429b0",
+    "mode": 420
+  },
+  "third_party/oneplus/switch/erhai-switch": {
+    "origin": "reference/oneplus-coexist75/switch/erhai-switch",
+    "sha256": "9919e85489935385dd9ce79a6dfed8e1b5c3b9c93de9faf752c602f5867625d9",
+    "mode": 420
+  },
+  "third_party/oneplus-integration/kernel/source.json": {
+    "origin": "upstream/kernel/source.json",
+    "sha256": "3bfa6621e0eb497aa2859b2e86166927ac83b2c43a827290bd69820d84079eea",
+    "mode": 420
+  },
+  "third_party/oneplus-integration/tools/build-erhai-abl-symbols.py": {
+    "origin": "upstream/tools/build-erhai-abl-symbols.py",
+    "sha256": "455650f9748e7cb8e0bbadbd352133a010c1350396799c8103e52929f9a8bc6d",
+    "mode": 493
+  },
+  "third_party/oneplus-integration/tools/lib/abl_layout.py": {
+    "origin": "upstream/tools/lib/abl_layout.py",
+    "sha256": "54d3760d2e3e82994aca1372b06a90922995a9ccb30ca4aa858ddac25107b92d",
+    "mode": 493
+  },
+  "third_party/oneplus-integration/packaging/mesa/source.json": {
+    "origin": "upstream/packaging/mesa/source.json",
+    "sha256": "f1f2b7ed4f31194cb5dff5f90c0bb5eb742508a20cea71f522c75a210e23b06d",
+    "mode": 420
+  },
+  "third_party/oneplus-integration/packaging/mesa/patches/0001-freedreno-a830v1.patch": {
+    "origin": "upstream/packaging/mesa/patches/0001-freedreno-a830v1.patch",
+    "sha256": "64f82d5e34f078758ecda47c4ee00a62bf04215616891716175f71ea0543ccc9",
+    "mode": 420
+  },
+  "third_party/y700-camera/source.json": {
+    "origin": "reference/camera74/h0cheung-kernel/source.json",
+    "sha256": "beabd33ee79ef9f94f6333d2636d2d7a43deb842eef9693245cee838a15e99cb",
+    "mode": 420
+  },
+  "third_party/y700-camera/source-verified.json": {
+    "origin": "reference/camera74/h0cheung-kernel/source-verified.json",
+    "sha256": "c6e7ef46d0abdbb01fcc3689886b4dd543b2815ddc8e06dc2fe02d16f8656de6",
+    "mode": 420
+  },
+  "firmware/installed-manifest.json": {
+    "origin": "final installed firmware identity",
+    "sha256": "56384d276afdf5d56f76a82fb6a1857c05a0517d23429fa52afcadd6bbf3d198",
+    "mode": 420
+  }
+}

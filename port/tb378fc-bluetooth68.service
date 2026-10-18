@@ -1,0 +1,16 @@
+[Unit]
+Description=TB378FC native UART Bluetooth preparation
+Requires=tb378fc-runtime68.service
+After=tb378fc-runtime68.service
+Before=bluetooth.service
+
+[Service]
+Type=oneshot
+ExecStart=/sbin/modprobe hci_uart
+ExecStart=/sbin/modprobe tb378fc_geni_uart
+ExecStart=/usr/bin/python3 /usr/local/libexec/tb378fc-bluetooth-address68.py
+RemainAfterExit=yes
+TimeoutStartSec=60
+
+[Install]
+WantedBy=graphical.target

@@ -1,0 +1,85 @@
+#!/bin/sh
+# Early storage support for the dedicated tb378fc-root79 volume.
+export PATH=/bin
+mount -t proc proc /proc
+mount -t sysfs sysfs /sys
+mount -t devtmpfs devtmpfs /dev
+mkdir -p /dev/pts /run /sys/kernel/config
+mount -t devpts devpts /dev/pts
+mount -t tmpfs -o size=6G,mode=0755 tmpfs /run
+mkdir -p /run/evidence
+exec </dev/console >/dev/console 2>&1
+cat /etc/build-id >/run/evidence/build-id.txt
+cat /proc/cmdline >/run/evidence/cmdline.txt
+for cpu in 1 2 3 4 5 6 7; do
+    [ ! -f /sys/devices/system/cpu/cpu$cpu/online ] || echo 1 >/sys/devices/system/cpu/cpu$cpu/online
+done
+setup=0
+case " $(cat /proc/cmdline) " in
+    *" tb378fc.setup=1 "*) setup=1 ;;
+esac
+fail() {
+    echo "TB378FC_ROOT79_FAILED $*" | tee /run/evidence/root-stage.txt
+    dmesg >/run/evidence/dmesg.txt
+    /bin/usb-diag >/run/evidence/usb-setup.txt 2>&1 &
+    httpd -p 8081 -h /run/evidence
+    sleep 90
+    /bin/reboot-bootloader
+    while :; do sleep 1; done
+}
+if [ "$setup" = 0 ] && [ -c /dev/watchdog0 ]; then
+    watchdog -F -T 30 -t 5 /dev/watchdog0 &
+fi
+echo TB378FC_ROOT79_EARLY_MODULES >/dev/kmsg
+while read -r module; do
+    [ -z "$module" ] || insmod "/lib/modules/$module" >>/run/evidence/early-modules.txt 2>&1 || fail "module:$module"
+done </etc/early-modules
+cat /proc/uptime >/run/evidence/storage-probe-uptime.txt
+if [ "$setup" = 1 ]; then
+    # Same early drivers as the persistent path; keep all tablet partitions
+    # unmounted and continue into the established full-RAM installation desk.
+    export TB378FC_PREPARED=1
+    exec /bin/desktop-init79
+    fail setup-exec
+fi
+/bin/usb-diag >/run/evidence/usb-setup.txt 2>&1 &
+httpd -p 8081 -h /run/evidence
+echo TB378FC_ROOT79_FIND_VOLUME | tee /run/evidence/root-stage.txt
+expected=$(cat /etc/root-uuid)
+volume=
+for count in $(seq 1 60); do
+    volume=$(findfs "UUID=$expected" 2>/dev/null) && break
+    sleep 1
+done
+[ -n "$volume" ] || fail missing-root-volume
+mkdir -p /run/tb378fc-root /run/desktop/minimal /run/desktop/standard /newroot
+mount -t ext4 -o rw,noatime "$volume" /run/tb378fc-root || fail root-mount
+[ "$(cat /run/tb378fc-root/.tb378fc-root)" = tb378fc-root79 ] || fail root-layout
+mount -t squashfs -o ro,loop /run/tb378fc-root/layers/minimal.squashfs /run/desktop/minimal || fail minimal
+mount -t squashfs -o ro,loop /run/tb378fc-root/layers/minimal.standard.squashfs /run/desktop/standard || fail standard
+mount -t overlay overlay -o lowerdir=/run/desktop/standard:/run/desktop/minimal,upperdir=/run/tb378fc-root/upper,workdir=/run/tb378fc-root/work /newroot || fail overlay
+cp /etc/build-id /newroot/etc/tb378fc-build-id
+mkdir -p /run/initramfs/bin /run/initramfs/dev /run/initramfs/proc /run/initramfs/sys /run/initramfs/run
+cp /bin/busybox /run/initramfs/bin/busybox
+for app in sh mount umount sync losetup reboot poweroff halt sleep; do
+    ln -s busybox "/run/initramfs/bin/$app"
+done
+cp /bin/persistent-shutdown80 /run/initramfs/shutdown
+chmod 0755 /run/initramfs/shutdown
+echo "TB378FC_ROOT79_READY uuid=$expected device=$volume" | tee /run/evidence/root-stage.txt
+cat /proc/mounts >/run/evidence/persistent-mounts.txt
+mkdir -p /newroot/run /newroot/dev /newroot/proc /newroot/sys
+for process in /proc/[0-9]*; do
+    pid=${process##*/}
+    [ "$pid" = 1 ] || [ ! -e "$process/exe" ] || kill "$pid" 2>/dev/null
+done
+sleep 1
+for process in /proc/[0-9]*; do
+    pid=${process##*/}
+    [ "$pid" = 1 ] || [ ! -e "$process/exe" ] || kill -KILL "$pid" 2>/dev/null
+done
+mount --move /dev /newroot/dev || fail move-dev
+mount --move /proc /newroot/proc || fail move-proc
+mount --move /sys /newroot/sys || fail move-sys
+mount --move /run /newroot/run || fail move-run
+exec switch_root /newroot /sbin/init

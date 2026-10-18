@@ -1,0 +1,2 @@
+# Initial bring-up: hold proxy discovery until this unit's data and server are ready.
+SUBSYSTEM=="misc", KERNEL=="fastrpc-adsp|fastrpc-adsp-secure", GROUP="fastrpc", MODE="0660", SYMLINK+="tb378fc-sensors-fastrpc", ENV{IIO_SENSOR_PROXY_TYPE}=""

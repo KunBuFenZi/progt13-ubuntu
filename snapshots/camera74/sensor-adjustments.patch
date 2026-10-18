@@ -1,0 +1,144 @@
+--- a/gc08a8.c
++++ b/gc08a8.c
+@@ -816,6 +816,8 @@
+ 	if (id != 0x08a8)
+ 		return dev_err_probe(dev, -ENODEV, "Unexpected sensor ID: %#llx\n", id);
+ 
++	dev_info(dev, "GC08A8 identity confirmed: %#llx\n", id);
++
+ 	ret = gc08a8_init_controls(sensor);
+ 	if (ret)
+ 		return ret;
+--- a/ov13b10.c
++++ b/ov13b10.c
+@@ -7,6 +7,7 @@
+ #include <linux/gpio/consumer.h>
+ #include <linux/i2c.h>
+ #include <linux/module.h>
++#include <linux/of.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/regulator/consumer.h>
+ #include <media/v4l2-ctrls.h>
+@@ -717,6 +718,8 @@
+ 	struct clk *img_clk;
+ 	struct regulator_bulk_data supplies[ARRAY_SIZE(ov13b10_supply_names)];
+ 	struct gpio_desc *reset;
++	bool tb378fc;
++	struct regulator *vaf;
+ 
+ 	/* V4L2 Controls */
+ 	struct v4l2_ctrl *link_freq;
+@@ -1195,10 +1198,62 @@
+ 	return 0;
+ }
+ 
++/* Native TB378FC sequence decoded from its camera module binary.
++ * Parent supplies and voltage constraints are represented in device tree.
++ */
++static int ov13b10_tb378fc_power_on(struct ov13b10 *sensor)
++{
++	const unsigned int order[] = { 1, 0, 2 }; /* AVDD, DOVDD, DVDD */
++	int ret, i;
++
++	gpiod_set_value_cansleep(sensor->reset, 1);
++	fsleep(1000);
++	ret = regulator_enable(sensor->vaf);
++	if (ret)
++		return ret;
++	fsleep(5000);
++	for (i = 0; i < ARRAY_SIZE(order); i++) {
++		ret = regulator_enable(sensor->supplies[order[i]].consumer);
++		if (ret)
++			goto disable;
++	}
++	gpiod_set_value_cansleep(sensor->reset, 0);
++	fsleep(5000);
++	ret = clk_prepare_enable(sensor->img_clk);
++	if (ret)
++		goto disable;
++	fsleep(1000);
++	return 0;
++
++disable:
++	gpiod_set_value_cansleep(sensor->reset, 1);
++	while (i--)
++		regulator_disable(sensor->supplies[order[i]].consumer);
++	regulator_disable(sensor->vaf);
++	return ret;
++}
++
++static int ov13b10_tb378fc_power_off(struct ov13b10 *sensor)
++{
++	regulator_disable(sensor->vaf);
++	fsleep(5000);
++	gpiod_set_value_cansleep(sensor->reset, 1);
++	fsleep(1000);
++	clk_disable_unprepare(sensor->img_clk);
++	fsleep(1000);
++	regulator_disable(sensor->supplies[2].consumer);
++	regulator_disable(sensor->supplies[0].consumer);
++	regulator_disable(sensor->supplies[1].consumer);
++	return 0;
++}
++
+ static int ov13b10_power_off(struct device *dev)
+ {
+ 	struct v4l2_subdev *sd = dev_get_drvdata(dev);
+ 	struct ov13b10 *ov13b10 = to_ov13b10(sd);
++
++	if (ov13b10->tb378fc)
++		return ov13b10_tb378fc_power_off(ov13b10);
+ 
+ 	gpiod_set_value_cansleep(ov13b10->reset, 1);
+ 	regulator_bulk_disable(ARRAY_SIZE(ov13b10_supply_names),
+@@ -1214,6 +1269,9 @@
+ 	struct v4l2_subdev *sd = dev_get_drvdata(dev);
+ 	struct ov13b10 *ov13b10 = to_ov13b10(sd);
+ 	int ret;
++
++	if (ov13b10->tb378fc)
++		return ov13b10_tb378fc_power_on(ov13b10);
+ 
+ 	ret = clk_prepare_enable(ov13b10->img_clk);
+ 	if (ret < 0) {
+@@ -1480,7 +1538,7 @@
+ 	int ret;
+ 
+ 	ov13b->reset = devm_gpiod_get_optional(ov13b->dev, "reset",
+-					       GPIOD_OUT_LOW);
++					       GPIOD_OUT_HIGH);
+ 	if (IS_ERR(ov13b->reset))
+ 		return dev_err_probe(ov13b->dev, PTR_ERR(ov13b->reset),
+ 				     "failed to get reset gpio\n");
+@@ -1596,6 +1654,14 @@
+ 		return -ENOMEM;
+ 
+ 	ov13b->dev = &client->dev;
++	ov13b->tb378fc = of_device_is_compatible(client->dev.of_node,
++					       "lenovo,tb378fc-ov13b10");
++	if (ov13b->tb378fc) {
++		ov13b->vaf = devm_regulator_get(ov13b->dev, "vaf");
++		if (IS_ERR(ov13b->vaf))
++			return dev_err_probe(ov13b->dev, PTR_ERR(ov13b->vaf),
++					     "failed to get native VAF rail\n");
++	}
+ 
+ 	/* Check HW config */
+ 	ret = ov13b10_check_hwcfg(ov13b);
+@@ -1705,9 +1771,16 @@
+ MODULE_DEVICE_TABLE(acpi, ov13b10_acpi_ids);
+ #endif
+ 
++static const struct of_device_id ov13b10_of_match[] = {
++	{ .compatible = "ovti,ov13b10" },
++	{}
++};
++MODULE_DEVICE_TABLE(of, ov13b10_of_match);
++
+ static struct i2c_driver ov13b10_i2c_driver = {
+ 	.driver = {
+ 		.name = "ov13b10",
++		.of_match_table = ov13b10_of_match,
+ 		.pm = pm_ptr(&ov13b10_pm_ops),
+ 		.acpi_match_table = ACPI_PTR(ov13b10_acpi_ids),
+ 	},

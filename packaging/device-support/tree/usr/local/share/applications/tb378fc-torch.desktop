@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Torch
+Name[zh_CN]=手电筒
+Comment=Use the rear flashlight; turns off automatically after 30 seconds
+Comment[zh_CN]=打开后置手电筒，30秒后自动关闭
+Exec=/usr/bin/python3 /usr/local/libexec/tb378fc-torch.py
+Icon=camera-flash-symbolic
+Terminal=false
+Categories=Utility;

@@ -1,0 +1,155 @@
+#!/usr/bin/python3
+# SPDX-License-Identifier: GPL-2.0-only
+"""Control the tablet backlight without disabling KMS or changing authentication."""
+import os
+from pathlib import Path
+import signal
+import socket
+import struct
+import subprocess
+import sys
+
+BACKLIGHT_CLASS = Path('/sys/class/backlight')
+# The kernel combines the LED strings of both KTZ8868 chips into one
+# led-backlight device, which the panel itself switches on and off.
+PANEL_BACKLIGHT = 'lenovo,tb378fc-aw99706b'
+
+
+def compatibles(device):
+    try:
+        value = (device / 'device/of_node/compatible').read_bytes()
+    except OSError:
+        return ()
+    return tuple(item.decode('ascii', 'replace') for item in value.split(b'\0') if item)
+
+
+def find_backlight(root=BACKLIGHT_CLASS):
+    """bl_power of the one panel backlight; refuse to guess between devices."""
+    try:
+        devices = sorted(root.iterdir())
+    except OSError as error:
+        raise RuntimeError(f'cannot list {root}: {error}') from error
+    panel = [device for device in devices if PANEL_BACKLIGHT in compatibles(device)]
+    if len(panel) != 1:
+        found = ', '.join(f'{device.name} ({"/".join(compatibles(device)) or "no OF node"})'
+                          for device in devices) or 'none'
+        raise RuntimeError(f'expected exactly one {PANEL_BACKLIGHT} backlight, found: {found}')
+    return panel[0] / 'bl_power'
+
+
+def active_uid():
+    def query(args):
+        return subprocess.check_output(['loginctl', *args], text=True,
+                                       timeout=2).strip()
+    sid = query(['show-seat', 'seat0', '-p', 'ActiveSession', '--value'])
+    if not sid:
+        raise RuntimeError('no active seat session')
+    return int(query(['show-session', sid, '-p', 'User', '--value']))
+
+
+class Backlight:
+    def __init__(self, path):
+        self.path = path
+        self.manual_blank = False
+        self.owner = None
+
+    def mode(self):
+        value = int(self.path.read_text().strip())
+        if value not in (0, 4):
+            raise RuntimeError('unexpected backlight power state')
+        return 0 if value == 0 else 3
+
+    def set_mode(self, mode):
+        # If the write fails, try to switch the backlight back on instead of
+        # stranding the session dark. GNOME owns the authentication boundary.
+        try:
+            self.path.write_text('0\n' if mode == 0 else '4\n')
+        except OSError:
+            self.restore()
+            raise
+        return self.mode()
+
+    def restore(self):
+        try:
+            self.path.write_text('0\n')
+        except OSError:
+            pass
+
+    def request(self, request, uid, seat_uid):
+        if uid not in (0, seat_uid):
+            raise PermissionError('caller does not own the active seat')
+        if seat_uid != self.owner:
+            self.manual_blank = False
+            self.owner = seat_uid
+        if request == 'GET':
+            return self.mode()
+        fields = request.split()
+        if len(fields) != 2 or fields[0] not in ('KEY', 'AUTO') or fields[1] not in ('0', '1', '2', '3'):
+            raise ValueError('invalid request')
+        origin, value = fields[0], int(fields[1])
+        if origin == 'KEY':
+            if uid != 0:
+                raise PermissionError('only the system key handler sets manual intent')
+            self.manual_blank = value != 0
+        elif self.manual_blank and value == 0:
+            # Completing a lock animation must not undo the explicit blank.
+            return self.mode()
+        result = self.set_mode(value)
+        print(f'backlight power: {origin} uid={uid} mode={result}', flush=True)
+        return result
+
+
+def check():
+    """ExecCondition: skip the service unless the panel backlight is unambiguous."""
+    try:
+        Backlight(find_backlight()).mode()
+    except (OSError, ValueError, RuntimeError) as error:
+        print(f'backlight power: {error}', file=sys.stderr, flush=True)
+        return 1
+    return 0
+
+
+def main():
+    if sys.argv[1:] == ['--check']:
+        raise SystemExit(check())
+    if sys.argv[1:]:
+        raise SystemExit('usage: tb378fc-display-power [--check]')
+    if os.environ.get('LISTEN_PID') != str(os.getpid()) or os.environ.get('LISTEN_FDS') != '1':
+        raise RuntimeError('start through tb378fc-display-power.socket')
+    lights = Backlight(find_backlight())
+    lights.mode()  # Refuse startup if the device is unreadable.
+    listener = socket.socket(fileno=3)
+    def stop(_signal, _frame):
+        raise SystemExit(0)
+    signal.signal(signal.SIGTERM, stop)
+    try:
+        while True:
+            connection, _ = listener.accept()
+            with connection:
+                connection.settimeout(1)
+                try:
+                    _, uid, _ = struct.unpack('3i', connection.getsockopt(
+                        socket.SOL_SOCKET, socket.SO_PEERCRED, struct.calcsize('3i')))
+                    data = b''
+                    while b'\n' not in data and len(data) < 32:
+                        chunk = connection.recv(32 - len(data))
+                        if not chunk:
+                            break
+                        data += chunk
+                    if not data.endswith(b'\n') or data.count(b'\n') != 1:
+                        raise ValueError('invalid frame')
+                    result = lights.request(data.decode('ascii').strip(), uid, active_uid())
+                    connection.sendall(f'OK {result}\n'.encode('ascii'))
+                except (OSError, ValueError, RuntimeError, subprocess.SubprocessError) as error:
+                    print(f'backlight power: rejected request: {error}', flush=True)
+                    try:
+                        connection.sendall(b'ERR request failed\n')
+                    except OSError:
+                        pass
+    finally:
+        lights.restore()
+        listener.close()
+
+
+if __name__ == '__main__':
+    main()

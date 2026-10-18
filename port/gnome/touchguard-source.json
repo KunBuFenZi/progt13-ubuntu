@@ -1,0 +1,16 @@
+{
+  "source": "Device GNOME 50.1 keyboard resource",
+  "original_sha256": "847c837f35874d12b1bda312b1209c72f3aad7d58ee5705dc38af8bf14c9c67a",
+  "patched_sha256": "16ed4e4b1b263e7d79048ebd1f8c074843493efa4185abc91949fa1e39cf6860",
+  "stable_backports": [
+    "ac2fb580fee9adf966d2ba3195e7cf067ac2eada",
+    "61b16d4124d2d15e5bf98f5bcebbecedf9d28c96"
+  ],
+  "compatibility": "Mutter18 lacks the newer input-panel-group API; preserve and pick keyboard targets during the lock-screen grab",
+  "diagnostics": "Event counters and generated Shift target geometry; no entered text or real finger coordinates",
+  "status": "LOADED_ON_BOOT66_DIAGNOSTICS_ONLY_PHYSICAL_TOUCH_STILL_FAILS",
+  "runtime_evidence": "out/device-tests/20261018-live-audio-66/touch67-final-before-android.tar.gz",
+  "valid_control": "Two exact native evdev Shift probes delivered 20 down and 20 up each; they bypass the touch sensor, IRQ and SPI",
+  "spi_runtime_hold": "FAILED: user still reported frequent missed touches; SPI control restored to auto",
+  "physical_touch_status": "UNRESOLVED"
+}
