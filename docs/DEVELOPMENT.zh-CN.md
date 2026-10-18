@@ -28,7 +28,7 @@ Git只保存文本源码、补丁、配置模板和摘要。固件/校准、原�
 
 ```sh
 python3 tools/check-source.py
-python3 tools/validation/test_switch.py
+sudo python3 tools/validation/test_switch.py
 ```
 
 第二项只使用临时目录中的普通文件，验证整组三件套轮换、dry-run、损坏拒绝和中断标记，不访问设备。GitHub Actions执行这些离线检查；它不宣称编译完整桌面镜像或连接真机。

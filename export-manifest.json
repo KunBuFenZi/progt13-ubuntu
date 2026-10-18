@@ -722,9 +722,9 @@
       "sha256": "01a2845e679eb026d805474213350c6fc050a3804cd81f79632669d53ba07e08"
     },
     "LICENSE": {
-      "source": "Linux GPL-2.0 license text",
-      "bytes": 18600,
-      "sha256": "8780e78a1a737e127f25a65f6d95269bffd36158dc261114de7859b490bfc5aa"
+      "source": "Linux GPL-2.0 text, SPDX usage preamble removed",
+      "bytes": 17876,
+      "sha256": "a5c87579eae94763551028fce310636daf1223647439325f853c7a0123dfb553"
     }
   }
 }

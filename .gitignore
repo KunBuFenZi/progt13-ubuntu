@@ -26,3 +26,5 @@ id_ed25519*
 *.tar.xz
 .env
 .env.*
+device.conf
+*.device.conf

@@ -34,4 +34,3 @@ subprocess.run([sys.executable,'port/package-wireless-desktop.py',
     '--audio-topology','out/topology-tb378fc/Lenovo-TB378FC-tplg.bin',
     '--dtb','out/abl-audio-gated/erhai-abl.dtb',
     '--mainline-dtb','out/kernel-audio-gated/arch/arm64/boot/dts/qcom/sm8750-lenovo-tb378fc-audio.dtb'],check=True)
-

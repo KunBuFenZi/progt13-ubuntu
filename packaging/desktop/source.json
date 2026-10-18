@@ -1,0 +1,1015 @@
+{
+  "schema": 1,
+  "release": {
+    "distribution": "Ubuntu",
+    "version": "26.04 LTS",
+    "codename": "resolute",
+    "architecture": "arm64"
+  },
+  "iso": {
+    "url": "https://cdimage.ubuntu.com/ubuntu/releases/26.04/release/ubuntu-26.04-desktop-arm64.iso",
+    "sha256": "c2afd538d66fdd77377d03f1ed2ac76a34f1c116baecc9a8170d68f833121f57"
+  },
+  "layers": [
+    {
+      "path": "casper/minimal.squashfs",
+      "sha256": "82613d06f973778f6d49c817d7eb764a7fd812016a30a7f8006e8f61d718b393",
+      "bytes": 3110420480,
+      "compression": "xz",
+      "role": "base desktop layer (lower)"
+    },
+    {
+      "path": "casper/minimal.standard.squashfs",
+      "sha256": "fce0e2440cdbb6ebaf03efe3dd844c0e1a3b5facaca913e18f312e30a8f9fdaf",
+      "bytes": 516481024,
+      "compression": "xz",
+      "role": "standard package selection (upper; extracted over the base)"
+    }
+  ],
+  "build_host": {
+    "image": "ubuntu@sha256:33ceb71981b602c1a7443a53469e4dba065f7503eab3078a2d7a57a2ab987517",
+    "architecture": "amd64",
+    "packages": [
+      {
+        "file": "squashfs-tools_4.6.1-1build1_amd64.deb",
+        "url": "https://archive.ubuntu.com/ubuntu/pool/main/s/squashfs-tools/squashfs-tools_4.6.1-1build1_amd64.deb",
+        "sha256": "87fae263846bab255d4a51ad9fc623685497ad830db60758dde39589c9fdadcb"
+      },
+      {
+        "file": "liblzo2-2_2.10-2build4_amd64.deb",
+        "url": "https://archive.ubuntu.com/ubuntu/pool/main/l/lzo2/liblzo2-2_2.10-2build4_amd64.deb",
+        "sha256": "e0d13be155013138b8db4cfe68212b866080af661c78302c2eab0d2f9d0d454e"
+      },
+      {
+        "file": "libattr1_2.5.2-1ubuntu0.1_amd64.deb",
+        "url": "https://archive.ubuntu.com/ubuntu/pool/main/a/attr/libattr1_2.5.2-1ubuntu0.1_amd64.deb",
+        "sha256": "a99e2e2dfcefbc0e9c99fdc0b284c8b35eaa58744163aaed476de1c93d3c4ef4"
+      },
+      {
+        "file": "attr_2.5.2-1ubuntu0.1_amd64.deb",
+        "url": "https://archive.ubuntu.com/ubuntu/pool/main/a/attr/attr_2.5.2-1ubuntu0.1_amd64.deb",
+        "sha256": "9242ea4780a656226ce000e0d78cbdda8dc376f9ca3bff2436aaa89b2a48aaf0"
+      }
+    ]
+  },
+  "runtime_packages": [
+    {
+      "package": "gstreamer1.0-plugins-extra",
+      "version": "1.28.2-1ubuntu1.1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/main/g/gst-plugins-bad1.0/gstreamer1.0-plugins-extra_1.28.2-1ubuntu1.1_arm64.deb",
+      "file": "gstreamer1.0-plugins-extra_1.28.2-1ubuntu1.1_arm64.deb",
+      "bytes": 254668,
+      "sha256": "790ad3594beeb81a6c17368977fbd15437804c263aff494da04c36f3a42dc5d9",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libgstreamer-plugins-extra1.0-0",
+      "version": "1.28.2-1ubuntu1.1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/main/g/gst-plugins-bad1.0/libgstreamer-plugins-extra1.0-0_1.28.2-1ubuntu1.1_arm64.deb",
+      "file": "libgstreamer-plugins-extra1.0-0_1.28.2-1ubuntu1.1_arm64.deb",
+      "bytes": 475400,
+      "sha256": "d85ccd6bea398268cf398f9b4333d5888a1b5988a91591ff530a315c489c5ef1",
+      "architecture": "arm64"
+    },
+    {
+      "package": "gir1.2-gst-plugins-extra-1.0",
+      "version": "1.28.2-1ubuntu1.1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/main/g/gst-plugins-bad1.0/gir1.2-gst-plugins-extra-1.0_1.28.2-1ubuntu1.1_arm64.deb",
+      "file": "gir1.2-gst-plugins-extra-1.0_1.28.2-1ubuntu1.1_arm64.deb",
+      "bytes": 83570,
+      "sha256": "8ee6ceafa5e6b1967cdae8ac71ea2f9201b5d3472d06b536ba098141ee9b3e6b",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libva-x11-2",
+      "version": "2.23.0-1ubuntu1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/libv/libva/libva-x11-2_2.23.0-1ubuntu1_arm64.deb",
+      "file": "libva-x11-2_2.23.0-1ubuntu1_arm64.deb",
+      "bytes": 12198,
+      "sha256": "c7647239ed0eb8587f198e562f865caa2a873760e2a7442c7ae55f051ff5d8c3",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libvdpau1",
+      "version": "1.5-4",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/main/libv/libvdpau/libvdpau1_1.5-4_arm64.deb",
+      "file": "libvdpau1_1.5-4_arm64.deb",
+      "bytes": 25840,
+      "sha256": "231a7a8c03290005c53c4d2d51f98103efac2a7ac76f0a7d61d2b5c74a93ae88",
+      "architecture": "arm64"
+    },
+    {
+      "package": "ocl-icd-libopencl1",
+      "version": "2.3.4-1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/main/o/ocl-icd/ocl-icd-libopencl1_2.3.4-1_arm64.deb",
+      "file": "ocl-icd-libopencl1_2.3.4-1_arm64.deb",
+      "bytes": 41052,
+      "sha256": "f5743c6370b2cb91bddd9c3d835ddc93e096d4c65b4be6e5cb7b14a2c045d306",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libavutil60",
+      "version": "7:8.0.1-3ubuntu2",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/f/ffmpeg/libavutil60_8.0.1-3ubuntu2_arm64.deb",
+      "file": "libavutil60_7%3a8.0.1-3ubuntu2_arm64.deb",
+      "bytes": 447524,
+      "sha256": "6991f6dc2eac6c461979d307c9b071b7dd87771cce05a3ee8cd3362e62075d4e",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libcodec2-1.2",
+      "version": "1.2.0-4",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/c/codec2/libcodec2-1.2_1.2.0-4_arm64.deb",
+      "file": "libcodec2-1.2_1.2.0-4_arm64.deb",
+      "bytes": 9000270,
+      "sha256": "567d3c2b05378c248e12d1df06b0855e95c9f8a13ae48998b3a63d7b318233b3",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libdav1d7",
+      "version": "1.5.3-1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/d/dav1d/libdav1d7_1.5.3-1_arm64.deb",
+      "file": "libdav1d7_1.5.3-1_arm64.deb",
+      "bytes": 296564,
+      "sha256": "ea05f30e1690a09fefe1d9a1bf714f3b3bd4bca60d33d1409e054d559809bb5f",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libgsm1",
+      "version": "1.0.23-2",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/libg/libgsm/libgsm1_1.0.23-2_arm64.deb",
+      "file": "libgsm1_1.0.23-2_arm64.deb",
+      "bytes": 26638,
+      "sha256": "c6410801af8e5b2b5971ba3857a31c4ed59095ab8d3f1fd4e609d920cd1db99b",
+      "architecture": "arm64"
+    },
+    {
+      "package": "librav1e0.8",
+      "version": "0.8.1-7",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/r/rust-rav1e/librav1e0.8_0.8.1-7_arm64.deb",
+      "file": "librav1e0.8_0.8.1-7_arm64.deb",
+      "bytes": 799944,
+      "sha256": "7ddf2e6be8d069f61048022a5fc6c80e4c3d10655fbd66f55d3b0df4bbb37ac1",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libshine3",
+      "version": "3.1.1-3build1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/s/shine/libshine3_3.1.1-3build1_arm64.deb",
+      "file": "libshine3_3.1.1-3build1_arm64.deb",
+      "bytes": 25862,
+      "sha256": "55c4c64f24ed2092f619b760a29631c8b5f35a9851024503549ccfc7aab461aa",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libsvtav1enc2",
+      "version": "2.3.0+dfsg-1build1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/s/svt-av1/libsvtav1enc2_2.3.0%2bdfsg-1build1_arm64.deb",
+      "file": "libsvtav1enc2_2.3.0+dfsg-1build1_arm64.deb",
+      "bytes": 1815280,
+      "sha256": "abe4d143bf0489ae43e7f40a335430d90169da668d79f37cc4a41034a15dcd46",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libsoxr0",
+      "version": "0.1.3-4.1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/libs/libsoxr/libsoxr0_0.1.3-4.1_arm64.deb",
+      "file": "libsoxr0_0.1.3-4.1_arm64.deb",
+      "bytes": 56084,
+      "sha256": "a119f6af4b68ec722981d18f1fcfbaec80b300881b73178e62c3fb019af91216",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libswresample6",
+      "version": "7:8.0.1-3ubuntu2",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/f/ffmpeg/libswresample6_8.0.1-3ubuntu2_arm64.deb",
+      "file": "libswresample6_7%3a8.0.1-3ubuntu2_arm64.deb",
+      "bytes": 70500,
+      "sha256": "50d13b6ec115991e4be5e2d6a0b8041cca6682055bc47740ec2eef87e0595b88",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libx264-165",
+      "version": "2:0.165.3222+gitb35605ac-3build1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/x/x264/libx264-165_0.165.3222%2bgitb35605ac-3build1_arm64.deb",
+      "file": "libx264-165_2%3a0.165.3222+gitb35605ac-3build1_arm64.deb",
+      "bytes": 541544,
+      "sha256": "d15fd2939dae7fcede14a276faa250a9cd731d65fa95d395a7f4926fd3edad7c",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libx265-215",
+      "version": "4.1-4",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/x/x265/libx265-215_4.1-4_arm64.deb",
+      "file": "libx265-215_4.1-4_arm64.deb",
+      "bytes": 2001100,
+      "sha256": "2f6d7aed025b248107a6579f1c811ab33b65dff025719b8c9440115635732f36",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libxvidcore4",
+      "version": "2:1.3.7-3",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/x/xvidcore/libxvidcore4_1.3.7-3_arm64.deb",
+      "file": "libxvidcore4_2%3a1.3.7-3_arm64.deb",
+      "bytes": 171150,
+      "sha256": "1b3c5e5fbe6d657cc41116fec5a31bcf0c7db7b6e1c346c7082f8740eb7ccfed",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libzvbi-common",
+      "version": "0.2.44-1ubuntu2",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/z/zvbi/libzvbi-common_0.2.44-1ubuntu2_all.deb",
+      "file": "libzvbi-common_0.2.44-1ubuntu2_all.deb",
+      "bytes": 42974,
+      "sha256": "64f20149bbd481893e74170564bc2203c94fe7a1089eaf25e28189e104cb3d37",
+      "architecture": "all"
+    },
+    {
+      "package": "libzvbi0t64",
+      "version": "0.2.44-1ubuntu2",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/z/zvbi/libzvbi0t64_0.2.44-1ubuntu2_arm64.deb",
+      "file": "libzvbi0t64_0.2.44-1ubuntu2_arm64.deb",
+      "bytes": 258230,
+      "sha256": "ebc3c90e044b6527f82230225ded53f9e965371cfe5eab18514c68eb7b448b7c",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libavcodec62",
+      "version": "7:8.0.1-3ubuntu2",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/f/ffmpeg/libavcodec62_8.0.1-3ubuntu2_arm64.deb",
+      "file": "libavcodec62_7%3a8.0.1-3ubuntu2_arm64.deb",
+      "bytes": 9479188,
+      "sha256": "38d603b538a8934040a54669b593a71a8beae96cfa3d51654bab109c48b753cf",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libunibreak6",
+      "version": "6.1-3build1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/libu/libunibreak/libunibreak6_6.1-3build1_arm64.deb",
+      "file": "libunibreak6_6.1-3build1_arm64.deb",
+      "bytes": 25256,
+      "sha256": "f403e66be4efb69f6a00f1a7ab5081e1e2fc3993445fd9cb1c17932ae692affc",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libass9",
+      "version": "1:0.17.4-2",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/liba/libass/libass9_0.17.4-2_arm64.deb",
+      "file": "libass9_1%3a0.17.4-2_arm64.deb",
+      "bytes": 102696,
+      "sha256": "b7732c029a59187e2ac8eaf34f725304b1e7e36fcb8a3d88fd7cbce9788d361a",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libudfread3",
+      "version": "1.2.0-2",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/libu/libudfread/libudfread3_1.2.0-2_arm64.deb",
+      "file": "libudfread3_1.2.0-2_arm64.deb",
+      "bytes": 16896,
+      "sha256": "db9be5caf72e5957c65c686ff70f0c2b729643390762b792628b78340ad799ed",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libbluray3",
+      "version": "1:1.4.1-1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/libb/libbluray/libbluray3_1.4.1-1_arm64.deb",
+      "file": "libbluray3_1%3a1.4.1-1_arm64.deb",
+      "bytes": 129178,
+      "sha256": "7ffcbb1c745dc64fd6854a15dc9e619f5f1edfcfcf7770c30830d8d1a7d62f7d",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libchromaprint1",
+      "version": "1.6.0-2build1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/c/chromaprint/libchromaprint1_1.6.0-2build1_arm64.deb",
+      "file": "libchromaprint1_1.6.0-2build1_arm64.deb",
+      "bytes": 31058,
+      "sha256": "76fb38d8c5fc13d5e605827cf27cfa92fd8d3c0aced84f96954adbd1adcca932",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libdvdread8t64",
+      "version": "7.0.1-1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/libd/libdvdread/libdvdread8t64_7.0.1-1_arm64.deb",
+      "file": "libdvdread8t64_7.0.1-1_arm64.deb",
+      "bytes": 60456,
+      "sha256": "0cc5e7e9a656912e56f3b3a6f6cc5f39cc665e793796702a25e7f8534b0b78af",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libdvdnav4",
+      "version": "7.0.0-2",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/libd/libdvdnav/libdvdnav4_7.0.0-2_arm64.deb",
+      "file": "libdvdnav4_7.0.0-2_arm64.deb",
+      "bytes": 37808,
+      "sha256": "4bedff36a6b5dc7fd38a237ba5308657e4ae87b7e52fa0676111e2d3c63d53cf",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libgme0",
+      "version": "0.6.4-1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/g/game-music-emu/libgme0_0.6.4-1_arm64.deb",
+      "file": "libgme0_0.6.4-1_arm64.deb",
+      "bytes": 140430,
+      "sha256": "97bd8f76bebe61d89586048b155b171c99c181690def6d98c14cafec22ddf82e",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libopenmpt0t64",
+      "version": "0.8.4-1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/libo/libopenmpt/libopenmpt0t64_0.8.4-1_arm64.deb",
+      "file": "libopenmpt0t64_0.8.4-1_arm64.deb",
+      "bytes": 688530,
+      "sha256": "600a78f0a1684646c4922d542fef027aed4e6963060095c6069ceeb42d44be03",
+      "architecture": "arm64"
+    },
+    {
+      "package": "librabbitmq4",
+      "version": "0.15.0-1ubuntu0.26.04.2",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/main/libr/librabbitmq/librabbitmq4_0.15.0-1ubuntu0.26.04.2_arm64.deb",
+      "file": "librabbitmq4_0.15.0-1ubuntu0.26.04.2_arm64.deb",
+      "bytes": 37990,
+      "sha256": "e840bd5170eee01ecba5b8e6951616b9830c5ccec21923b8a18fa39d20458b32",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libcjson1",
+      "version": "1.7.19-2",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/c/cjson/libcjson1_1.7.19-2_arm64.deb",
+      "file": "libcjson1_1.7.19-2_arm64.deb",
+      "bytes": 22304,
+      "sha256": "87e25c1d8c726f8ea2f2b7eb023d190d52328d9b1dcdfa4acfbc08e7c5ab1dbb",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libmbedcrypto16",
+      "version": "3.6.5-0.1ubuntu2",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/m/mbedtls/libmbedcrypto16_3.6.5-0.1ubuntu2_arm64.deb",
+      "file": "libmbedcrypto16_3.6.5-0.1ubuntu2_arm64.deb",
+      "bytes": 256336,
+      "sha256": "ce7e3cb7e4587d548ff8bb8b6b53cf19f292b43c317e75ad9214e48ba7781145",
+      "architecture": "arm64"
+    },
+    {
+      "package": "librist4",
+      "version": "0.2.11+dfsg-1build1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/libr/librist/librist4_0.2.11%2bdfsg-1build1_arm64.deb",
+      "file": "librist4_0.2.11+dfsg-1build1_arm64.deb",
+      "bytes": 76608,
+      "sha256": "1bbdea788defd36505bed16245d3c69f41e10d4e8fc2976db29cc04a7a8c3391",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libsrt1.5-gnutls",
+      "version": "1.5.4-3",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/s/srt/libsrt1.5-gnutls_1.5.4-3_arm64.deb",
+      "file": "libsrt1.5-gnutls_1.5.4-3_arm64.deb",
+      "bytes": 323050,
+      "sha256": "b3dcc320c334cc62fe545a0c4275b5abb6d9334493d74d3a013df30824d7c0bd",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libnorm1t64",
+      "version": "1.5.9+dfsg-4",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/n/norm/libnorm1t64_1.5.9%2bdfsg-4_arm64.deb",
+      "file": "libnorm1t64_1.5.9+dfsg-4_arm64.deb",
+      "bytes": 152294,
+      "sha256": "485d1141fafe37de3e88d9d0931a9a205b53358a670456815ee853ed2b322aa9",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libpgm-5.3-0t64",
+      "version": "5.3.128~dfsg-2.1build2",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/libp/libpgm/libpgm-5.3-0t64_5.3.128%7edfsg-2.1build2_arm64.deb",
+      "file": "libpgm-5.3-0t64_5.3.128~dfsg-2.1build2_arm64.deb",
+      "bytes": 161324,
+      "sha256": "4e8d5507b1464a8b151c8a32ca6461cc00994e221256fad0d9bfba4f958c4bd0",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libzmq5",
+      "version": "4.3.5-1build3",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/z/zeromq3/libzmq5_4.3.5-1build3_arm64.deb",
+      "file": "libzmq5_4.3.5-1build3_arm64.deb",
+      "bytes": 244050,
+      "sha256": "698f8a88ee1f0052b23b21d1e9d52eb6ff553b466d232e28daca55cd5240ed2e",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libavformat62",
+      "version": "7:8.0.1-3ubuntu2",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/f/ffmpeg/libavformat62_8.0.1-3ubuntu2_arm64.deb",
+      "file": "libavformat62_7%3a8.0.1-3ubuntu2_arm64.deb",
+      "bytes": 1335026,
+      "sha256": "6c46dd6ee4494239e6ef9b226ad9b334c3b2ae665052e34946059005584ac332",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libbs2b0",
+      "version": "3.1.0+dfsg-8build1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/libb/libbs2b/libbs2b0_3.1.0%2bdfsg-8build1_arm64.deb",
+      "file": "libbs2b0_3.1.0+dfsg-8build1_arm64.deb",
+      "bytes": 10646,
+      "sha256": "fd643dd7ba55c3d58d761b99a0663364e6cfb8aeefb114eeacccf25d531ba370",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libflite1",
+      "version": "2.2-7build1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/f/flite/libflite1_2.2-7build1_arm64.deb",
+      "file": "libflite1_2.2-7build1_arm64.deb",
+      "bytes": 13517454,
+      "sha256": "1b28cf2661a60bc7ff5261a15d047d3489442932fcea8b89eb119d84851c24ce",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libserd-0-0",
+      "version": "0.32.6-1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/s/serd/libserd-0-0_0.32.6-1_arm64.deb",
+      "file": "libserd-0-0_0.32.6-1_arm64.deb",
+      "bytes": 44220,
+      "sha256": "79d61c51a3b7fd31ddd48a2c87e7ac6145636ec9f65853131653d396bf6a615a",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libzix-0-0",
+      "version": "0.8.0-1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/z/zix/libzix-0-0_0.8.0-1_arm64.deb",
+      "file": "libzix-0-0_0.8.0-1_arm64.deb",
+      "bytes": 25746,
+      "sha256": "b1393cc4da05cc32526af92b0d77448bd1fdd0cc508167eb1c5248676f2d2e31",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libsord-0-0",
+      "version": "0.16.20-1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/s/sord/libsord-0-0_0.16.20-1_arm64.deb",
+      "file": "libsord-0-0_0.16.20-1_arm64.deb",
+      "bytes": 15962,
+      "sha256": "6f717e7e184c6bd331e3600661b1506ff190ea63d75eb1d7d6e1fdf2ee8236f6",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libsratom-0-0",
+      "version": "0.6.20-1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/s/sratom/libsratom-0-0_0.6.20-1_arm64.deb",
+      "file": "libsratom-0-0_0.6.20-1_arm64.deb",
+      "bytes": 16342,
+      "sha256": "4baf3faf2a3c112401f5eb4620fbf4a7d7f75fe376504d10f5f5b2ce6f4b2c74",
+      "architecture": "arm64"
+    },
+    {
+      "package": "liblilv-0-0",
+      "version": "0.26.2-1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/l/lilv/liblilv-0-0_0.26.2-1_arm64.deb",
+      "file": "liblilv-0-0_0.26.2-1_arm64.deb",
+      "bytes": 43696,
+      "sha256": "c14d363ed112d27136ff05518c78253490aa68267f9dbec504a38fe44e7a0b63",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libmysofa1",
+      "version": "1.3.3+dfsg-1ubuntu2",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/libm/libmysofa/libmysofa1_1.3.3%2bdfsg-1ubuntu2_arm64.deb",
+      "file": "libmysofa1_1.3.3+dfsg-1ubuntu2_arm64.deb",
+      "bytes": 1157232,
+      "sha256": "dbf870ceef15154dbe669537c550e33085013419fc773e1dab18fe204f2917c4",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libplacebo360",
+      "version": "7.360.0-3",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/libp/libplacebo/libplacebo360_7.360.0-3_arm64.deb",
+      "file": "libplacebo360_7.360.0-3_arm64.deb",
+      "bytes": 2894722,
+      "sha256": "4d57a614eb801c447a3dcb9c1379be5a9626edf952962f5eb64f63b626770957",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libfftw3-double3",
+      "version": "3.3.10-2fakesync1build3",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/main/f/fftw3/libfftw3-double3_3.3.10-2fakesync1build3_arm64.deb",
+      "file": "libfftw3-double3_3.3.10-2fakesync1build3_arm64.deb",
+      "bytes": 388096,
+      "sha256": "5e8528a56a99c63d2f368e3b1b4315c3052338da0f3a4268ef3365d35abca4f0",
+      "architecture": "arm64"
+    },
+    {
+      "package": "librubberband3",
+      "version": "4.0.0+dfsg-2ubuntu1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/r/rubberband/librubberband3_4.0.0%2bdfsg-2ubuntu1_arm64.deb",
+      "file": "librubberband3_4.0.0+dfsg-2ubuntu1_arm64.deb",
+      "bytes": 137692,
+      "sha256": "d5766318d6944e757d3dd13a192c925cb24b1d494c9c73cb4a543d3a0ffaafa4",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libswscale9",
+      "version": "7:8.0.1-3ubuntu2",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/f/ffmpeg/libswscale9_8.0.1-3ubuntu2_arm64.deb",
+      "file": "libswscale9_7%3a8.0.1-3ubuntu2_arm64.deb",
+      "bytes": 387188,
+      "sha256": "956462eafe212044549864a78aa40d314a7d32c8cce9f914e16da73a8f7296f9",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libvidstab1.1",
+      "version": "1.1.0-2.1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/libv/libvidstab/libvidstab1.1_1.1.0-2.1_arm64.deb",
+      "file": "libvidstab1.1_1.1.0-2.1_arm64.deb",
+      "bytes": 38726,
+      "sha256": "e2f9862c3416bd91cab9677d95f1981712ffa1a357ce31acecb2d2d5346e4859",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libzimg2",
+      "version": "3.0.6+ds1-1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/z/zimg/libzimg2_3.0.6%2bds1-1_arm64.deb",
+      "file": "libzimg2_3.0.6+ds1-1_arm64.deb",
+      "bytes": 120212,
+      "sha256": "17bd227309d0e972db6ee317c5fd11fe8457a2ee5aeea61ff818eb00fd43308c",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libavfilter11",
+      "version": "7:8.0.1-3ubuntu2",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/f/ffmpeg/libavfilter11_8.0.1-3ubuntu2_arm64.deb",
+      "file": "libavfilter11_7%3a8.0.1-3ubuntu2_arm64.deb",
+      "bytes": 4692138,
+      "sha256": "18f47ebb13576e48fda7fe0653a3388fcd3d930f92e9c9294a0918d034a4ff05",
+      "architecture": "arm64"
+    },
+    {
+      "package": "gstreamer1.0-libav",
+      "version": "1.28.2-1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/g/gst-libav1.0/gstreamer1.0-libav_1.28.2-1_arm64.deb",
+      "file": "gstreamer1.0-libav_1.28.2-1_arm64.deb",
+      "bytes": 100862,
+      "sha256": "79f52647236acd87111df5e07b18ee933e24aa48260a84ef9ae3624db0cef30e",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libavtp0",
+      "version": "0.2.0-2build1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/liba/libavtp/libavtp0_0.2.0-2build1_arm64.deb",
+      "file": "libavtp0_0.2.0-2build1_arm64.deb",
+      "bytes": 6964,
+      "sha256": "47a9ea7ea2b4b9ff741225d982a3e27e7bd7e7b68f8dbe6db8d3cde6ba232f0b",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libcpuinfo0",
+      "version": "0.0~git20250905.877328f-1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/c/cpuinfo/libcpuinfo0_0.0%7egit20250905.877328f-1_arm64.deb",
+      "file": "libcpuinfo0_0.0~git20250905.877328f-1_arm64.deb",
+      "bytes": 27342,
+      "sha256": "c2053bc750199b3c13f313771d819055d822cc529eaf664c561970f318a828b4",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libdc1394-25",
+      "version": "2.2.6-6",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/libd/libdc1394/libdc1394-25_2.2.6-6_arm64.deb",
+      "file": "libdc1394-25_2.2.6-6_arm64.deb",
+      "bytes": 93626,
+      "sha256": "100440bf570576a8ef550b1ebb0ce873e57a389a214753c0c4919834bfb4340b",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libde265-0",
+      "version": "1.0.16-1build1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/libd/libde265/libde265-0_1.0.16-1build1_arm64.deb",
+      "file": "libde265-0_1.0.16-1build1_arm64.deb",
+      "bytes": 148116,
+      "sha256": "6f5af67a76c933bc8aeb22a3141b2b0cfa2a89cc681bf9065d91715a9db728ea",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libdnnl3.6",
+      "version": "3.9.1+ds-2",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/o/onednn/libdnnl3.6_3.9.1%2bds-2_arm64.deb",
+      "file": "libdnnl3.6_3.9.1+ds-2_arm64.deb",
+      "bytes": 4656606,
+      "sha256": "10a14849a98868db2a58a4b9b271e7171b6b77638bbf23e81418a951dccd971e",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libfaad2",
+      "version": "2.11.2-1build1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/f/faad2/libfaad2_2.11.2-1build1_arm64.deb",
+      "file": "libfaad2_2.11.2-1build1_arm64.deb",
+      "bytes": 208166,
+      "sha256": "9db083631c11e05a1d0b5ecf1f5f5a64bfcb428651958bfab6ce827da79e86d0",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libfarmhash0",
+      "version": "0~git20190513.0d859a8-4",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/f/farmhash/libfarmhash0_0%7egit20190513.0d859a8-4_arm64.deb",
+      "file": "libfarmhash0_0~git20190513.0d859a8-4_arm64.deb",
+      "bytes": 10566,
+      "sha256": "51907ff402ad552f5e5e0cc78895b59574f9190ff2e82c5fe3191492fda13819",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libinstpatch-1.0-2",
+      "version": "1.1.7-1.1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/libi/libinstpatch/libinstpatch-1.0-2_1.1.7-1.1_arm64.deb",
+      "file": "libinstpatch-1.0-2_1.1.7-1.1_arm64.deb",
+      "bytes": 247280,
+      "sha256": "49738c4f79039c1ccb18230dad9674f2c5b57a70d65daf547bdc4b9db7f8a211",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libjack-jackd2-0",
+      "version": "1.9.22~dfsg-5build1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/main/j/jackd2/libjack-jackd2-0_1.9.22%7edfsg-5build1_arm64.deb",
+      "file": "libjack-jackd2-0_1.9.22~dfsg-5build1_arm64.deb",
+      "bytes": 283658,
+      "sha256": "89081dcda715a1d2073e6bd3aaa958ec1b70b64b5b9d62702680e6aafc8913fa",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libxss1",
+      "version": "1:1.2.3-1build4",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/main/libx/libxss/libxss1_1.2.3-1build4_arm64.deb",
+      "file": "libxss1_1%3a1.2.3-1build4_arm64.deb",
+      "bytes": 7102,
+      "sha256": "8a46d061e3b6a048dcfad6b8439e2f292e33e26c19634635904d7b8bb3e144a9",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libsdl3-0",
+      "version": "3.4.2+ds-1ubuntu1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/libs/libsdl3/libsdl3-0_3.4.2%2bds-1ubuntu1_arm64.deb",
+      "file": "libsdl3-0_3.4.2+ds-1ubuntu1_arm64.deb",
+      "bytes": 1097738,
+      "sha256": "fd8aa982a6752b8474b8878b320691c2ee9b5fbf39aca05cb0e017920c647f2a",
+      "architecture": "arm64"
+    },
+    {
+      "package": "timgm6mb-soundfont",
+      "version": "1.3-5build1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/t/timgm6mb-soundfont/timgm6mb-soundfont_1.3-5build1_all.deb",
+      "file": "timgm6mb-soundfont_1.3-5build1_all.deb",
+      "bytes": 5577184,
+      "sha256": "e34727ced73876bd5945b8104fa3a542ec752747f2b5855945edefccba09c7b9",
+      "architecture": "all"
+    },
+    {
+      "package": "libfluidsynth3",
+      "version": "2.4.8+dfsg-1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/f/fluidsynth/libfluidsynth3_2.4.8%2bdfsg-1_arm64.deb",
+      "file": "libfluidsynth3_2.4.8+dfsg-1_arm64.deb",
+      "bytes": 260278,
+      "sha256": "91a81f7f8f55915bf6a13c6926172b41ad1ccbcbbeebf04faef3a1b670d7b20e",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libgupnp-igd-1.6-0",
+      "version": "1.6.0-5",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/g/gupnp-igd/libgupnp-igd-1.6-0_1.6.0-5_arm64.deb",
+      "file": "libgupnp-igd-1.6-0_1.6.0-5_arm64.deb",
+      "bytes": 16430,
+      "sha256": "fa8bd3231a86c5bea41d11793f4e2a9c270729ffb288d42aae4b42013a7dca54",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libimath-3-1-29t64",
+      "version": "3.1.12-1ubuntu5",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/i/imath/libimath-3-1-29t64_3.1.12-1ubuntu5_arm64.deb",
+      "file": "libimath-3-1-29t64_3.1.12-1ubuntu5_arm64.deb",
+      "bytes": 68808,
+      "sha256": "8915f83b72834523a1ebed9fb40a94a1cb11426f27e23f7b5e8c0201c8c2fe64",
+      "architecture": "arm64"
+    },
+    {
+      "package": "liblrdf0",
+      "version": "0.6.1-5",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/libl/liblrdf/liblrdf0_0.6.1-5_arm64.deb",
+      "file": "liblrdf0_0.6.1-5_arm64.deb",
+      "bytes": 17550,
+      "sha256": "54f24b84a2fbfb158f02dfee21e7025b74908455d31e73637c2ab5f7d22747e5",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libltc11",
+      "version": "1.3.2-1build2",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/libl/libltc/libltc11_1.3.2-1build2_arm64.deb",
+      "file": "libltc11_1.3.2-1build2_arm64.deb",
+      "bytes": 13852,
+      "sha256": "2a8afe4b12b05b495833c70274cc01545edc29e01394b735c7203663c14a5b0c",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libmjpegutils-2.2-0",
+      "version": "1:2.2.1-3",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/m/mjpegtools/libmjpegutils-2.2-0_2.2.1-3_arm64.deb",
+      "file": "libmjpegutils-2.2-0_1%3a2.2.1-3_arm64.deb",
+      "bytes": 25956,
+      "sha256": "618f900b9392049bb9349d2d592c36b47132cb02271992649455994518f95779",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libmodplug1",
+      "version": "1:0.8.9.0-3build2",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/libm/libmodplug/libmodplug1_0.8.9.0-3build2_arm64.deb",
+      "file": "libmodplug1_1%3a0.8.9.0-3build2_arm64.deb",
+      "bytes": 161306,
+      "sha256": "f6b09569af7501fa1f3d74745180a3ca30378ca6fbbf32214107710de8b398c3",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libmpcdec6",
+      "version": "2:0.1~r495-3build1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/libm/libmpc/libmpcdec6_0.1%7er495-3build1_arm64.deb",
+      "file": "libmpcdec6_2%3a0.1~r495-3build1_arm64.deb",
+      "bytes": 32574,
+      "sha256": "8fbaa7a77ef6d2f7251861f82ab840c1a7908886f23af6c37b6400a2618cca64",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libmpeg2encpp-2.2-0",
+      "version": "1:2.2.1-3",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/m/mjpegtools/libmpeg2encpp-2.2-0_2.2.1-3_arm64.deb",
+      "file": "libmpeg2encpp-2.2-0_1%3a2.2.1-3_arm64.deb",
+      "bytes": 71628,
+      "sha256": "e3e80c179967878cdcd2422ae227030711473bcb6f444a8861da9b0c33227a1e",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libmplex2-2.2-0",
+      "version": "1:2.2.1-3",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/m/mjpegtools/libmplex2-2.2-0_2.2.1-3_arm64.deb",
+      "file": "libmplex2-2.2-0_1%3a2.2.1-3_arm64.deb",
+      "bytes": 45140,
+      "sha256": "79a73e4df9274d4d28f38fd0d74594c902c97f6426046a810569bd3a056ad6ae",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libneon27t64",
+      "version": "0.36.0-1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/n/neon27/libneon27t64_0.36.0-1_arm64.deb",
+      "file": "libneon27t64_0.36.0-1_arm64.deb",
+      "bytes": 105716,
+      "sha256": "19d1330523fcf09be6d9d48cbec9b1367ee20082a8bae57767e5dd559c3d8458",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libnice10",
+      "version": "0.1.23-2",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/libn/libnice/libnice10_0.1.23-2_arm64.deb",
+      "file": "libnice10_0.1.23-2_arm64.deb",
+      "bytes": 152458,
+      "sha256": "d8a583e983b5f9d32ecf9be7a4a6f421b76161e1d496db6b7cce76ef5be89bd8",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libonnx1t64",
+      "version": "1.20.0-1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/o/onnx/libonnx1t64_1.20.0-1_arm64.deb",
+      "file": "libonnx1t64_1.20.0-1_arm64.deb",
+      "bytes": 945362,
+      "sha256": "9d818314e87625c5b8df3c2120ebbdc57e3f3af1411be6a187b5aa96c8c3b7fd",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libonnxruntime-providers",
+      "version": "1.23.2+dfsg-6ubuntu1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/o/onnxruntime/libonnxruntime-providers_1.23.2%2bdfsg-6ubuntu1_arm64.deb",
+      "file": "libonnxruntime-providers_1.23.2+dfsg-6ubuntu1_arm64.deb",
+      "bytes": 303736,
+      "sha256": "6d93c5b3734aa0c1ce0eeb8f4ae05c9905682f9003c6463fe63969c12e00cd14",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libpthreadpool0",
+      "version": "0.0~git20251020.0e6ca13-1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/p/pthreadpool/libpthreadpool0_0.0%7egit20251020.0e6ca13-1_arm64.deb",
+      "file": "libpthreadpool0_0.0~git20251020.0e6ca13-1_arm64.deb",
+      "bytes": 36686,
+      "sha256": "83f6d5d30cb1f647d0710ad02bd26ab1d9426bee46a05115ea5176d0d91286b6",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libre2-11",
+      "version": "20250805-1build3",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/main/r/re2/libre2-11_20250805-1build3_arm64.deb",
+      "file": "libre2-11_20250805-1build3_arm64.deb",
+      "bytes": 163980,
+      "sha256": "b4893eef98d3320bf34def10122bec1a3aeddfc57f09220e1460577e6e930e39",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libxnnpack0.20241108",
+      "version": "0.0~git20241108.4ea82e5-2build1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/x/xnnpack/libxnnpack0.20241108_0.0%7egit20241108.4ea82e5-2build1_arm64.deb",
+      "file": "libxnnpack0.20241108_0.0~git20241108.4ea82e5-2build1_arm64.deb",
+      "bytes": 394968,
+      "sha256": "ce939afe2f1e0258a00f76fb895ef09087ca6f6a0246aaa80386af7b05cf9100",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libonnxruntime1.23",
+      "version": "1.23.2+dfsg-6ubuntu1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/o/onnxruntime/libonnxruntime1.23_1.23.2%2bdfsg-6ubuntu1_arm64.deb",
+      "file": "libonnxruntime1.23_1.23.2+dfsg-6ubuntu1_arm64.deb",
+      "bytes": 5229874,
+      "sha256": "8c4fdaec5ec40a4b68bf247db1b044675f8d8990e7b7c8bf4fad15a3f769f7ee",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libopenal-data",
+      "version": "1:1.25.1-2",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/o/openal-soft/libopenal-data_1.25.1-2_all.deb",
+      "file": "libopenal-data_1%3a1.25.1-2_all.deb",
+      "bytes": 163062,
+      "sha256": "92dd8ba066527a11bd8bbbec43c3815fc04b49a99eeee9890b9653b9b370ca24",
+      "architecture": "all"
+    },
+    {
+      "package": "libopenexr-3-1-30",
+      "version": "3.1.13-2build1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/o/openexr/libopenexr-3-1-30_3.1.13-2build1_arm64.deb",
+      "file": "libopenexr-3-1-30_3.1.13-2build1_arm64.deb",
+      "bytes": 953674,
+      "sha256": "82be887ad7f6be06fb8d2c56508d99669dbd8cbb6d17bb87329726531f735fa0",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libopenh264-8",
+      "version": "2.6.0+dfsg-2build1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/o/openh264/libopenh264-8_2.6.0%2bdfsg-2build1_arm64.deb",
+      "file": "libopenh264-8_2.6.0+dfsg-2build1_arm64.deb",
+      "bytes": 374606,
+      "sha256": "6ad29a11643bb607409b113cab401f942b7cd856c01a092c22c79db765f5d41d",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libopenni2-0",
+      "version": "2.2.0.33+dfsg-19",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/o/openni2/libopenni2-0_2.2.0.33%2bdfsg-19_arm64.deb",
+      "file": "libopenni2-0_2.2.0.33+dfsg-19_arm64.deb",
+      "bytes": 368492,
+      "sha256": "1d2ad222703e7871204b6c6a08d861e8c6bdc23fe447a09e103d3a2a5c36bcd1",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libqrencode4",
+      "version": "4.1.1-2build1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/q/qrencode/libqrencode4_4.1.1-2build1_arm64.deb",
+      "file": "libqrencode4_4.1.1-2build1_arm64.deb",
+      "bytes": 26338,
+      "sha256": "51223089ce04af06d8fc1c564ee50a3a6b8f074d634094afb40c142fd811576b",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libsoundtouch1",
+      "version": "2.4.0+ds-1build1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/s/soundtouch/libsoundtouch1_2.4.0%2bds-1build1_arm64.deb",
+      "file": "libsoundtouch1_2.4.0+ds-1build1_arm64.deb",
+      "bytes": 52818,
+      "sha256": "26611f233292848008fc9d3a97c1f87818b856e1d9f00df3580769c7cc91b008",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libspandsp2t64",
+      "version": "0.0.6+dfsg-2.2build2",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/s/spandsp/libspandsp2t64_0.0.6%2bdfsg-2.2build2_arm64.deb",
+      "file": "libspandsp2t64_0.0.6+dfsg-2.2build2_arm64.deb",
+      "bytes": 315280,
+      "sha256": "1cf59649f4747c7ba0c8e032f5e35d609258449861e49d1c8bd9db329bb8b4f0",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libsrtp2-1",
+      "version": "2.7.0-3build1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/libs/libsrtp2/libsrtp2-1_2.7.0-3build1_arm64.deb",
+      "file": "libsrtp2-1_2.7.0-3build1_arm64.deb",
+      "bytes": 47412,
+      "sha256": "19776be6b3348b302becf36cb96b1c573c701b9ed86fef07d7ea81748d6d4eb6",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libtensorflow-lite2.14.1",
+      "version": "2.14.1+dfsg-3build1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/t/tensorflow/libtensorflow-lite2.14.1_2.14.1%2bdfsg-3build1_arm64.deb",
+      "file": "libtensorflow-lite2.14.1_2.14.1+dfsg-3build1_arm64.deb",
+      "bytes": 1415114,
+      "sha256": "f116c2659887e3933ccdef1964fcd8851fbf8307a899a44edd307328fa50f4f4",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libwildmidi2",
+      "version": "0.4.6-1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/w/wildmidi/libwildmidi2_0.4.6-1_arm64.deb",
+      "file": "libwildmidi2_0.4.6-1_arm64.deb",
+      "bytes": 72292,
+      "sha256": "d72d56978f7983512f6766a55dfac7baf51d7ff561de3fd7d98e49feb879ccfb",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libxcb-xkb1",
+      "version": "1.17.0-2ubuntu1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/main/libx/libxcb/libxcb-xkb1_1.17.0-2ubuntu1_arm64.deb",
+      "file": "libxcb-xkb1_1.17.0-2ubuntu1_arm64.deb",
+      "bytes": 32200,
+      "sha256": "62a2646163addecfffdc76125603bdce6096cf2739631e3737ecbd5759bdef32",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libxkbcommon-x11-0",
+      "version": "1.13.1-1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/main/libx/libxkbcommon/libxkbcommon-x11-0_1.13.1-1_arm64.deb",
+      "file": "libxkbcommon-x11-0_1.13.1-1_arm64.deb",
+      "bytes": 13990,
+      "sha256": "8e248cb094bb3508e5c68ab5e89572cd82ea3fe2639b49f2b7d9dbefd4fa31ef",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libzbar0t64",
+      "version": "0.23.93-9ubuntu1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/z/zbar/libzbar0t64_0.23.93-9ubuntu1_arm64.deb",
+      "file": "libzbar0t64_0.23.93-9ubuntu1_arm64.deb",
+      "bytes": 120458,
+      "sha256": "97ef782f2edf0af65f0ddb5b778b3ba887178412e26dff32ba4583ef3b6669f3",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libzxing3",
+      "version": "2.3.0-5",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/z/zxing-cpp/libzxing3_2.3.0-5_arm64.deb",
+      "file": "libzxing3_2.3.0-5_arm64.deb",
+      "bytes": 564412,
+      "sha256": "94dce3e5f416a65c0bea5e5982c845e5560346c958d3e3dbe1f54eb7ea9b2696",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libgstreamer-plugins-bad1.0-0",
+      "version": "1.28.2-1ubuntu1.1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/g/gst-plugins-bad1.0/libgstreamer-plugins-bad1.0-0_1.28.2-1ubuntu1.1_arm64.deb",
+      "file": "libgstreamer-plugins-bad1.0-0_1.28.2-1ubuntu1.1_arm64.deb",
+      "bytes": 524250,
+      "sha256": "3b78ed64a86b808e91a6afd87e45f89aa630a4c31d2ce64590009ab515dd6a3e",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libdca0",
+      "version": "0.0.7-2build2",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/libd/libdca/libdca0_0.0.7-2build2_arm64.deb",
+      "file": "libdca0_0.0.7-2build2_arm64.deb",
+      "bytes": 92278,
+      "sha256": "9147d3755edae3f5b2863d6a5eceec00c23c04274b2ab39d410afd5d38f1e98a",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libopenal1",
+      "version": "1:1.25.1-2",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/o/openal-soft/libopenal1_1.25.1-2_arm64.deb",
+      "file": "libopenal1_1%3a1.25.1-2_arm64.deb",
+      "bytes": 709342,
+      "sha256": "1374e6ae3f4da6559649f51d8d1f34fb4d11d971e6352e23cc1befbc77cf105f",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libvo-aacenc0",
+      "version": "0.1.3-3build1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/v/vo-aacenc/libvo-aacenc0_0.1.3-3build1_arm64.deb",
+      "file": "libvo-aacenc0_0.1.3-3build1_arm64.deb",
+      "bytes": 70476,
+      "sha256": "95dcbef252e852dc057a3533ac4c90070c239314b8af72ad2128daef2c5040fc",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libvo-amrwbenc0",
+      "version": "0.1.3-2build2",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/v/vo-amrwbenc/libvo-amrwbenc0_0.1.3-2build2_arm64.deb",
+      "file": "libvo-amrwbenc0_0.1.3-2build2_arm64.deb",
+      "bytes": 76238,
+      "sha256": "91ddb647b2f7f36e40792caa8dbe4b0a8a46a994eef2fdac545198d82c6b3ab5",
+      "architecture": "arm64"
+    },
+    {
+      "package": "gstreamer1.0-plugins-bad",
+      "version": "1.28.2-1ubuntu1.1",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/g/gst-plugins-bad1.0/gstreamer1.0-plugins-bad_1.28.2-1ubuntu1.1_arm64.deb",
+      "file": "gstreamer1.0-plugins-bad_1.28.2-1ubuntu1.1_arm64.deb",
+      "bytes": 2841540,
+      "sha256": "ac67300f66e006901e18bc6cb92bf5551dfeb08e3f4f7070d669d3f1ed01133f",
+      "architecture": "arm64"
+    },
+    {
+      "package": "libprotobuf-c1",
+      "version": "1.5.1-1ubuntu2",
+      "architecture": "arm64",
+      "url": "https://snapshot.ubuntu.com/ubuntu/20260924T000000Z/pool/universe/p/protobuf-c/libprotobuf-c1_1.5.1-1ubuntu2_arm64.deb",
+      "sha256": "c1c5f545a5d11c98ad2eea8c9b610b253880a3f62cdd3481f18b52c66cca1de5",
+      "file": "libprotobuf-c1_1.5.1-1ubuntu2_arm64.deb"
+    }
+  ],
+  "runtime_snapshot": "20260924T000000Z",
+  "runtime_seeds": [
+    "gstreamer1.0-plugins-bad",
+    "gstreamer1.0-libav"
+  ]
+}

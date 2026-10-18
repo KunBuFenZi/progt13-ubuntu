@@ -3,3 +3,4 @@
 *.config text eol=lf
 *.py text eol=lf
 *.sh text eol=lf
+*.patch whitespace=-trailing-space,-space-before-tab

@@ -13,4 +13,4 @@ jobs:
         with:
           python-version: '3.12'
       - run: python3 tools/check-source.py
-      - run: python3 tools/validation/test_switch.py
+      - run: sudo python3 tools/validation/test_switch.py

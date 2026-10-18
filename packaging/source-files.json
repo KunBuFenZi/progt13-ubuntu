@@ -706,12 +706,12 @@
   },
   "port/package-audio-desktop-v10.py": {
     "origin": "development recipe port/package-audio-desktop-v10.py",
-    "sha256": "c73f1ef6e785ca066b5bd7f7939704e5cabac2a1b17b33daa9499dc52bdce7be",
+    "sha256": "b9fecf6f5c83d186b06b0f47cedc6d29759183ec4c4be47fd9e116edb1ae1019",
     "mode": 493
   },
   "port/package-audio-desktop-v11.py": {
     "origin": "development recipe port/package-audio-desktop-v11.py",
-    "sha256": "a9d88d1a8c44c6c7eee1cd264aad354bd0b65fa273b43e5d4a2b73ba114b44ab",
+    "sha256": "d09d46f201c6f857242861c9de01ed9f7ef8858b7dbad3f3e5eb3e47101ec09f",
     "mode": 493
   },
   "port/package-audio-desktop-v2.py": {
@@ -746,12 +746,12 @@
   },
   "port/package-audio-desktop-v8.py": {
     "origin": "development recipe port/package-audio-desktop-v8.py",
-    "sha256": "d5c127ef56ec887b5fb20056bff2b5b46a791bcb17df4f8f55196f4a8214cc6d",
+    "sha256": "a1ae0cba677b9388ef0fcb82c3f7b21e7b68258fed44beb231d7222b69f92d72",
     "mode": 493
   },
   "port/package-audio-desktop-v9.py": {
     "origin": "development recipe port/package-audio-desktop-v9.py",
-    "sha256": "f76dc235db8469a459f6e9af54152d0020e79fe19cf2676e5aa67817ae08d4c9",
+    "sha256": "b9a98e47df9885983373f215dc5b0cd6a5d1005fe07afa7a42ece33da7de8761",
     "mode": 493
   },
   "port/package-audio-desktop.py": {
@@ -1166,7 +1166,7 @@
   },
   "port/refresh-hooks75.h": {
     "origin": "development recipe port/refresh-hooks75.h",
-    "sha256": "bcb321f77c34953bcfa80d455b71178368b8f086453dde6aefdcdbe81a096154",
+    "sha256": "fb10fcf1642709d9b61c212560910ead8aa4690f2341c4bf41dae480f790b9bc",
     "mode": 420
   },
   "port/refresh-live75.c": {

@@ -138,7 +138,7 @@ DEFINE_SHOW_ATTRIBUTE(refresh_state75);
 /* Called with DRM modeset locks held. Does not change the display mode. */
 static int install_hooks75(void)
 {
-	const char *paths[] = {"/soc@0/display-subsystem@ae00000/dsi@ae94000", 
+	const char *paths[] = {"/soc@0/display-subsystem@ae00000/dsi@ae94000",
 		"/soc@0/display-subsystem@ae00000/dsi@ae96000"};
 	struct dsi_prefix75 *dsi;
 	struct device_node *np;

@@ -56,7 +56,7 @@ libcamera基于0.7.0，应用 `snapshots/patches/libcamera-final.patch`；原始
 
 ## Ubuntu根系统与初始化
 
-实机使用Ubuntu Desktop26.04 ARM64的`minimal.squashfs`和`minimal.standard.squashfs`下层，ext4中的`upper/`与`work/`提供持久写入。`port/fetch-desktop-base.py`记录Ubuntu输入来源，`port/build-persistent-root79.py`记录容器装配方式；它引用的私有settings归档不随仓库提供。应以安装树内容和自行构建的运行依赖创建新的干净upper，而不是复制作者的个人系统。
+实机使用Ubuntu Desktop26.04 ARM64的`minimal.squashfs`和`minimal.standard.squashfs`下层，ext4中的`upper/`与`work/`提供持久写入。固定ISO及层摘要在`packaging/desktop/source.json`，原始`port/fetch-desktop-base.py`读取它时需复制到本地`inputs/desktop-source.json`。`port/build-persistent-root79.py`记录容器装配方式；它引用的私有settings归档不随仓库提供。应以安装树内容和自行构建的运行依赖创建新的干净upper，而不是复制作者的个人系统。
 
 `initramfs/init`所需输入包括BusyBox静态ARM64、早期ext4/UFS依赖、`/etc/early-modules`、本次根分区UUID、设备固件及`/bin/persistent-shutdown80`。`port/build-initramfs.py`保留已实测的装配器。正式根系统应运行`packaging/setup-owner.sh ACCOUNT`，在本机设置密码、sudo和Snap服务。
 
